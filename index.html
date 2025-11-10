@@ -1,135 +1,26 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>專業多功能待辦清單 (Flask)</title>
-    <link rel="stylesheet" href="css/index.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Peien's Notes</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header>
-        <h1>專業多功能待辦清單</h1>
-    </header>
-    <main>
-      <div id="input-area">
-          <input type="text" id="todo-input1" placeholder="請輸入待辦事項標題" maxlength="50" />
-          <input type="text" id="todo-input2" placeholder="請輸入詳細描述 (選填)" maxlength="150" />
-          <button id="add-button" aria-label="新增待辦事項">新增</button>
-      </div>
+  <header>
+    <h1>Peien's Notes</h1>
+    <p class="subtitle">技術、學習與生活記錄</p>
+  </header>
 
-      <ul id="todo-list" aria-live="polite" aria-relevant="additions removals">
-          <li>目前沒有待辦事項</li>
-      </ul>
-
-      <p class="footer-text">此待辦清單為純靜態 GitHub Pages 範例</p>
+  <main id="post-list">
+    <p>載入文章中...</p>
   </main>
 
-    <script>
-      // DOM 元件
-      const inputTitle = document.getElementById('todo-input1');
-      const inputDesc = document.getElementById('todo-input2');
-      const addButton = document.getElementById('add-button');
-      const todoList = document.getElementById('todo-list');
+  <footer>
+    <p>© 2025 Peien Wu · Hosted on GitHub Pages</p>
+  </footer>
 
-      // 建立待辦清單項目DOM模板函式
-      function createTodoItem(title, description) {
-          const li = document.createElement('li');
-
-          const textsDiv = document.createElement('div');
-          textsDiv.className = 'todo-texts';
-
-          const titleSpan = document.createElement('span');
-          titleSpan.className = 'todo-title';
-          titleSpan.textContent = title;
-          textsDiv.appendChild(titleSpan);
-
-          if(description && description.trim() !== ''){
-              const descSpan = document.createElement('span');
-              descSpan.className = 'todo-desc';
-              descSpan.textContent = description;
-              textsDiv.appendChild(descSpan);
-          }
-
-          const actionsDiv = document.createElement('div');
-          actionsDiv.className = 'actions';
-
-          const completeBtn = document.createElement('button');
-          completeBtn.className = 'complete-btn';
-          completeBtn.title = '標記完成';
-          completeBtn.setAttribute('aria-pressed', 'false');
-          completeBtn.innerHTML = '&#10003;'; // ✓
-          actionsDiv.appendChild(completeBtn);
-
-          const deleteBtn = document.createElement('button');
-          deleteBtn.className = 'delete-btn';
-          deleteBtn.title = '刪除待辦';
-          deleteBtn.innerHTML = '&#128465;'; // 垃圾桶符號
-          actionsDiv.appendChild(deleteBtn);
-
-          li.appendChild(textsDiv);
-          li.appendChild(actionsDiv);
-
-          // 綁定事件：完成標記
-          completeBtn.addEventListener('click', () => {
-              const pressed = completeBtn.getAttribute('aria-pressed') === 'true';
-              completeBtn.setAttribute('aria-pressed', String(!pressed));
-              li.classList.toggle('completed');
-          });
-
-          // 綁定事件：刪除
-          deleteBtn.addEventListener('click', () => {
-              if(confirm('確定要刪除此待辦事項嗎？')){
-                  li.remove();
-                  checkEmptyList();
-              }
-          });
-
-          return li;
-      }
-
-      // 檢查清單是否為空，顯示預設訊息
-      function checkEmptyList(){
-          if(todoList.children.length === 0){
-              const emptyItem = document.createElement('li');
-              emptyItem.textContent = '目前沒有待辦事項';
-              todoList.appendChild(emptyItem);
-          }
-      }
-
-      // 新增按鈕事件
-      addButton.addEventListener('click', () => {
-          const title = inputTitle.value.trim();
-          const desc = inputDesc.value.trim();
-
-          if(!title){
-              alert('待辦事項標題不可為空！');
-              inputTitle.focus();
-              return;
-          }
-          // 建立新待辦並加入清單
-          const newItem = createTodoItem(title, desc);
-          if(todoList.querySelector('li') && todoList.querySelector('li').textContent === "目前沒有待辦事項"){
-              todoList.innerHTML = ''; // 清空訊息
-          }
-          todoList.appendChild(newItem);
-
-          // 清空輸入欄
-          inputTitle.value = '';
-          inputDesc.value = '';
-          inputTitle.focus();
-      });
-
-      // 允許按 Enter 鍵直接新增 (聚焦於標題和描述欄)
-      inputTitle.addEventListener('keydown', (e) => {
-          if(e.key === 'Enter'){
-              addButton.click();
-          }
-      });
-      inputDesc.addEventListener('keydown', (e) => {
-          if(e.key === 'Enter'){
-              addButton.click();
-          }
-      });
-  </script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="scripts/main.js"></script>
 </body>
 </html>
