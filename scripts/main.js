@@ -1,14 +1,35 @@
-// 手動設定文章列表 (之後可自動生成)
-const posts = [
-  { title: "第一篇文章：開始寫作", file: "test.md", date: "2025-11-10" },
-  { title: "第二篇文章：資料庫學習筆記", file: "second-post.md", date: "2025-11-09" },
-];
+async function loadPostList() {
+  const listDiv = document.getElementById("post-list");
+  listDiv.innerHTML = "<p>載入中...</p>";
 
-const postList = document.getElementById('post-list');
+  try {
+    // GitHub Pages 不允許直接讀取資料夾清單，
+    // 所以我們手動維護一份 posts.json（會自動更新版本我可以幫你做，但這版是手動）
+    const response = await fetch("posts/posts.json");
+    const posts = await response.json();
 
-postList.innerHTML = posts.map(post => `
-  <article class="post">
-    <a href="posts/${post.file.replace('.md', '.html')}" class="post-title">${post.title}</a>
-    <div class="post-date">${post.date}</div>
-  </article>
-`).join('');
+    listDiv.innerHTML = "";
+    posts.forEach(post => {
+      const a = document.createElement("a");
+      a.textContent = post.title;
+      a.href = "#";
+      a.onclick = () => loadPost(post.file);
+      listDiv.appendChild(a);
+      listDiv.appendChild(document.createElement("br"));
+    });
+  } catch (e) {
+    listDiv.innerHTML = "<p>載入文章清單失敗。</p>";
+  }
+}
+
+async function loadPost(filename) {
+  const contentDiv = document.getElementById("content");
+  contentDiv.innerHTML = "<p>載入中...</p>";
+
+  const res = await fetch(`posts/${filename}`);
+  const text = await res.text();
+  contentDiv.textContent = text; // 直接顯示 markdown 原文
+}
+
+// 初始化
+loadPostList();
