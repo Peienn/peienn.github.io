@@ -1,11 +1,11 @@
-# Setup-GitLab
+### Setup-GitLab
 
 **[Step by step Teaching](https://medium.com/@peienwutech/gitlab-ci-cd-%E5%BE%9Egitlab%E5%BB%BA%E7%BD%AE%E9%96%8B%E5%A7%8B-23d971cacf3c)**
 
 
-## 主要流程
-1. 架設 GitLab Server (Docker)
-2. 架設 GitLab Runner (Docker) 並建立 Runner
+# 主要流程
+## 1. 架設 GitLab Server (Docker)
+## 2. 架設 GitLab Runner (Docker) 並建立 Runner
 
 
 # GitLab 與 Runner 的關係
