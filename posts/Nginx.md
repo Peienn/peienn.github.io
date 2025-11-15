@@ -5,7 +5,7 @@ Nginx 是甚麼以及如何用?
 2. Nginx 安裝
 3. Nginx 使用
 4. Nginx + 實際案例(多人聊天室)
-5. 結論
+
 
 
 
@@ -109,12 +109,8 @@ Nginx 的設定有多種方式可以實現流量處理，常見兩種方法，�
 
 --- 
 ---
----
----
----
 
-
-## steps 1: 修改後端程式碼，以及啟動多人聊天室的後端伺服器
+### steps 1: 修改後端程式碼，以及啟動多人聊天室的後端伺服器
 
 1. 原本只有一個backend，現在多加一個backend2，模擬第二台後端伺服器，但要把backend2的端口改成3001
 2. 調整io入口的程式碼，讓系統更安全
@@ -150,7 +146,7 @@ chatroom2\backend2>npm run dev
 ---
 
 
-## steps 2: 修改前端的io --> 要連到哪裡去
+### steps 2: 修改前端的io --> 要連到哪裡去
 原本:寫死完整 URL (host + port) const socket = io("http://localhost:3000"); <br>
 - 問題 1: 寫死 localhost → 手機無法連，因為 localhost 會指向手機自己的 3000 port,但手機沒有 Backend → Error
 - 問題 2: 寫死 3000 → 繞過 Nginx,直達Backend，無法負載均衡
@@ -177,7 +173,7 @@ const socket = io({
 
 ---
 
-## steps 3: 修改完後就可以把前端的東西放到Nginx內 (如前述所說，靜態資源由Web Server提供)
+### steps 3: 修改完後就可以把前端的東西放到Nginx內 (如前述所說，靜態資源由Web Server提供)
 
 ```markdown
 # React 專案打包成靜態檔案
@@ -188,7 +184,7 @@ npm run build
 
 
 
-## steps 4: 啟動Nginx (但要先進行conf設定)
+### steps 4: 啟動Nginx (但要先進行conf設定)
 
 - 設定Nginx/conf/nginx.conf
 
@@ -251,7 +247,7 @@ nginx
 # 或是直接到Nginx資料夾下點選 Nginx.exe
 ```
 
-## steps 5: 檢查結果
+### steps 5: 檢查結果
 ![Nginx](images/Nginx/result1.png)
 
 從圖中可以看出，上面兩個是同一個聊天室，下面兩個是同一個聊天室，說明如下：
@@ -276,7 +272,7 @@ nginx
 
 --- 
 
-## 結論和延伸
+# 結論和延伸
 
 透過「多人聊天室」專案成功實作 Nginx 的兩大功能:
 1. 反向代理 : 
