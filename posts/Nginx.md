@@ -19,7 +19,7 @@ Nginx 是輕量且高效能的 Web 伺服器（Web Server），負責扮演網�
 
 從上圖可以看出發現，沒有Nginx的情況下，由使用者決定要去連到哪一台後端伺服器來獲取資訊，<br>但如果今天採用了Nginx，就會變成是使用者連線到Nginx，由Nginx來決定是哪一台後端伺服器提供資訊。至此可知，後端伺服器會有好幾台且都是相同的服務。
 
-#### Nginx 主要特色:
+### Nginx 主要特色:
 1. 反向代理（Reverse Proxy） : Nginx 作為使用者與後端伺服器間的中介，負責將請求轉發到指定的後端伺服器。
 2. 負載平衡（Load Balancing）: Nginx 可根據設定的策略（如輪詢、IP hash）將流量分配到多台後端伺服器，提高效能與可靠性。
 <br>
@@ -46,7 +46,7 @@ A3 :  沒有Web Server的情況，開發伺服器需要同時處理 "靜態" 和
 
 ## 2. Nginx 安裝
 
-#### -Linux : 直接進入os
+### Linux 
 ```markdown
 # 保持套件是最新版本
 sudo apt update
@@ -59,7 +59,10 @@ sudo systemctl status nginx
 # 進入首頁
 http://localhost/    --> Welcome to nginx
 ```
-#### -Windows : 下載Nginx軟體包，並放到你想放置的位置 例如 C:\nginx\
+### Windows 
+
+下載Nginx軟體包，並放到你想放置的位置 例如 C:\nginx\
+
 ```markdown
 # 切換路徑
 cd c:\nginx
