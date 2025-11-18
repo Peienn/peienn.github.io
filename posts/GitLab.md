@@ -11,10 +11,9 @@ GitLab CI/CD 從GitLab建置開始
   1. 介紹GitLab
   2. 架設GitLab Server (Docker)
   3. 架設GitLab Runner (Docker) + 建立Runner
-  4. 測試結果
 
 
-# 介紹GitLab
+## 介紹GitLab
 在 GitLab CI/CD 流程中，**GitLab** 與 **Runner** 是兩個核心組件，它們的關係如下：
 
 ### 1. GitLab
@@ -40,7 +39,7 @@ GitLab CI/CD 從GitLab建置開始
 
 ---
 
-### 3. GitLab 與 Runner 的互動流程
+### 3. GitLab vs Runner 
 
 1. 開發者 push 代碼到 GitLab 專案
 2. GitLab 解析 `.gitlab-ci.yml`，生成 pipeline
@@ -51,11 +50,11 @@ GitLab CI/CD 從GitLab建置開始
 7. GitLab 顯示 pipeline 狀態（成功/失敗/日誌）
 
 
-# 架設GitLab Server (Docker)
+## 架設GitLab Server (Docker)
 
 就是架設一個跟 **[官方](https://gitlab.com/users/sign_in)** 一樣的Server, 不過所有設定你都可以自由調整。<br> 首先，安裝ubuntu環境，可以按照 **[影片](https://www.youtube.com/watch?v=hWH4n9zB7mk)** 上去安裝。(需要有Ubuntu Desktop，影片也有教)
 
-## Linux建置方法
+### Linux 建置
 
 1. 更新ubuntu的package, 提升穩定性與安全性 (新版本通常會修改漏洞)<br>
     ```markdown
@@ -83,7 +82,7 @@ GitLab CI/CD 從GitLab建置開始
   sudo docker exec -it gitlab cat /etc/gitlab/initial_root_password
 ```
 
-## 其他功能
+### 其他功能
 ```markdown
 # 忘記密碼? 用指令重新設定user密碼。 ex:[root]
   sudo docker exec -it gitlab gitlab-rake "gitlab:password:reset[root]"
@@ -103,9 +102,9 @@ sudo docker inspect -f '{{.HostConfig.RestartPolicy.Name}}' gitlab
 ```
 
 
-# 架設GitLab Runner (Docker) 
+## 架設GitLab Runner (Docker) 
 很簡單，透過docker方式建即可，指令參數的功能跟剛剛差不多。
-## 安裝 Runner 軟體
+### 安裝 Runner 軟體
 ```
 # 安裝Gitlab Runner
 sudo docker run -d \
@@ -118,7 +117,7 @@ sudo docker run -d \
 # 檢查Runner有無啟用
 sudo docker ps
 ```
-## 註冊 Runner
+### 註冊 Runner
 架設完成後，要註冊Runner。方法有蠻多種的：<br>
   1. GitLab Server的Web上註冊
   2. OS層用command註冊
