@@ -19,13 +19,13 @@ Nginx 是輕量且高效能的 Web 伺服器（Web Server），負責扮演網�
 
 從上圖可以看出發現，沒有Nginx的情況下，由使用者決定要去連到哪一台後端伺服器來獲取資訊，<br>但如果今天採用了Nginx，就會變成是使用者連線到Nginx，由Nginx來決定是哪一台後端伺服器提供資訊。至此可知，後端伺服器會有好幾台且都是相同的服務。
 
-### Nginx 主要特色:
+#### Nginx 主要特色:
 1. 反向代理（Reverse Proxy） : Nginx 作為使用者與後端伺服器間的中介，負責將請求轉發到指定的後端伺服器。
 2. 負載平衡（Load Balancing）: Nginx 可根據設定的策略（如輪詢、IP hash）將流量分配到多台後端伺服器，提高效能與可靠性。
 <br>
 <br>
-### 衍伸問題:
 
+#### 衍伸問題:
 
 Q1 : 平常用Flask or React 等等網站開發工具也都有相同功能，這樣有用到Web Server?<br>
 A1 : 這些都是**開發用的伺服器**，讓你可以快速啟動和測試而已。真正的Web Server是有「獨立軟體」負責接收並回應 HTTP 請求。ex: GitHub Pages、Nginx、Microsoft IIS。
@@ -46,7 +46,7 @@ A3 :  沒有Web Server的情況，開發伺服器需要同時處理 "靜態" 和
 
 ## 2. Nginx 安裝
 
-### -Linux : 直接進入os
+#### -Linux : 直接進入os
 ```markdown
 # 保持套件是最新版本
 sudo apt update
@@ -59,7 +59,7 @@ sudo systemctl status nginx
 # 進入首頁
 http://localhost/    --> Welcome to nginx
 ```
-### -Windows : 下載Nginx軟體包，並放到你想放置的位置 例如 C:\nginx\
+#### -Windows : 下載Nginx軟體包，並放到你想放置的位置 例如 C:\nginx\
 ```markdown
 # 切換路徑
 cd c:\nginx
@@ -93,6 +93,7 @@ Nginx 的設定有多種方式可以實現流量處理，常見兩種方法，�
 
 ## 4. 搭配專案的題目 : 多人聊天室 
 
+### 架構調整
 原本多人聊天室的架構 : 
 - 後端伺服器 * 1
 - 服務 * 1 (Port:5000)
@@ -109,8 +110,8 @@ Nginx 的設定有多種方式可以實現流量處理，常見兩種方法，�
 
 --- 
 ---
-
-### steps 1: 修改後端程式碼，以及啟動多人聊天室的後端伺服器
+### 程式及參數調整
+#### steps 1: 修改後端程式碼，以及啟動多人聊天室的後端伺服器
 
 1. 原本只有一個backend，現在多加一個backend2，模擬第二台後端伺服器，但要把backend2的端口改成3001
 2. 調整io入口的程式碼，讓系統更安全
@@ -146,7 +147,7 @@ chatroom2\backend2>npm run dev
 ---
 
 
-### steps 2: 修改前端的io --> 要連到哪裡去
+#### steps 2: 修改前端的io --> 要連到哪裡去
 原本:寫死完整 URL (host + port) const socket = io("http://localhost:3000"); <br>
 - 問題 1: 寫死 localhost → 手機無法連，因為 localhost 會指向手機自己的 3000 port,但手機沒有 Backend → Error
 - 問題 2: 寫死 3000 → 繞過 Nginx,直達Backend，無法負載均衡
@@ -173,7 +174,7 @@ const socket = io({
 
 ---
 
-### steps 3: 修改完後就可以把前端的東西放到Nginx內 (如前述所說，靜態資源由Web Server提供)
+#### steps 3: 修改完後就可以把前端的東西放到Nginx內 (如前述所說，靜態資源由Web Server提供)
 
 ```markdown
 # React 專案打包成靜態檔案
@@ -184,7 +185,7 @@ npm run build
 
 
 
-### steps 4: 啟動Nginx (但要先進行conf設定)
+#### steps 4: 啟動Nginx (但要先進行conf設定)
 
 - 設定Nginx/conf/nginx.conf
 
@@ -247,7 +248,7 @@ nginx
 # 或是直接到Nginx資料夾下點選 Nginx.exe
 ```
 
-### steps 5: 檢查結果
+#### steps 5: 檢查結果
 ![Nginx](images/Nginx/result1.png)
 
 從圖中可以看出，上面兩個是同一個聊天室，下面兩個是同一個聊天室，說明如下：
