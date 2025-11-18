@@ -52,7 +52,7 @@
     
         // 生成 TOC（只抓 h1 和 h2）
         const tocContainer = document.getElementById("toc");
-        const headers = document.querySelectorAll("#content h1, #content h2");
+        const headers = document.querySelectorAll("#content h1, #content h2", #content h3");
         let tocHtml = "<ul>";
     
         headers.forEach(h => {
@@ -60,8 +60,9 @@
           h.id = id;
     
           if (h.tagName === "H2") {
-            // h2 縮排在 h1 下
-            tocHtml += `<li style="margin-left:15px"><a href="#${id}"> - ${h.textContent}</a></li>`;
+            tocHtml += `<li style="margin-left:15px">- <a href="#${id}">${h.textContent}</a></li>`;
+          } else if (h.tagName === "H3") {
+            tocHtml += `<li style="margin-left:30px">-- <a href="#${id}">${h.textContent}</a></li>`;
           } else { // h1
             tocHtml += `<li>• <a href="#${id}">${h.textContent}</a></li>`;
           }
