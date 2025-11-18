@@ -8,13 +8,13 @@
 
 # 主要流程:
 
- ## 1. 介紹
- ## 2. 架設GitLab Server (Docker)
- ## 3. 架設GitLab Runner (Docker) + 建立Runner
- ## 4. 測試結果
+  1. 介紹GitLab
+  2. 架設GitLab Server (Docker)
+  3. 架設GitLab Runner (Docker) + 建立Runner
+  4. 測試結果
 
 
-# 介紹
+# 介紹GitLab
 在 GitLab CI/CD 流程中，**GitLab** 與 **Runner** 是兩個核心組件，它們的關係如下：
 
 ### 1. GitLab
