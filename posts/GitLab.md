@@ -8,13 +8,13 @@
 
 # 主要流程:
 
- 1. 介紹
- 2. 架設GitLab Server (Docker)
- 3. 架設GitLab Runner (Docker) + 建立Runner
- 4. 測試結果
+ ## 1. 介紹
+ ## 2. 架設GitLab Server (Docker)
+ ## 3. 架設GitLab Runner (Docker) + 建立Runner
+ ## 4. 測試結果
 
 
-## 介紹 : GitLab & Runner 
+# 介紹
 在 GitLab CI/CD 流程中，**GitLab** 與 **Runner** 是兩個核心組件，它們的關係如下：
 
 ### 1. GitLab
@@ -51,7 +51,7 @@
 7. GitLab 顯示 pipeline 狀態（成功/失敗/日誌）
 
 
-## 架設GitLab Server (Docker)
+# 架設GitLab Server (Docker)
 
 就是架設一個跟 **[官方](https://gitlab.com/users/sign_in)** 一樣的Server, 不過所有設定你都可以自由調整。<br> 首先，安裝ubuntu環境，可以按照 **[影片](https://www.youtube.com/watch?v=hWH4n9zB7mk)** 上去安裝。(需要有Ubuntu Desktop，影片也有教)
 
