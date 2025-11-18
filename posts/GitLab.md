@@ -1,4 +1,4 @@
-### GitLab CI/CD 從GitLab建置開始
+GitLab CI/CD 從GitLab建置開始
 
 
 
@@ -55,6 +55,8 @@
 
 就是架設一個跟 **[官方](https://gitlab.com/users/sign_in)** 一樣的Server, 不過所有設定你都可以自由調整。<br> 首先，安裝ubuntu環境，可以按照 **[影片](https://www.youtube.com/watch?v=hWH4n9zB7mk)** 上去安裝。(需要有Ubuntu Desktop，影片也有教)
 
+## Linux建置方法
+
 1. 更新ubuntu的package, 提升穩定性與安全性 (新版本通常會修改漏洞)<br>
     ```markdown
     sudo apt update && sudo apt upgrade -y
@@ -81,7 +83,7 @@
   sudo docker exec -it gitlab cat /etc/gitlab/initial_root_password
 ```
 
-#### 其他功能
+## 其他功能
 ```markdown
 # 忘記密碼? 用指令重新設定user密碼。 ex:[root]
   sudo docker exec -it gitlab gitlab-rake "gitlab:password:reset[root]"
