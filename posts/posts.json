@@ -1,8 +1,9 @@
 [
-    { "title": "第三篇文章：Oracle-ORA整理", "file": "OracleError.md" ,"date": "2025-11-14"},
-    { "title": "第二篇文章：Nginx介紹與使用", "file": "Nginx.md" ,"date": "2025-11-14"},
-    { "title": "第一篇文章：GitLab CI/CD 從GitLab建置開始", "file": "GitLab.md" ,"date": "2025-11-09"}
     
-   
+    { "title": "第二篇文章：Nginx介紹與使用", "file": "Nginx.md" ,"date": "2025-11-14"},
+    { "title": "第一篇文章：GitLab CI/CD 從GitLab建置開始", "file": "GitLab.md" ,"date": "2025-11-09"},
+    { "title": "Oracle-ORA整理", "file": "OracleError.md" ,"date": "ongoing"},
+    { "title": "LeetCode練習紀錄", "file": "Leetcode.md" ,"date": "ongoing"}
+
 ]
   
