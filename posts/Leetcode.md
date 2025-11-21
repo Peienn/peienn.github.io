@@ -99,3 +99,57 @@ s = abcde , k = 3
 s = abcde , k = 14
 1. abcdeabcde (s+s)
 2. 因為 k > 字串長度 = s[13%5:13%5+5] = s[3:8] = abc`deabc`de = deabc
+
+--- 
+
+## 1903. Largest Odd Number in String `(Eazy)`
+
+You are given a string num, representing a large integer. Return the largest-valued odd integer (as a string) that is a non-empty substring of num, or an empty string "" if no odd integer exists.
+
+A substring is a contiguous sequence of characters within a string.
+
+Input: num = "52" <br>
+Output: "5" <br>
+Explanation: The only non-empty substrings are "5", "2", and "52". "5" is the only odd number.
+
+```bash
+class Solution(object):
+    def largestOddNumber(self, num):
+        """
+        :type num: str
+        :rtype: str
+        """
+    
+
+        right = len(num)
+        while right > 0 :
+            if int(num[right-1]) %2!=0:
+                return num[:right]
+            else:
+                right-=1
+            
+        return ""
+```
+
+從字串中，找出最大(子字串)的奇數。 ex: '53281' 的所有子字串包含:
+- 5,3,2,8,1
+- 53,32,28,81
+- 532,328,281
+- 5328,3281
+- 53281
+
+想法 : 從個位數開始往前看，只要出現奇數就直接回傳 num[:odd]，不會有比這個還大的奇數。<br>
+`因為子字串(Substring)不能亂改順序。`
+
+
+所以由右到左，只要出現一個奇數，整串就會是最大的奇數。
+
+- '270718`5`2' : 只要出現一個奇數
+- '`2707185`2' : 整串就會是最大的奇數
+
+需要考慮中間的  '<u>`27071`</u>852' or  '2<u>`707185`</u>2'嗎 ?  
+當然不用，因為一定比整串還要小。
+
+---
+
+
