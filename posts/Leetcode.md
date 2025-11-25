@@ -152,4 +152,106 @@ class Solution(object):
 
 ---
 
+# Two Point
+## 2161. Partition Array According to Given Pivot `(Medium)`
 
+You are given a 0-indexed integer array nums and an integer pivot. Rearrange nums such that the following conditions are satisfied:
+
+- Every element less than pivot appears before every element greater than pivot.
+- Every element equal to pivot appears in between the elements less than and greater than pivot.
+- The relative order of the elements less than pivot and the elements greater than pivot is maintained.
+    - More formally, consider every pi, pj where pi is the new position of the ith element and pj is the new position of the jth element. If i < j and both elements are smaller (or larger) than pivot, then pi < pj.
+
+Return nums after the rearrangement.
+
+Input: nums = [9,12,5,10,14,3,10], pivot = 10 <br>
+Output: [9,5,3,10,10,12,14]<br>
+Explanation: 
+The elements 9, 5, and 3 are less than the pivot so they are on the left side of the array.
+The elements 12 and 14 are greater than the pivot so they are on the right side of the array.
+The relative ordering of the elements less than and greater than pivot is also maintained. [9, 5, 3] and [12, 14] are the respective orderings.
+
+
+解法1:  用雙指標一個從左一個從右
+- 如果遇到比pivot小的，就從左邊開始填入(result[left])
+- 如果遇到比pivot大的，就從右邊開始填入(result[right])
+- 要分兩次是因為要`按照順序`。<br>
+ 如果在一個loop內 `判斷小就放左，大就放右`，會導致先出現的greater than pivot 在最右邊
+
+```bash
+ ex:
+ init   : [0,0,0,0,0,0,0] 
+ Round1 : [9,0,0,0,0,0,0]
+ Round1 : [9,0,0,0,0,0,12]  #Error
+```
+
+
+
+```bash
+#Solution
+result = [0] * len(nums)
+left = 0
+right = len(nums)-1
+
+for i in range(len(nums)):
+    if nums[i] < pivot:
+        result[left] = nums[i]
+        left+=1
+    
+for j in range(len(nums)-1,-1,-1):
+    if nums[j] > pivot:
+        result[right] = nums[j]
+        right-=1
+while left <= right:
+    result[left] = pivot
+    left+=1
+
+ # First Loop
+ init   : [0,0,0,0,0,0,0] 
+ Round1 : [9,0,0,0,0,0,0]
+ Round2 : [9,0,0,0,0,0,0]  
+ Round3 : [9,5,0,0,0,0,0] 
+ Round4 : [9,5,0,0,0,0,0] 
+ Round5 : [9,5,0,0,0,0,0] 
+ Round6 : [9,5,3,0,0,0,0] 
+ Round7 : [9,5,3,0,0,0,0] 
+ # Second Loop
+ init   : [9,5,0,0,0,0,0] 
+ Round1 : [9,5,0,0,0,0,0] 
+ Round2 : [9,5,0,0,0,0,0] 
+ Round3 : [9,5,0,0,0,0,14] 
+ Round4 : [9,5,0,0,0,0,14] 
+ Round5 : [9,5,0,0,0,0,14] 
+ Round6 : [9,5,3,0,0,12,14] 
+ Round7 : [9,5,3,0,0,12,14] 
+ # 這時候 left = 2 (3) , right = 5 (12)
+ # 如果left <=right 代表中間有空格 ，其實就是 pivot的數量
+ # 因為比pivot大，比pivot小的都已經填入，剩下的就是等於pivot的
+[9,5,3,0,0,12,14] 
+[9,5,3,10,10,12,14] 
+```
+
+解法2 : 用一個迴圈+兩個stack
+
+按照value的大小各自放入stack , 最後在組裝起來
+
+```bash
+less_stack =[] 
+great_stack =[]
+for i, element in enumerate(nums):
+    
+    if element < pivot:
+        less_stack.append(element)
+    elif element > pivot:
+        great_stack.append(element)
+    
+pivot_len = len(nums) - len(less_stack) - len(great_stack) 
+result = less_stack + pivot_len * [pivot] + great_stack
+
+# less_stack = [9,5,3]
+# great_stack = [12,14]
+
+# pivot_len = 7 - 3 - 2 = 2 (兩個pivot)
+# [9,5,3] + [10,10] + [12,14] = [9,5,3,10,10,12,14]
+
+```
