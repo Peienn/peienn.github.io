@@ -135,7 +135,7 @@ $ CONFIG GET appendonly (Default: no )
 - <span style="color:green">NoSQL DB (redis) </span>
 
 ![123](images/redis/redis.png)
----
+
 
 ### 程式及參數調整
 
