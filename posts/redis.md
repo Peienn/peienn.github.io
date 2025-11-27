@@ -133,9 +133,10 @@ $ CONFIG GET appendonly (Default: no )
 - 後端伺服器 * 1
 - 服務 * 1 (Port:5000) +  服務 * 1 (Port:5001)
 - <span style="color:green">NoSQL DB (redis) </span>
-
+  
 ![123](images/redis/redis.png)
 
+---
 
 ### 程式及參數調整
 
@@ -233,7 +234,7 @@ await pushMessageToRedis(message);
 - 192.168.0.105 - - [27/Nov/2025   .....    upstream: 127.0.0.1:3001
 - 127.0.0.1 - - [27/Nov/2025      .....    upstream: 127.0.0.1:3000
 - 192.168.0.102 - - [27/Nov/2025   .....    upstream: 127.0.0.1:3001
-- 
+  
 ![123](images/redis/result_accesslog.png)
 
 
