@@ -255,3 +255,85 @@ result = less_stack + pivot_len * [pivot] + great_stack
 # [9,5,3] + [10,10] + [12,14] = [9,5,3,10,10,12,14]
 
 ```
+
+# Sliding Window
+## 2444. Count Subarrays With Fixed Bounds `(Hard)`
+
+You are given an integer array nums and two integers minK and maxK.
+
+A fixed-bound subarray of nums is a subarray that satisfies the following conditions:
+
+- The minimum value in the subarray is equal to minK.
+- The maximum value in the subarray is equal to maxK.
+
+Return the number of fixed-bound subarrays.
+
+A subarray is a contiguous part of an array.
+
+Input: nums = [1,3,5,2,7,5], minK = 1, maxK = 5 <br>
+Output: 2 <br>
+Explanation: The fixed-bound subarrays are [1,3,5] and [1,3,5,2].
+
+```bash
+res = 0
+minFound = False
+maxFound = False
+start = 0
+minStart = 0
+maxStart = 0
+for i in range(len(nums)):
+    num = nums[i]
+    if num < minK or num > maxK:
+        minFound = False
+        maxFound = False
+        start = i+1
+    if num == minK:
+        minFound = True
+        minStart = i
+    if num == maxK:
+        maxFound = True
+        maxStart = i
+    if minFound and maxFound:
+        res += (min(minStart, maxStart) - start + 1)
+
+    i+=1
+
+# res
+```
+
+說明: 
+
+nums = [2,1,6,-2,7,3,1,4,8,2,6,7,2] minK = 1 maxK = 8
+
+1. 用Sliding Window的方式去找到同時有minK + maxK，`如果還沒同時存在minK + maxK，就遇到範圍外的`，要重新，因為一定組不起來
+
+    - [`2,1,6,-2` ,7,3,1,4,8,2,6,7,2] --> 因為遇到-2 且尚未遇到maxK，重來
+    - [2,1,6,-2, `7,3,1,4,8,2,6,7,2`] --> 剩下全部都滿足條件，計算結果
+
+2. 找出計算公式 (min(minStart, maxStart) - start + 1)
+    - Base的是 [1,4,8] 當作一個Unit，每增加一個 res就要+1 ex: [3,1,4,8] , [7,3,1,4,8] 
+    - 但如果方向不同，每增加一個就要增加另外一邊的倍數
+    - 已知 base [1,4,8] 如果只看左邊的話 res = 3 ([7,3,1,4,8] ,[3,1,4,8] , [1,4,8])
+    - 現在加入右邊的2 [7,3,1,4,8,`2`]，會直接變成res = 6，因為左邊的三個都可以跟右邊新增的組合成新的 
+    -  [7,3,1,4,8] --> [7,3,1,4,8,2]
+    - [3,1,4,8] --> [3,1,4,8,2]
+    - [1,4,8] --> [1,4,8,2]
+
+於是，公式就會變成
+
+```bash          
+                   s      min     max    
+[ 2 , 1 , 6 , -2 , 7 , 3 , 1 , 4 , 8 , 2 , 6 , 7 , 2 ]
+
+(min(min,max) - s +1 )
+
+取min是因為不知道是min先出現還是max先出現
+
+[7 , 3 , 1 , 4 , 8] --> res=3
+[7 , 3 , 1 , 4 , 8 , 2] --> res=6
+[7 , 3 , 1 , 4 , 8 , 2 , 6] --> res=9
+...
+[7 , 3 , 1 , 4 , 8 , 2 , 6 , 7 , 2 ] --> res=15
+
+# res=15
+```
