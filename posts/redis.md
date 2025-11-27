@@ -137,8 +137,6 @@ $ CONFIG GET appendonly (Default: no )
 ![123](images/redis/redis.png)
 ---
 
-
-
 ### 程式及參數調整
 
 #### steps 1:修改後端，內容較多 (前端不用改)
