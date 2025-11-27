@@ -1,9 +1,38 @@
 [
-    { "title": "第三篇文章：Redis介紹與使用", "file": "redis.md" ,"date": "2025-11-27"},
-    { "title": "第二篇文章：Nginx介紹與使用", "file": "Nginx.md" ,"date": "2025-11-16"},
-    { "title": "第一篇文章：GitLab CI/CD 從GitLab建置開始", "file": "GitLab.md" ,"date": "2025-11-09"},
-    { "title": "Oracle-ORA整理", "file": "OracleError.md" ,"date": "ongoing"},
-    { "title": "LeetCode練習紀錄", "file": "Leetcode.md" ,"date": "ongoing"}
 
+    { 
+        "title": "第三篇文章：Redis介紹與使用", 
+        "file": "redis.md",
+        "date": "2025-11-27",
+        "category": "tech",
+        "excerpt": "深入了解 Redis 的基本概念、安裝配置與實際應用場景"
+    },
+    { 
+        "title": "第二篇文章：Nginx介紹與使用", 
+        "file": "Nginx.md",
+        "date": "2025-11-16",
+        "category": "tech",
+        "excerpt": "學習 Nginx 的安裝、配置與反向代理的實作方式"
+    },
+    { 
+        "title": "第一篇文章：GitLab CI/CD 從GitLab建置開始", 
+        "file": "GitLab.md",
+        "date": "2025-11-09",
+        "category": "tech",
+        "excerpt": "從零開始建置 GitLab CI/CD 自動化流程"
+    },
+    { 
+        "title": "Oracle-ORA整理", 
+        "file": "OracleError.md",
+        "date": "ongoing",
+        "category": "tech",
+        "excerpt": "整理常見的 Oracle 錯誤代碼與解決方案"
+    },
+    { 
+        "title": "LeetCode練習紀錄", 
+        "file": "Leetcode.md",
+        "date": "ongoing",
+        "category": "tech",
+        "excerpt": "記錄 LeetCode 刷題心得與解題思路"
+    }
 ]
-  
