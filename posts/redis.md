@@ -1,7 +1,7 @@
 上一篇文章提到，在多人聊天室架構中加入 Nginx，雖然能實現反向代理及流量控制，  
 但也導致使用者被隨機分配到不同的聊天室實例，無法保證在同一間聊天室中互動。
 
-![123](noredis.png)
+![123](images/redis/noredis.png)
 
 這個問題可以透過 Redis 的 **Pub/Sub** 功能來解決
 
@@ -12,7 +12,7 @@
 3. Redis 實作
 
 
-# Redis 介紹
+## Redis 介紹
 
 Redis 是一種 **NoSQL 資料庫（鍵值 key-value store）**。資料主要存放於 **記憶體 (RAM)** 中，讀寫速度極快，因此以高速的記憶體存取為特色。  
 
@@ -23,7 +23,7 @@ Redis 是一種 **NoSQL 資料庫（鍵值 key-value store）**。資料主要�
 - **輕量部署**：單一執行檔，安裝快速，資源消耗低。
 
 
-## 持久化機制 
+### 持久化機制 
 
 Redis 既然是存放在記憶體內，如何持久化（資料永久保存）以確保資料在斷電或重啟後可恢復 ?
 
@@ -47,7 +47,7 @@ Redis 既然是存放在記憶體內，如何持久化（資料永久保存）�
 | 設定複雜度      | 簡單，較適合初學者             | 較複雜，需注意 AOF 文件管理     |
 | 適合使用情境    | 追求較高效率、可接受少量極端資料損失 | 需要高資料可靠性與完整性應用     |
 
-## Redis 常見應用場景
+### Redis 常見應用場景
 - **快取 (Caching)**  
   快速緩存熱門資料，減輕後端資料庫壓力，提升系統效能。
 
@@ -67,12 +67,12 @@ Redis 既然是存放在記憶體內，如何持久化（資料永久保存）�
 
 
 
-# Redis 安裝
+## Redis 安裝
 下面以常見的作業系統為例，說明如何安裝 Redis。<br>
 (Redis 官方沒有正式 Windows 版本)
 
 
-## 1. 在 Ubuntu / Debian Linux 安裝
+### 1. 在 Ubuntu / Debian Linux 安裝
 
 ```markdown
 # 更新套件清單
@@ -90,7 +90,7 @@ sudo systemctl enable redis
 # 檢查 Redis 是否正常運作。若回傳 PONG 表示運作正常
 redis-cli ping
 ```
-## 2. 用 Docker 安裝
+### 2. 用 Docker 安裝
 ```markdown
 # 下載並啟動 Redis
 docker run -d --name my-redis -p 6379:6379 redis:latest
@@ -106,7 +106,7 @@ $ ping
 ```
 ---
 
-## 3. 檢查持久化設定
+### 3. 檢查持久化設定
 
 ```bash
 $ CONFIG GET SAVE
@@ -122,11 +122,11 @@ $ CONFIG GET appendonly (Default: no )
 
 
 
-# Redis 實作
+## Redis 實作
 
 搭配上一篇的多人聊天室，這次要將兩個後端伺服器產生的聊天室`同步訊息`。
 
-## 架構調整
+### 架構調整
 在原本聊天室內容各自一方的情況下，增加redis來同步聊天室的內容。
 
 - 網頁伺服器 * 1 (Web Server)
@@ -134,13 +134,12 @@ $ CONFIG GET appendonly (Default: no )
 - 服務 * 1 (Port:5000) +  服務 * 1 (Port:5001)
 - <span style="color:green">NoSQL DB (redis) </span>
 
-![123](redis2.png)
-
+![123](images/redis/redis.png)
 ---
 
 
 
-## 程式及參數調整
+### 程式及參數調整
 
 #### steps 1:修改後端，內容較多 (前端不用改)
 
@@ -207,3 +206,79 @@ await pushMessageToRedis(message);
 
 
 #### steps 2: 檢查結果
+
+因為已經用Docker裝好了，所以直接啟用redis Server，並透過指令檢查是否正常可用 
+
+![123](images/redis/docker.jpg)
+
+---
+
+測試方法與上次加入Nginx時一樣
+
+- 圖的上方兩個是輸入 127.0.0.1:8080  --> (loopback 介面 (lo0) ,虛擬網卡)
+- 圖的下方兩個是輸入 192.168.0.103:8080 --> (實體網卡 (WiFi/Ethernet))
+
+但上次的結果是`IP Hash`導致被引導至`不同的聊天室` (有兩個後端伺服器，且資訊不共享)
+
+而這次可以發現上下兩邊的資訊都是一致的(包含手機連線)。
+
+並不是被導入到相同聊天室，而是因為`兩邊的資訊透過Redis的Pub/Sub共享了`。
+
+
+
+
+![123](images/redis/result.png)
+![123](images/redis/result_phone.jpg)
+
+下圖 Nginx/access.log中看出，不同的IP被導到不同的後端(Port:3000 & Port:3001)
+
+- 192.168.0.105 - - [27/Nov/2025   .....    upstream: 127.0.0.1:3001
+- 127.0.0.1 - - [27/Nov/2025      .....    upstream: 127.0.0.1:3000
+- 192.168.0.102 - - [27/Nov/2025   .....    upstream: 127.0.0.1:3001
+- 
+![123](images/redis/result_accesslog.png)
+
+
+---
+
+最後，可以回到redis Server中，檢查訂閱的頻道 "chat:messages" 其內容是否與前後端顯示的一致
+
+- 開始前檢查長度:0
+- 結束後檢查長度:15
+- 檢查所有訊息可以看到確實就是剛剛的使用者 (aaa, bbb, ... , iPhone)
+- 最後刪除頻道的內容並離開
+  
+![123](images/redis/redisserver_log.jpg)
+
+
+
+# 結論和延伸
+
+## 結論
+
+Nginx幫助我們的聊天室做到 `簡易分散式架構` ，以及`基本流量分流`，但是因為`缺少記憶體共享`導致不同後端的聊天室被分開。
+
+這次透過Redis (NoSQL) 將所有訊息存在Redis List中，以Pub/Sub的方式將訊息共享給多個後端，實現`分散式環境下的記憶體共享`，解決前述問題。
+
+## 延伸問題
+
+進入聊天室後，如果重新整理網頁(F5) 就會直接離開聊天室，並要求重新輸入名稱才能進入。
+
+這是因為欠缺一個機制 : **`缺少使用者身分認證機制`** 。
+
+**解決方法:**
+
+  1. ✅ **Cookie Session + Redis Session Store（最推薦）**  
+     - `session_id` 存在瀏覽器的 Cookie 裡  
+     - Session 資料存到 Redis → 多後端共用 
+     - 可控管登入 / 踢人  
+     - 配合 Redis 可支援多後端  
+
+  2. ❌ **JWT（不推薦聊天室用）**  
+     - Token 無法輕易被伺服器強制失效  
+     - 不利於管理使用者連線狀態 
+     - 增加安全與同步負擔
+     - 適合 App 或 REST API
+
+
+下一篇討論 Session 機制，並利用Cookie Session + Redis Session Store 解決身分認證機制問題。
