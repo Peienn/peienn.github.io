@@ -40,10 +40,7 @@
 
 
 
----
-
-
-## 3. Session 實作
+## 2. Session 實作
 
 ### 流程說明
 
@@ -62,9 +59,9 @@
 今天看到有種基於文字的圖表繪製工具 : Mermaid ，於是用Mermaid做了一個流程圖的差異。
 
 <div style="display: flex; align-items: flex-start; gap:20px;">
-    <div style="flex:1; border-right:1px solid #888; padding:10px;">
-    
-```mermaid
+  <!-- 左邊圖 -->
+  <div style="flex:1; border-right:1px solid #888; padding:10px;">
+  <div class="mermaid">
 sequenceDiagram
     participant 前端
     participant Nginx
@@ -79,12 +76,12 @@ sequenceDiagram
     Redis->>前端: 回傳歷史訊息
     
     Note over 前端,Redis: ❌ 重新整理後狀態丟失，需重新登入
-```
-<h4 style="text-align:center;"> Flowchart  (Before) </h4>
-</div> 
-<div style="flex:1;  border-radius:8px; padding:10px;">
-
-```mermaid
+  </div>
+  <h4 style="text-align:center; margin-top:10px;">Flowchart (Before)</h4>
+  </div>
+  <!-- 右邊圖 -->
+    <div style="flex:1; padding:10px;">
+  <div class="mermaid">
 sequenceDiagram
     participant 前端
     participant Nginx
@@ -99,9 +96,9 @@ sequenceDiagram
     Redis->>前端: 回傳歷史訊息
     
     Note over 前端,Redis: ✅ 重新整理後自動登入 (cookie 還在)
-```
-<h4 style="text-align:center;"> Flowchart  (After)</h4>
-</div>
+  </div>
+  <h4 style="text-align:center; margin-top:10px;">Flowchart (After)</h4>
+  </div>
 </div>
 
 
