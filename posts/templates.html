@@ -69,6 +69,7 @@
         });
         tocHtml += "</ul>";
         tocContainer.innerHTML = tocHtml;
+        mermaid.init(undefined, document.querySelectorAll(".mermaid"));
       } catch (err) {
         document.getElementById("content").innerHTML = "⚠️ 無法載入文章：" + err.message;
       }
