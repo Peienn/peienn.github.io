@@ -79,12 +79,8 @@
         tocHtml += "</ul>";
         tocContainer.innerHTML = tocHtml;
         
-        // ** 【修改 2: 觸發 Mermaid 渲染】 **
-        // 確保 DOM 內容已經更新，然後手動初始化 Mermaid
-        // 注意：這裡使用 mermaid.run 是為了兼容較新的版本
-        await mermaid.run({
-            nodes: document.querySelectorAll('.mermaid')
-        });
+       
+        mermaid.init(undefined, document.querySelectorAll(".mermaid"));
         // ----------------------------------------
 
       } catch (err) {
