@@ -58,12 +58,11 @@
 
 今天看到有種基於文字的圖表繪製工具 : Mermaid ，於是用Mermaid做了一個流程圖的差異。
 
+但嘗試了多種方法都無法在Github Page上顯示 (vscode 可以)，所以暫時放棄用圖片。
 
+![123](images/session/mermaid.png)
 
-<div style="display: flex; align-items: flex-start; gap:20px;">
-  <!-- 左邊圖 -->
-  <div style="flex:1; border-right:1px solid #888; padding:10px;">
-  <div class="mermaid">
+```bash
 sequenceDiagram
     participant 前端
     participant Nginx
@@ -78,12 +77,7 @@ sequenceDiagram
     Redis->>前端: 回傳歷史訊息
     
     Note over 前端,Redis: ❌ 重新整理後狀態丟失，需重新登入
-  </div>
-  <h4 style="text-align:center; margin-top:10px;">Flowchart (Before)</h4>
-  </div>
-  <!-- 右邊圖 -->
-    <div style="flex:1; padding:10px;">
-  <div class="mermaid">
+
 sequenceDiagram
     participant 前端
     participant Nginx
@@ -98,22 +92,7 @@ sequenceDiagram
     Redis->>前端: 回傳歷史訊息
     
     Note over 前端,Redis: ✅ 重新整理後自動登入 (cookie 還在)
-  </div>
-  <h4 style="text-align:center; margin-top:10px;">Flowchart (After)</h4>
-  </div>
-</div>
-
-# Redis 架構圖
-
-這是一個測試圖表：
-
-```mermaid
-graph TD;
-    A[Client] --> B[Redis Master];
-    B --> C[Redis Slave 1];
-    B --> D[Redis Slave 2];
 ```
-
 
 
 ### 安裝套件介紹
@@ -221,3 +200,86 @@ location ~ ^/(login|logout|check-session) {
 ---
 
 ### 實際結果
+
+這次用兩個畫面而不是四個畫面，因為來源端會有Cookie紀錄。
+
+- 127.0.0.1:8080  --> (loopback 介面 (lo0) ,虛擬網卡)
+- 192.168.0.103:8080 --> (實體網卡 (WiFi/Ethernet))
+
+1. 首先進入聊天室，要求輸入名稱
+
+![123](images/session/result1.png)
+
+2. 進去聊天室後，可以按下F12 --> 應用程式 --> Cookie檢查
+
+![123](images/session/result2.png)
+
+3. 即便我一直按下F5，後端也一直在Console.log()，但聊天室仍然不會被登出
+
+![123](images/session/result3.png)
+
+4. 從Redis裡面可以找出目前有哪些Session紀錄在內，從上面的網站中找出session id
+      - s%3AyA19PpxIV7gCRCbDPlz_e_7txZfLK75u.UlGX0U%2F3AuoJtaHGwkANyz0e%2BW2s2IhH2wNFbTdXRdQ
+      - s%3AYiI_z3d1Aca01iJRaAI0KG0PBPLWWyys.poNijCKFsi8gp13bFI7aMOsBB%2FNHpp%2B83QVeqEt9KlU
+
+    透過URL解碼 (decodeURlComponent)
+
+     - s:yA19PpxIV7gCRCbDPlz_e_7txZfLK75u.UlGX0U/3AuoJtaHGwkANyz0e+W2s2IhH2wNFbTdXRdQ
+     - s:YiI_z3d1Aca01iJRaAI0KG0PBPLWWyys.poNijCKFsi8gp13bFI7aMOsBB/NHpp+83QVeqEt9KlU
+
+    取出中間部分 sessionID  `s:<sessionID>.<簽章/哈希>`   (`s:` 前綴 ;`.<簽章/哈希>` 驗證 cookie 是否被竄改)
+     - yA19PpxIV7gCRCbDPlz_e_7txZfLK75u
+     - YiI_z3d1Aca01iJRaAI0KG0PBPLWWyys
+
+    可以發現這兩組SessionID 確實都存在redis中。 (3) and (5)
+
+![123](images/session/redis_session.jpg)
+
+# 結論和延伸
+
+## 結論
+
+這次加入Session 可以幫助我們將聊天室從「無狀態」升級為「有狀態」。只有當Session 在Redis裡面失效才會要求使用者重新登入。
+
+但管理者可以隨時進入Redis 刪除 Session。
+
+
+## 延伸問題 : 為什麼還需要關聯性資料庫？
+
+目前只使用 Redis 儲存資料，雖然可以透過 **RDB + AOF** 做到資料持久化，但仍有以下問題：
+
+#### 1. 記憶體限制
+Redis 是**記憶體資料庫**，當聊天訊息不斷增長達到記憶體上限時：
+- Redis 可能會拒絕新的寫入
+- 或根據策略自動刪除舊資料
+
+#### 2. 查詢能力不足
+Redis 採用 **key-value** 儲存結構，不擅長：
+- 複雜查詢（例如：查詢某使用者的所有訊息）
+- 資料分析（例如：統計每日活躍使用者數）
+  
+#### 3. 資料管理困難
+- 缺乏使用者管理功能（註冊、個人資料等）
+- 無法記錄登入日誌和系統審計 (Audit)
+
+
+### 解決方案：Redis + PostgreSQL
+
+下一篇將討論如何加入 PostgreSQL 資料庫，實現以下架構：
+```
+📊 資料分層策略
+├─ 快速載入（Redis）
+│  └─ 最新 50 條訊息
+│  └─ Session 資料
+│
+└─ 永久保存（PostgreSQL）
+   └─ 完整聊天記錄
+   └─ 使用者資料
+   └─ 登入日誌
+```
+
+**查詢流程：**
+1. **載入最近訊息** → 從 Redis 快速讀取
+2. **查詢歷史記錄** → 從 PostgreSQL 撈取
+3. **發送新訊息** → 同時寫入 Redis 和 PostgreSQL
+

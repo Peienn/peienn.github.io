@@ -1,106 +1,83 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>文章閱讀</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css/github-markdown.min.css">
-  <link rel="stylesheet" href="/css/templates.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>文章閱讀</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css/github-markdown.min.css">
+  <link rel="stylesheet" href="/css/templates.css">
 </head>
 <body>
-  <button id="darkToggle">🌙 夜間模式</button>
-  <div class="container">
-        <nav id="toc-container">
-      
-      <button id="index">回首頁</button>
-      <h2>目錄</h2>
-      <div id="toc"></div>
-      
-    </nav>
+  <button id="darkToggle">🌙 夜間模式</button>
+  <div class="container">
+    <!-- 左側目錄 -->
+    <nav id="toc-container">
+      
+      <button id="index">回首頁</button>
+      <h2>目錄</h2>
+      <div id="toc"></div>
+      
+    </nav>
 
-        <article id="content" class="markdown-body">
-      載入中...
-    </article>
+    <!-- 右側文章內容 -->
+    <article id="content" class="markdown-body">
+      載入中...
+    </article>
 
-      </div>
+    <!-- 右側文章內容 
+    <nav id="toc-container">
+      <h2>目錄</h2>
+      <div id="toc"></div>
+    </nav>
+    -->
+  </div>
 
-  <button id="backToTop" title="回到頂部">⬆ Top</button>
+  <button id="backToTop" title="回到頂部">⬆ Top</button>
 
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script>
-    // ** 【修改 1: 設置 Marked 的自訂 Renderer】 **
-    // 覆寫 marked 的程式碼區塊渲染器，讓 'mermaid' 語言輸出 div 標籤
-    const renderer = new marked.Renderer();
-    const originalCodeRenderer = renderer.code; 
-
-    renderer.code = function(code, language) {
-        if (language === 'mermaid') {
-            // 遇到 mermaid 語言，轉換成 <div class="mermaid">
-            return '<div class="mermaid">' + code + '</div>';
-        }
-        // 其他語言則保留原本的渲染方式
-        return originalCodeRenderer.apply(this, arguments);
-    };
-
-    // 套用自訂 Renderer
-    marked.setOptions({ renderer: renderer });
-    // ** 【修改 1 結束】 **
+  <!-- marked.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    async function loadMarkdown() {
+      const params = new URLSearchParams(window.location.search);
+      const file = params.get('file');
+      if (!file) return;
     
-    async function loadMarkdown() {
-      const params = new URLSearchParams(window.location.search);
-      const file = params.get('file');
-      if (!file) return;
-    
-      try {
-        const res = await fetch("../" + file);
-        if (!res.ok) throw new Error("HTTP " + res.status);
-        const md = await res.text();
-    
-        // Markdown -> HTML
-        document.getElementById("content").innerHTML = marked.parse(md);
-    
-        // 生成 TOC（只抓 h1 和 h2）
-        const tocContainer = document.getElementById("toc");
-        const headers = document.querySelectorAll("#content h1, #content h2, #content h3");
-        let tocHtml = "<ul>";
-    
-        headers.forEach(h => {
-          const id = h.textContent.replace(/\s+/g, "-");
-          h.id = id;
-    
-          if (h.tagName === "H2") {
-            tocHtml += `<li style="margin-left:15px">- <a href="#${id}">${h.textContent}</a></li>`;
-          } else if (h.tagName === "H3") {
-            tocHtml += `<li style="margin-left:30px">-- <a href="#${id}">${h.textContent}</a></li>`;
-          } else { // h1
-            tocHtml += `<li>• <a href="#${id}">${h.textContent}</a></li>`;
-          }
-        });
-        tocHtml += "</ul>";
-        tocContainer.innerHTML = tocHtml;
-        
-       
-        mermaid.init(undefined, document.querySelectorAll(".mermaid"));
-        // ----------------------------------------
-
-      } catch (err) {
-        document.getElementById("content").innerHTML = "⚠️ 無法載入文章：" + err.message;
-      }
-    }
-    loadMarkdown();
+      try {
+        const res = await fetch("../" + file);
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const md = await res.text();
+    
+        // Markdown -> HTML
+        document.getElementById("content").innerHTML = marked.parse(md);
+    
+        // 生成 TOC（只抓 h1 和 h2）
+        const tocContainer = document.getElementById("toc");
+        const headers = document.querySelectorAll("#content h1, #content h2, #content h3");
+        let tocHtml = "<ul>";
+    
+        headers.forEach(h => {
+          const id = h.textContent.replace(/\s+/g, "-");
+          h.id = id;
+    
+          if (h.tagName === "H2") {
+            tocHtml += `<li style="margin-left:15px">- <a href="#${id}">${h.textContent}</a></li>`;
+          } else if (h.tagName === "H3") {
+            tocHtml += `<li style="margin-left:30px">-- <a href="#${id}">${h.textContent}</a></li>`;
+          } else { // h1
+            tocHtml += `<li>• <a href="#${id}">${h.textContent}</a></li>`;
+          }
+        });
+        tocHtml += "</ul>";
+        tocContainer.innerHTML = tocHtml;
+      } catch (err) {
+        document.getElementById("content").innerHTML = "⚠️ 無法載入文章：" + err.message;
+      }
+    }
+    loadMarkdown();
 </script>
 
 <script src="/scripts/utils_templates/DarkMode.js"></script>
 <script src="/scripts/utils_templates/BackSomewhere.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/mermaid@8.14.0/dist/mermaid.min.js"></script>
-<script>
-    // ** 【修改 3: 調整 Mermaid 初始化】 **
-    // 將 startOnLoad: true 改為 false，因為我們已經在 loadMarkdown 裡手動呼叫了
-    // 移除不必要的 mermaid.init，改用 mermaid.run（在 loadMarkdown 內）
-    // 為了兼容 v8.14.0，這裡維持 mermaid.initialize，但關閉自動載入。
-    mermaid.initialize({ startOnLoad: false });
-    // ** 【修改 3 結束】 **
-</script>
 
 
 </body>
