@@ -70,6 +70,7 @@
         tocHtml += "</ul>";
         tocContainer.innerHTML = tocHtml;
         mermaid.init(undefined, document.querySelectorAll(".mermaid"));
+
       } catch (err) {
         document.getElementById("content").innerHTML = "⚠️ 無法載入文章：" + err.message;
       }
@@ -79,9 +80,9 @@
 
 <script src="/scripts/utils_templates/DarkMode.js"></script>
 <script src="/scripts/utils_templates/BackSomewhere.js"></script>
-<script type="module">
-  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
-  mermaid.initialize({ startOnLoad: true });
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({ startOnLoad: false }); // 不要自動跑
 </script>
 
 </body>
