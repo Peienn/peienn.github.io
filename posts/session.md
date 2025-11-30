@@ -58,6 +58,8 @@
 
 今天看到有種基於文字的圖表繪製工具 : Mermaid ，於是用Mermaid做了一個流程圖的差異。
 
+
+
 <div style="display: flex; align-items: flex-start; gap:20px;">
   <!-- 左邊圖 -->
   <div style="flex:1; border-right:1px solid #888; padding:10px;">
@@ -100,6 +102,57 @@ sequenceDiagram
   <h4 style="text-align:center; margin-top:10px;">Flowchart (After)</h4>
   </div>
 </div>
+
+
+<div style="display: flex; align-items: flex-start; gap:20px;">
+
+  <!-- 左邊圖 -->
+  <div style="flex:1; border-right:1px solid #888; padding:10px;">
+
+```mermaid
+sequenceDiagram
+    participant 前端
+    participant Nginx
+    participant 後端
+    participant Redis
+
+    前端->>前端: 輸入名稱，改狀態
+    前端->>Nginx: WebSocket 連線
+    Nginx->>後端: 轉發
+    前端->>後端: 告訴後端名字 emit('join')
+    後端->>Redis: 存訊息
+    Redis->>前端: 回傳歷史訊息
+
+    Note over 前端,Redis: ❌ 重新整理後狀態丟失，需重新登入
+```
+
+<h4 style="text-align:center; margin-top:10px;">Flowchart (Before)</h4>
+</div> 
+<!-- 右邊圖 --> 
+<div style="flex:1; padding:10px;">
+
+```mermaid
+sequenceDiagram
+    participant 前端
+    participant Nginx
+    participant 後端
+    participant Redis
+
+    前端->>後端: POST /login (存名字)
+    後端->>Redis: 建立 session
+    後端->>前端: 給 cookie
+    前端->>後端: WebSocket 連線 (帶 cookie)
+    後端->>Redis: 查 cookie 知道是誰
+    Redis->>前端: 回傳歷史訊息
+
+    Note over 前端,Redis: ✅ 重新整理後自動登入 (cookie 還在)
+```
+
+<h4 style="text-align:center; margin-top:10px;">Flowchart (After)</h4> 
+</div> 
+</div> 
+
+
 
 
 
