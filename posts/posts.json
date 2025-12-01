@@ -1,24 +1,31 @@
 [
+     { 
+        "title": "第五篇文章：PostgreSQL介紹與使用", 
+        "file": "postgresql.md",
+        "date": "2025-12-01",
+        "category": "tech",
+        "excerpt": "PostgreSQL, Session, Mermaid, Redis, Nginx, Node.js, React"
+    },
     { 
         "title": "第四篇文章：Session介紹與使用", 
         "file": "session.md",
-        "date": "2025-11-28",
+        "date": "2025-11-30",
         "category": "tech",
-        "excerpt": "Session 和 Cookie 的基本概念和實作方式"
+        "excerpt": "Session, Mermaid, Redis, Nginx, Node.js, React"
     },
     { 
         "title": "第三篇文章：Redis介紹與使用", 
         "file": "redis.md",
         "date": "2025-11-27",
         "category": "tech",
-        "excerpt": "深入了解 Redis 的基本概念、安裝配置與實際應用場景"
+        "excerpt": "Redis, Nginx, Node.js, React"
     },
     { 
         "title": "第二篇文章：Nginx介紹與使用", 
         "file": "Nginx.md",
         "date": "2025-11-16",
         "category": "tech",
-        "excerpt": "學習 Nginx 的安裝、配置與反向代理的實作方式"
+        "excerpt": "Nginx, Node.js, React"
     },
     { 
         "title": "第一篇文章：GitLab CI/CD 從GitLab建置開始", 
