@@ -337,3 +337,70 @@ nums = [2,1,6,-2,7,3,1,4,8,2,6,7,2] minK = 1 maxK = 8
 
 # res=15
 ```
+
+
+# Array 
+## 849. Maximize Distance to Closest Person `(Medium)`
+You are given an array representing a row of seats where seats[i] = 1 represents a person sitting in the ith seat, and seats[i] = 0 represents that the ith seat is empty (0-indexed).
+
+There is at least one empty seat, and at least one person sitting.
+
+Alex wants to sit in the seat such that the distance between him and the closest person to him is maximized. 
+
+Return that maximum distance to the closest person.
+
+Input: seats = [1,0,0,0,1,0,1] <br>
+Output: 2 <br>
+Explanation: <Br>
+If Alex sits in the second open seat (i.e. seats[2]), then the closest person has distance 2.
+If Alex sits in any other open seat, the closest person has distance 1.
+Thus, the maximum distance to the closest person is 2.
+
+```bash
+class Solution(object):
+    def maxDistToClosest(self, seats):
+        """
+        :type seats: List[int]
+        :rtype: int
+        """
+    
+        l = False
+        l_value = 0
+        result =0
+
+        for i,element in enumerate(seats):
+
+            if element==0:
+                continue
+            else:
+                if l:
+                    # distance between each pair of 1
+                    distance = (i-l_value) //2
+                    result = max(result , distance)
+                else:
+                    # distance between [0  , first 1]
+                    result = max(result , i-0)
+                    l = True
+                l_value = i
+        # (i-l-value) :  distance between [last 1 , len(seats)]
+        return (max( (i-l_value), result))
+```
+
+說明 : 
+
+- init : 用`l` 跟 `l_value` 去紀錄目前為止有沒有出現過 1 以及 1 在哪個位置。
+
+- 迴圈去跑 List, 0 的話就跳過不用管，如果找到 1 :
+  -  `l` 還沒出現，代表目前是第 1 個 1 ， 要計算這個位置與 0 之間的距離 [`0,0,1`,0,0,1,0,0]  --> i-0
+  -  `l` 出現過了，代表目前是第 n 個 1， 要計算與上一個 1 之間的距離並除2 [0,0,`1,0,0,1`,0,0]  -> (i-l_value) //2
+
+- 迴圈結束，在找出最後一個 1 與 尾端的距離 [0,0,1,0,0,`1,0,0`]
+
+- 每次找到的距離都要與 result 取 `max()`。
+
+複雜度 : 
+
+- 時間複雜度 O(n) : 針對len(seats) 執行一次迴圈，且迴圈內每個操作都是O(1)
+- 空間複雜度 O(1) : 宣告的變數都是值，沒有任何 List, Dictionary等
+
+---
