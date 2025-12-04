@@ -75,34 +75,39 @@ document.addEventListener('DOMContentLoaded', function() {
   const categoryBtns = document.querySelectorAll('.category-btn');
   const introTextContainer = document.getElementById('intro-text-container');
   
+  function filterCategory(category) {
+    const articles = document.querySelectorAll('.article-card');
+    
+    articles.forEach(article => {
+      if (category === 'all' || article.dataset.category === category) {
+        article.classList.remove('hidden');
+      } else {
+        article.classList.add('hidden');
+      }
+    });
+
+    if (category === 'tech') {
+      introTextContainer.style.display = 'block';
+    } else {
+      introTextContainer.style.display = 'none';
+    }
+  }
+
   categoryBtns.forEach(btn => {
     btn.addEventListener('click', function() {
-      // 移除所有 active 類別
       categoryBtns.forEach(b => b.classList.remove('active'));
-      // 添加 active 到當前按鈕
       this.classList.add('active');
-      
       const category = this.dataset.category;
-      const articles = document.querySelectorAll('.article-card');
-      
-      // 篩選文章
-      articles.forEach(article => {
-        if (category === 'all' || article.dataset.category === category) {
-          article.classList.remove('hidden');
-        } else {
-          article.classList.add('hidden');
-        }
-      });
-
-      // 控制 introTextContainer 顯示與否
-      if (category === 'tech') {
-        introTextContainer.style.display = 'block';
-      } else {
-        introTextContainer.style.display = 'none';
-      }
+      filterCategory(category);
     });
   });
 
-  // 頁面載入時，預設判斷一次，因為預設已選全部，隱藏文字區塊
-  introTextContainer.style.display = 'none';
-  });
+  // 頁面載入時，依預設的 active 按鈕執行一次篩選與顯示控制
+  const activeBtn = document.querySelector('.category-btn.active');
+  if (activeBtn) {
+    filterCategory(activeBtn.dataset.category);
+  } else {
+    // 沒有預設 active 的話，隱藏 introTextContainer
+    introTextContainer.style.display = 'none';
+  }
+});
