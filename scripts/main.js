@@ -73,6 +73,7 @@ function updateCategoryStats(posts) {
 // 分類篩選功能
 document.addEventListener('DOMContentLoaded', function() {
   const categoryBtns = document.querySelectorAll('.category-btn');
+  const introTextContainer = document.getElementById('intro-text-container');
   
   categoryBtns.forEach(btn => {
     btn.addEventListener('click', function() {
@@ -92,6 +93,16 @@ document.addEventListener('DOMContentLoaded', function() {
           article.classList.add('hidden');
         }
       });
+
+      // 控制 introTextContainer 顯示與否
+      if (category === 'tech') {
+        introTextContainer.style.display = 'block';
+      } else {
+        introTextContainer.style.display = 'none';
+      }
     });
   });
-});
+
+  // 頁面載入時，預設判斷一次，因為預設已選全部，隱藏文字區塊
+  introTextContainer.style.display = 'none';
+  });
