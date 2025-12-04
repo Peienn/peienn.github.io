@@ -6,35 +6,11 @@
   <title>Peien's Notes</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="/css/style.css">
-  <script>
-    // 分類篩選功能
-    document.addEventListener('DOMContentLoaded', function() {
-      const categoryBtns = document.querySelectorAll('.category-btn');
-      
-      categoryBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-          // 移除所有 active 類別
-          categoryBtns.forEach(b => b.classList.remove('active'));
-          // 添加 active 到當前按鈕
-          this.classList.add('active');
-          
-          const category = this.dataset.category;
-          const articles = document.querySelectorAll('.article-card');
-          
-          articles.forEach(article => {
-            if (category === 'all' || article.dataset.category === category) {
-              article.classList.remove('hidden');
-            } else {
-              article.classList.add('hidden');
-            }
-          });
-        });
-      });
-    });
-  </script>
+  
 </head>
 
 <body>
+
   <header>
     <h1>✨ Peien's Notes</h1>
     <p class="subtitle">技術、學習與生活記錄</p>
@@ -43,41 +19,16 @@
   <div class="content-wrapper">
     <main>
       <!-- 分類篩選 -->
-      <div class="category-filter">
-        <button class="category-btn active" data-category="all">
-          <i class="fas fa-th"></i> 全部
-        </button>
-        <button class="category-btn" data-category="tech">
-          <i class="fas fa-code"></i> 後端技術專案
-        </button>
-        <button class="category-btn" data-category="life">
-          <i class="fas fa-coffee"></i> 日常生活
-        </button>
-        <button class="category-btn" data-category="sport">
-          <i class="fas fa-running"></i> 運動健身
-        </button>
-        <button class="category-btn" data-category="travel">
-          <i class="fas fa-plane"></i> 旅遊紀錄
-        </button>
-        
+      <div class="category-filter" id="category-filter">
+        <!-- 按鈕會由 JS 動態產生 -->
       </div>
 
-      <!-- 顯示文字區塊 -->
-      <div id="intro-text-container" style="
-        margin: 1.5em 0; 
-        padding: 1em 1.2em; 
-        background-color: #f0f4f8; 
-        border-radius: 8px; 
-        text-align: center; 
-        font-size: 1.1rem; 
-        color: #333;
-        max-width: 600px;
-        margin-left: auto;
-        margin-right: auto;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      ">
+      <!-- 文字說明區塊 -->
+      <div id="intro-text-container" style="display:none;">
         以聊天室為專案基底，融入各種後端技術。
       </div>
+
+      <!-- 文章列表 -->
       <div id="post-list">
         <p>🔄 載入文章中...</p>
       </div>
@@ -85,7 +36,7 @@
 
     <aside>
       <div class="profile">
-        <img src="/posts/images/profile.png" alt="Profile Photo">
+        <img src="/posts/images/profile.png" alt="Profile Photo" style="width:100%; border-radius: 50%;" />
         <h2>Peien Wu</h2>
         <p>軟體開發者。</p>
         <div class="social-links">
@@ -103,31 +54,7 @@
 
       <!-- 分類統計 -->
       <div class="category-stats">
-        <h3>文章分類</h3>
-        <div class="stat-item">
-          <span class="stat-label">
-            <i class="fas fa-code"></i> 技術筆記
-          </span>
-          <span class="stat-count" data-category-count="tech">0</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-label">
-            <i class="fas fa-coffee"></i> 日常生活
-          </span>
-          <span class="stat-count" data-category-count="life">0</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-label">
-            <i class="fas fa-running"></i> 運動健身
-          </span>
-          <span class="stat-count" data-category-count="sport">0</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-label">
-            <i class="fas fa-plane"></i> 旅遊紀錄
-          </span>
-          <span class="stat-count" data-category-count="travel">0</span>
-        </div>
+        <!-- 內容會由 JS 動態產生 -->
       </div>
     </aside>
   </div>
@@ -137,6 +64,5 @@
   </footer>
 
   <script src="scripts/main.js"></script>
-
 </body>
 </html>
