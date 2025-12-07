@@ -177,14 +177,96 @@ sudo systemctl status postgresql
 ### 程式碼和參數調整
 
 
+這次調整了整個後端的架構，以往都是直接把所有程式碼都寫在 Server.js 內(主程式)，但隨著使用的技術越來越多，如果仍舊把所有Code都寫在一起，就會變得很混亂。
+因此這次將架構分離，類似MVC。
+
+- config : 設定檔或連線資訊
+- db : 資料庫連線 (Redis, PostgreSQL)
+- models : 資料操控
+- routes : API 設定
+- sockets :　socket連線設定
+  
+讓 Server.js (主程式) 內更清晰，讓維護者可以快速了解整個後端的架構。
+
 #### 後端
 
-
-1. 每次訊息寫入Redis時，也要抄寫一份到PostgreSQL
+1. 以往都只將訊息寫入Redis。 現在同時也要寫一份到PostgreSQL。
 2. 建立獲取PostgreSQL 訊息的API， 讓前端可以在 "觸發條件" 觸發時獲取歷史訊息。
-
 
 #### 前端
 
-1. 登入時到PostgreSQL 檢查使用者是否存在
-2. 
+1. 以往輸入名稱按下加入後會直接進入，現在按下加入會去call API /login , 檢查名稱是否存在PostgreSQL，如果不存在的話就拒絕進入
+2. 新增"註冊"按鈕，當按下按鈕後，會call API /register，檢查名稱是否存在資料庫，如果不存在的話就會寫入資料庫並允許進入，否則回傳錯誤 "已註冊"。
+3. 聊天室內加入 "載入更多歷史訊息"按鈕， 按下後會call API /history , 後端會回傳訊息。前端在將訊息插入到目前的聊天室。 
+
+
+
+其實加入PostgreSQL後，只不過在過往的基礎上，多了一些判斷和行為而已。
+
+
+
+### 實際結果
+
+1. 首先，確認資料庫是乾淨的。
+
+![123](images/postgresql/init_db.png)
+
+
+2. 打開網站，輸入任意的名稱。 但會發現你進不去，因為要登記在資料庫的名稱才有權限可以進入。
+
+![123](images/postgresql/Login_non-authorization.png)
+
+
+3. 透過註冊，後端將名稱寫入資料庫，才允許該名稱進入聊天室。同時開始寫入Redis 和 PostgreSQL ("名稱" 已加入聊天室) <br>
+   (這邊用兩個名稱 "amber" 與 "brent" 做後續測試)
+
+![123](images/postgresql/register.png)
+
+
+
+中間在做任何事的時候，都可以直接到redis檢查。
+例如，初始化時聊天室的長度是0 ; 用 Set 紀錄線上使用者的數量也是 0
+
+直到 "amber" 和 "brent" 註冊完也輸入完訊息後，再次檢查就會看到redis發生變動。
+
+![123](images/postgresql/redis.jpg)
+
+
+
+4. 這時候，我們到PostgreSQL查看 users表，會看到剛剛註冊的 "amber" , "brent" , 以及用來記錄系統資訊的 "system"
+
+![123](images/postgresql/register_db.png)
+
+
+5. 成功進入聊天室後，開始寫訊息，中間測試 "brent" `登出`會呈現甚麼狀況。 <br>
+
+   可以看到系統會顯示 "brent"已離開聊天室給所有聊天室成員看。
+
+![123](images/postgresql/logout.png)
+
+6. 當 "brent" 輸入名稱重新回來之後，滑到最上面會看到呈現的訊息與 "amber" 不同。  <br>
+   因為每次進入聊天室的人，獲取到的訊息都是從Redis來的 (快速)，而Redis目前設定只保存 50筆 訊息。 <br>
+   這時可以讓我們測試 `載入歷史訊息` 的功能是否正常。
+
+![123](images/postgresql/loginWithSession.png)
+
+
+7. 結合上圖可以發現，訊息有正確的被載入 4 的前面是 3 2 1 而且都由 "amber"輸入。(輸入訊息時是從1~50) <br>
+   包含最初近來聊天室系統所發出的 "已加入聊天室"。
+
+![123](images/postgresql/loadHistory.png)
+
+
+8. 最後，讓兩位使用者都離開聊天室。並進到PostgreSQL 查看訊息。
+
+![123](images/postgresql/message_db.png)
+
+---
+
+
+# 結論和延伸
+
+## 結論
+
+
+## 延伸
