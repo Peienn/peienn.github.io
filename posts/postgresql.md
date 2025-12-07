@@ -264,9 +264,25 @@ sudo systemctl status postgresql
 ---
 
 
-# 結論和延伸
-
-## 結論
+# 結論
 
 
-## 延伸
+現在，我們使用了 3 個後端會用到的技術建立了一個簡單的聊天室。
+
+- Nginx : 流量控制 + 反向代理
+- Redis : Session 管理 + 多伺服器資訊共享 (Pub/Sub)
+- PostgreSQL :　訊息永久保存
+
+
+
+![architecture](images/postgresql/architecture.png)
+
+
+
+接下來，將進入到偏向維運的部分，讓系統`更穩定、易管理`。
+
+- Docker Compose : 服務容器化與統一管理
+- Grafana + Prometheus : 效能監控
+- ELK : :LogFile 分析平台
+
+
