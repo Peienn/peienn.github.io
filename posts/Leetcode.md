@@ -404,3 +404,98 @@ class Solution(object):
 - 空間複雜度 O(1) : 宣告的變數都是值，沒有任何 List, Dictionary等
 
 ---
+
+
+# BFS
+
+## 1654. Minimum Jumps to Reach Home `(Medium)`
+
+A certain bug's home is on the x-axis at position x. Help them get there from position 0.
+
+The bug jumps according to the following rules:
+
+- It can jump exactly a positions forward (to the right).
+- It can jump exactly b positions backward (to the left).
+- It cannot jump backward twice in a row.
+- It cannot jump to any forbidden positions.
+The bug may jump forward beyond its home, but it cannot jump to positions numbered with negative integers.
+
+Given an array of integers forbidden, where forbidden[i] means that the bug cannot jump to the position forbidden[i], and integers a, b, and x, return the minimum number of jumps needed for the bug to reach its home. If there is no possible sequence of jumps that lands the bug on position x, return -1.
+
+
+Example 1:
+
+Input: forbidden = [14,4,18,1,15], a = 3, b = 15, x = 9 <br>
+Output: 3 <br>
+Explanation: 3 jumps forward (0 -> 3 -> 6 -> 9) will get the bug home.
+
+```bash
+class Solution(object):
+    def minimumJumps(self, forbidden, a, b, x):
+        """
+        :type forbidden: List[int]
+        :type a: int
+        :type b: int
+        :type x: int
+        :rtype: int
+        """
+        upper_bound =  max(forbidden)+a+b+x
+
+        # BFS
+        visited = set()
+        visited.add((0,False))
+        queue = deque([(0,False)])
+
+        result = 0
+        while queue:
+
+            for _ in range(len(queue)):
+
+                position , lastIsBack = queue.popleft()
+
+                if position==x:
+                    return result
+                
+                #  go Forward
+                next_position = position + a
+
+                if (0<=next_position<=upper_bound)  and (next_position not in forbidden) and ( (next_position , False) not in visited):
+                    visited.add((next_position , False))
+                    queue.append((next_position, False))
+
+                #  go Backward
+                next_position = position - b
+                if (not lastIsBack) and (0<=next_position<=upper_bound)  and (next_position not in forbidden) and ( (next_position , True) not in visited):
+
+                    visited.add((next_position , True))
+                    queue.append((next_position, True))
+                
+            # every round need to add 1 
+            result +=1
+        
+        return -1
+```
+
+說明 : 簡單來說就是從 0 到 x ，往前一步 = a , 往後一步 = b , 不能連續後退兩步。試問 0 到 x 最短距離要幾步? 如果無法到達回傳 -1
+
+
+這題透過BFS，將`每次可以到達的index 存在Queue內`，`同時記錄這一步是不是後退步`。如果這一回合走完都沒有到達 x 的話，距離要+1，直到結束。
+
+
+
+ex: forbidden = [5,10,14,18,23], a = 7, b = 3, x =19
+
+- init : queue = 0 , False
+- round 1 : queue = (7, False)   因為只能往前走 a = 7
+- round 2 : queue =  (4, True)  7如果往前走變成 (14,False) 採到forbidden所以不能紀錄  
+- round 3 : queue = (11, False) 因為上一步是後退，這一次只能往前走 4+7=11
+- round 4 : queue = (8, True)  11+7採到forbidden
+- round 5 : queue = (15, False)  只能前進
+- round 6 : queue = [ (22, False) , (12, True)]
+- round 7 : queue 
+    1. POP (22, False)
+    2. 加入 (2, False)到Queue
+    3. 準備加入 (19, True)到Queue時發現， 19 ==x ，直接return 7。
+
+
+---
