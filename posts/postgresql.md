@@ -21,7 +21,7 @@
  - 開源 (Open) : MySQL, PostgreSQL
  - 商用 (Business) : Oracle, Microsoft SQL Server 
 
-因為是個人專案所以從`開源`中選擇，而挑選 `PostgreSQL原因 :
+因為是個人專案所以從`開源`中選擇，而挑選 `PostgreSQL`原因 :
 
 -  **功能比較強大**  
    PostgreSQL 支援更多元的功能和資料類型，能處理更複雜的資料和需求。
@@ -29,7 +29,7 @@
 -  **穩定可靠，資料安全**  
    它對資料一致性和安全性要求很高，適合重要資料的存放。
 
--  **有一定領域知識**  
+-  **具備領域知識**  
    目前工作內容中一部分是負責公司 OracleDB 的維運管理
 
 | 項目       | PostgreSQL               | MySQL                     |
@@ -46,9 +46,6 @@
 
 
 ## 2. PostgreSQL 安裝
-
-
-安裝完資料庫，緊接著就是需要針對資料庫進行備份和監控。
 
 ### 安裝方式
 
@@ -77,6 +74,8 @@ sudo systemctl start postgresql
 sudo systemctl enable postgresql
 sudo systemctl status postgresql
 ```
+
+安裝完資料庫，緊接著就是需要針對資料庫進行備份和監控。
 
 ### 資料庫備份
 
@@ -150,8 +149,8 @@ sudo systemctl status postgresql
 
 ## 3. PostgreSQL 實作 (搭配聊天室)
 
-上一篇 Session 文章中，我們討論的延伸問題是因為目前Redis 是記憶體型資料庫，無法支撐大量訊息作為儲存，以及Key-Value的儲存結構下，無法支撐複雜查詢和資料分析。
-也沒有完整的管理功能來保護使用者。因此需要一個 RDBMS 作為後端的主要資料庫。
+上一篇 Session 文章中，我們討論的延伸問題是因為目前Redis 是記憶體型資料庫，<u>無法支撐大量訊息作為儲存</u>，以及Key-Value的儲存結構下，<u>無法支撐複雜查詢和資料分析</u>。
+也<u>沒有完整的管理功能來保護使用者</u>。因此需要一個 RDBMS 作為後端的主要資料庫。
 
 加入PostgreSQL後要達成的目標 : 
 
@@ -166,12 +165,11 @@ sudo systemctl status postgresql
    └─ 使用者資料
    └─ 登入日誌
 ```
-**查詢流程：**
+
+
 1. **載入最近訊息** → 從 Redis 快速讀取
 2. **查詢歷史記錄** → 從 PostgreSQL 撈取
 3. **發送新訊息** → 同時寫入 Redis 和 PostgreSQL
-
-
 
 
 ### 程式碼和參數調整
@@ -199,9 +197,9 @@ sudo systemctl status postgresql
 2. 新增"註冊"按鈕，當按下按鈕後，會call API /register，檢查名稱是否存在資料庫，如果不存在的話就會寫入資料庫並允許進入，否則回傳錯誤 "已註冊"。
 3. 聊天室內加入 "載入更多歷史訊息"按鈕， 按下後會call API /history , 後端會回傳訊息。前端在將訊息插入到目前的聊天室。 
 
+<br>
 
-
-其實加入PostgreSQL後，只不過在過往的基礎上，多了一些判斷和行為而已。
+其實加入PostgreSQL後，只不過是在過往的基礎上，多了一些判斷和行為而已。
 
 
 
