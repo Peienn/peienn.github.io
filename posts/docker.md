@@ -232,3 +232,99 @@ docker run -d \
   # 3.2 :Restore to DB
   pg_restore -U chat_user -d ChatRoom /ChatRoom.backup
 ```
+
+# Docker  Compose
+
+從剛剛可以看出，為了建立這幾個 Container，需要分別下很多指令。有時候容易搞混自己前面總共下了什麼指令，例如：有沒有加入 network、啟動的順序等等．
+
+因此 Docker 也有一種寫法可以一次性啟動所有 Container ，並且在裡面記錄所有事情。這樣就可以一眼知道你所有 Container 是在做什麼，那就是 Docker Compose。
+
+```bash
+version: "3.9"
+
+services:
+  nginx:
+    image: nginx:latest
+    container_name: my-nginx
+    ports:
+      - "8080:8080"
+    volumes:
+      # 前端 build 出來的靜態檔
+      - ./dist:/usr/share/nginx/html:ro
+      # nginx 設定檔
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - backend
+      - backend2
+    networks:
+      - tech-showcase-net
+
+  backend:
+    image: node:20
+    container_name: backend
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+    command: sh -c "npm install && npm run dev"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - my-postgres
+      - my-redis
+    networks:
+      - tech-showcase-net
+
+  backend2:
+    image: node:20
+    container_name: backend2
+    working_dir: /app
+    volumes:
+      - ./backend2:/app
+    command: sh -c "npm install && npm run dev"
+    ports:
+      - "3001:3001"
+    depends_on:
+      - my-postgres
+      - my-redis
+    networks:
+      - tech-showcase-net
+
+  my-postgres:
+    image: postgres:17
+    container_name: my-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ChatRoom
+      POSTGRES_USER: chat_user
+      POSTGRES_PASSWORD: chat_user
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - tech-showcase-net
+
+  my-redis:
+    image: redis:latest
+    container_name: my-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - tech-showcase-net
+
+networks:
+  tech-showcase-net:
+    driver: bridge
+
+volumes:
+  pgdata:
+    external: true
+
+```
+
+接下來就只需要在路徑下輸入
+
+```bash
+docker compose up -d
+# 但如果你的db是乾淨的，沒有任何資訊，要記得把 external: true拿掉
+# 專案有附上我的 ChatRoom.backup ，若是不想重建整個Postgres，可以按照上面的方法直接匯入
+``` 
