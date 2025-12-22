@@ -89,3 +89,146 @@ VM 其實就是一台完整功能的電腦，只不過是虛擬的。由一台�
 
 
 # Docker 使用
+
+根據過去的專案所使用到的技術，現在要將其全部轉換為Docker啟用。
+- 後端開發程式
+- 前端＆Nginx
+- Redis
+- PostgreSQL
+  
+在轉換時須先注意一件事，那就是前面說到的 Container 的資源是隔離的，包含`網路`，所以可想而知 Container 跟 Container 彼此之間是無法連線的。
+因此需要建立 Container 的網路橋接。
+
+```bash
+# 建立 1 個 network , 叫做tech-showcase-net
+docker network create tech-showcase-net
+
+# 可以透過 inspect檢查現在有哪些Container使用這個network
+docker network inspect tech-showcase-net
+```
+
+
+## 後端開發程式
+
+```bash 
+
+#修改config/index.js , 以前是帶入ip , 改換成container name
+host: process.env.REDIS_HOST || 'my-redis',
+host: process.env.DB_HOST || 'my-postgres',
+
+# 啟用兩個後端
+docker run -d \
+  --name backend \
+  --network tech-showcase-net \
+  -p 3000:3000 \
+  -v /Users/wupeien/Desktop/GitHib/tech-showcase-chat/backend:/app \
+  -w /app \
+  node:20 \
+  sh -c "npm install && npm run dev"
+
+
+docker run -d \
+  --name backend2 \
+  --network tech-showcase-net \
+  -p 3001:3001 \
+  -v /Users/wupeien/Desktop/GitHib/tech-showcase-chat/backend:/app \
+  -w /app \
+  node:20 \
+  sh -c "npm install && npm run dev"
+
+
+# 透過logs 去檢查backend是否順利執行
+docker logs backend
+```
+
+## 前端＋Nginx
+
+```bash
+# 1. 修改掛載到 Container 的nginx.conf 
+
+# 1.1 root的位置更改為/usr/share/nginx/html （建立Docker時會設定）
+root   /usr/share/nginx/html;
+
+# 1.2 把server指定ip 改成 後端container的名稱 （backend, backend2)
+upstream api_upstream {
+    # ip_hash 確保同一個用戶的請求發送到同一個後端，利於 Session 維護
+    ip_hash; 
+    server backend:3000;
+    server backend2:3001;
+}
+
+#  2. 建立 Nginx Container (Port 8080)
+docker run -d --name my-nginx \
+  --network tech-showcase-net \
+  -v /Users/wupeien/Desktop/GitHib/tech-showcase-chat/dist:/usr/share/nginx/html:ro \
+  -v /Users/wupeien/Desktop/GitHib/tech-showcase-chat/nginx/nginx.conf:/etc/nginx/nginx.conf:ro \
+  -p 8080:8080 nginx
+
+
+# 如果之後前端更新了，要將新的打包檔 /dist 給nginx，可以執行下列
+# 它會將前端的程式碼進行 npm run build, 並把 /dist 放到tech-showcase-chat/dist，不需要restart就可以直接看到畫面更新了
+docker run --rm \
+  -v /Users/wupeien/Desktop/GitHib/tech-showcase-chat/frontend:/app \
+  -v /Users/wupeien/Desktop/GitHib/tech-showcase-chat/dist:/app/dist \
+  node:20 /bin/bash -c "cd /app && npm install && npm run build"
+
+
+# 補充說明：Nginx官方預設的 Docker
+/etc/nginx/nginx.conf        ← 主設定檔
+/usr/share/nginx/html        ← 預設網站根目錄
+:ro ← read only
+```
+
+## Redis
+
+其實之前的時候就已經是用Docker 啟用了。只不過這次我們需要將Redis的Container加入網路。
+
+```bash
+# 將 my-redis 加入到
+docker network connect tech-showcase-ne my-redis
+```
+
+## PostgreSQL 
+
+```bash
+# 要記得帶入DB資訊才能建立PostgreSQL的Container
+docker run -d \ 
+--name my-postgres \
+--network tech-showcase-net
+ -p 5432:5432 \ 
+ -e POSTGRES_USER=chat_user \ 
+ -e POSTGRES_PASSWORD=chat_user \ 
+ -e POSTGRES_DB=ChatRoom \ 
+ -v pgdata:/var/lib/postgresql/data \ 
+ postgres:15
+
+ # 進入DB
+ docker exec -it my-postgres psql -U chat_user -d ChatRoom
+
+ # 列出所有DB
+ ChatRoom=# \l
+
+ # 所有訊息
+ ChatRoom=# \dt
+
+ # 離開PostgreSQL
+ ChatRoom=# \q
+```
+
+之前是在Windows直接安裝PostgreSQL，所有資訊都留在那，但現在因為搬到mac上實作Docker，所以要進行資料搬移。
+```bash
+# steps 1:從原本windows的cmd中，使用pg_dump把資料庫備份
+"D:\PostgreSQL\17\bin\pg_dump.exe" -U chat_user -h localhost -p 5432 -F c -b -v -f "D:\backup\ChatRoom.backup" ChatRoom
+
+# steps 2 : 把ChatRoom.backup 搬移到mac桌面 （透過 google drive）
+
+# steps 3: Import 檔案到PostgreSQL 的 Container內
+
+  # 3.1  將檔案從桌面複製一份到Container內
+  docker cp ~/Desktop/ChatRoom.backup my-postgres:/ChatRoom.backup
+  docker exec -it my-postgres bash  
+  ls -l --> 可以看到一份ChatRoom.backup
+
+  # 3.2 :Restore to DB
+  pg_restore -U chat_user -d ChatRoom /ChatRoom.backup
+```
