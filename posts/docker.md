@@ -36,7 +36,7 @@ Docker 利用的是 Linux 核心的 Namespace 和 cgroups 技術。
 
 ---
 
-## - 為什麼要使用 Docker？
+## 為什麼要使用 Docker？
 
 - **環境一致性**  
   將應用及所有依賴包裝在容器中，不論開發、測試或生產環境，都能保證相同的運行條件，`減少「我機可運行，他機無法運行」`的狀況。
@@ -47,9 +47,15 @@ Docker 利用的是 Linux 核心的 Namespace 和 cgroups 技術。
 - **彈性與擴展性**  
   容器`易於複製和擴展`，方便建構微服務架構及自動化部署流水線 (CI/CD)。
 
+在尚未使用Docker之前 (左圖)，我們的主機需要`安裝各種軟體以及相依套件`，導致系統環境日益複雜，且隨著安裝的軟體增加，問題也愈發明顯。
+
+但是使用Docker之後，我們只需要在主機上`安裝 Docker engine 就好` (右圖) 。即便未來有 100 種軟體需要使用，只需要去`倉庫 (Docker Hub)` 裡面下載對應的 Image，主機就可以直接使用這項軟體了。
+
+
+![123](images/docker/compare.png)
 ---
 
-## - Docker 與 VM 
+## Docker 與 VM 
 
 在Docker 尚未推出時，是透過建立 VM (Virtual Machine) 來解決「環境不一致」的問題。
 
@@ -89,6 +95,8 @@ VM 其實就是一台完整功能的電腦，只不過是虛擬的。由一台�
 
 
 # Docker 使用
+
+
 
 根據過去的專案所使用到的技術，現在要將其全部轉換為Docker啟用。
 - 後端開發程式
@@ -233,6 +241,26 @@ docker run -d \
   pg_restore -U chat_user -d ChatRoom /ChatRoom.backup
 ```
 
+## 主機架構
+
+如果都安裝好了，你的主機架構大概會變成是這樣。
+
+你的主機上只會安裝 Docker ，並且透過 Docker 去啟用
+  - Backend (Node.js)
+  - Frontend (Nginx)
+  - Redis
+  - PostgreSQL
+  
+在透過一條 network，讓容器間可以相互連接。
+
+如果今天這個服務要下線或是轉移至其他主機，只需要將容器關閉，你的主機又回到乾淨的模樣。
+(不會有各種軟體移除後導致的<u>殘留文件或檔案</u>。)
+
+跟之前的主機相比，是不是 <u>**乾淨許多**</u> ?
+
+
+
+![123](images/docker/Arch.png)
 # Docker  Compose
 
 ## 介紹
@@ -360,3 +388,5 @@ docker compose restart --> 重啟所有 Container
 docker compose restart backend --> 重啟特定 Container
 docker-compose exec -it my-redis redis-cli --> 進入 my-redis (Container) ， 透過"偽終端機" (-t) "互動式介面"(-i) 來啟用 "Redis指令列介面"(redis-cli) 
 ``` 
+
+
