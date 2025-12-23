@@ -2,7 +2,7 @@
 const categoryInfo = {
   tech: { name: '💻 後端技術筆記', icon: 'fas fa-code' },
   //life: { name: '☕ 日常生活', icon: 'fas fa-coffee' },
-  training: { name: '學習紀錄', icon: 'fas fa-plane' },
+  training: { name: '📖 學習紀錄', icon: 'fas fa-book-open' },
   sport: { name: '🏃 運動健身', icon: 'fas fa-running' }
   //travel: { name: '✈️ 旅遊紀錄', icon: 'fas fa-plane' }
   
