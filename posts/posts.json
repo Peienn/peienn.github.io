@@ -1,58 +1,58 @@
 [
       { 
-        "title": "第六篇文章：Docker介紹與使用", 
+        "title": "第五篇文章：Docker介紹與使用", 
         "file": "docker.md",
-        "date": "2025-12-01",
+        "date": "2025-12-23",
         "category": "tech",
         "excerpt": "Docker, PostgreSQL, Session, Mermaid, Redis, Nginx, Node.js, React"
     },
      { 
-        "title": "第五篇文章：PostgreSQL介紹與使用", 
+        "title": "第四篇文章：PostgreSQL介紹與使用", 
         "file": "postgresql.md",
-        "date": "2025-12-01",
+        "date": "2025-12-09",
         "category": "tech",
         "excerpt": "PostgreSQL, Session, Mermaid, Redis, Nginx, Node.js, React"
     },
     { 
-        "title": "第四篇文章：Session介紹與使用", 
+        "title": "第三篇文章：Session介紹與使用", 
         "file": "session.md",
         "date": "2025-11-30",
         "category": "tech",
         "excerpt": "Session, Mermaid, Redis, Nginx, Node.js, React"
     },
     { 
-        "title": "第三篇文章：Redis介紹與使用", 
+        "title": "第二篇文章：Redis介紹與使用", 
         "file": "redis.md",
         "date": "2025-11-27",
         "category": "tech",
         "excerpt": "Redis, Nginx, Node.js, React"
     },
     { 
-        "title": "第二篇文章：Nginx介紹與使用", 
+        "title": "第一篇文章：Nginx介紹與使用", 
         "file": "Nginx.md",
         "date": "2025-11-16",
         "category": "tech",
         "excerpt": "Nginx, Node.js, React"
     },
     { 
-        "title": "第一篇文章：GitLab CI/CD 從GitLab建置開始", 
+        "title": "GitLab CI/CD 從GitLab建置開始", 
         "file": "GitLab.md",
         "date": "2025-11-09",
-        "category": "tech",
+        "category": "training",
         "excerpt": "從零開始建置 GitLab CI/CD 自動化流程"
     },
     { 
         "title": "Oracle-ORA整理", 
         "file": "OracleError.md",
         "date": "ongoing",
-        "category": "tech",
+        "category": "training",
         "excerpt": "整理常見的 Oracle 錯誤代碼與解決方案"
     },
     { 
         "title": "LeetCode練習紀錄", 
         "file": "Leetcode.md",
         "date": "ongoing",
-        "category": "tech",
+        "category": "training",
         "excerpt": "記錄 LeetCode 刷題心得與解題思路"
     }
 ]
