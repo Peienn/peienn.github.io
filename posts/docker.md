@@ -235,9 +235,35 @@ docker run -d \
 
 # Docker  Compose
 
-從剛剛可以看出，為了建立這幾個 Container，需要分別下很多指令。有時候容易搞混自己前面總共下了什麼指令，例如：有沒有加入 network、啟動的順序等等．
+## 介紹
+從剛剛可以看出，為了建立多個 Container，需要分別下各種指令。有時候甚至會搞混自己前面到底下了什麼指令，例如： 
+- Container A 有沒有加入 network ? 
+- Container 啟動有無按照順序 ? 
+- 環境變數怎麼設定？ 
 
-因此 Docker 也有一種寫法可以一次性啟動所有 Container ，並且在裡面記錄所有事情。這樣就可以一眼知道你所有 Container 是在做什麼，那就是 Docker Compose。
+這些問題會隨著服務變多，容器數量增加而愈加複雜。
+
+Docker Compose 正是為了解決「多容器管理」而誕生。名稱中的「Compose」也代表它能將多個 Container 組合起來一併管理。
+
+
+| 項目             | Docker   | Docker Compose |
+|----------------  |---------|------|
+| **n 個容器啟動次數**    |  n 次 `docker run`    |  1 次 `docker compose up`|
+| **資源共享**           | 無                    | 網路、資料卷(Volume)、環境變數等|
+| **撰寫格式**           | CLI指令 或 Dockerfile | Yaml 檔 |
+| **容器管理**           | `個別`容器啟用、暫停       | 支援`個別、整組`容器啟用、暫停|
+| **維護性**             | 低 (指令/檔案 散落)    | 高 (集中管理)|
+| **適用場景**           | 單一服務/快速測試      | 多服務協同運作 (多容器)|
+
+
+從上述比較表可以大致整理出 Docker Compose 特點 : 
+
+-  `快速和方便管理`多容器 :  一份 Yaml 配置檔即可管理多個容器。
+-  適合`協同合作服務` : 在資源共享的情況下，方便各個容器之間相互使用。
+
+## 使用
+
+將前面透過 CLI 逐步建置的Docker指令，轉換成 一個 docker-compose.yml。
 
 ```bash
 version: "3.9"
@@ -321,10 +347,16 @@ volumes:
 
 ```
 
-接下來就只需要在路徑下輸入
+接下來就只需要在 docker-compose.yml 的路徑下輸入 `docker compose up -d` ，就會自動啟用所有 Container了。
 
 ```bash
-docker compose up -d
-# 但如果你的db是乾淨的，沒有任何資訊，要記得把 external: true拿掉
+# 如果你的db是全新的，沒有任何資訊，要記得把最後的 external: true拿掉
 # 專案有附上我的 ChatRoom.backup ，若是不想重建整個Postgres，可以按照上面的方法直接匯入
+
+# 常用指令
+docker compose logs -f backend --> 即時觀看 log
+docker compose down --> 關閉所有 Container
+docker compose restart --> 重啟所有 Container
+docker compose restart backend --> 重啟特定 Container
+docker-compose exec -it my-redis redis-cli --> 進入 my-redis (Container) ， 透過"偽終端機" (-t) "互動式介面"(-i) 來啟用 "Redis指令列介面"(redis-cli) 
 ``` 
