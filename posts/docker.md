@@ -261,8 +261,9 @@ docker run -d \
 跟之前的主機相比，是不是 <u>**乾淨許多**</u> ?
 
 
-
 ![123](images/docker/Arch.png)
+
+
 # Docker  Compose
 
 ## 介紹
