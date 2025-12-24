@@ -339,6 +339,119 @@ nums = [2,1,6,-2,7,3,1,4,8,2,6,7,2] minK = 1 maxK = 8
 ```
 
 
+## 1658. Minimum Operations to Reduce X to Zero `(Medium)`
+You are given an integer array nums and an integer x. In one operation, you can either remove the leftmost or the rightmost element from the array nums and subtract its value from x. Note that this modifies the array for future operations.
+
+Return the minimum number of operations to reduce x to exactly 0 if it is possible, otherwise, return -1.
+
+Input: nums = [3,2,20,1,1,3], x = 10 <br>
+Output: 5 <br>
+Explanation: The optimal solution is to remove the last three elements and the first two elements (5 operations in total) to reduce x to zero.
+
+```bash
+class Solution(object):
+    def minOperations(self, nums, x):
+        
+        target = sum(nums)-x
+
+        if target ==0:
+            return len(nums)
+        
+        # the sum of all the elements is less than "x"
+        if target <0:
+            return -1
+
+        
+        left = 0
+        curr_sum = 0
+        result = 0
+        for right in range(len(nums)):
+
+            curr_sum += nums[right]
+            while curr_sum > target and left<=right:
+                curr_sum -= nums[left]
+                left+=1
+
+            if curr_sum ==target:
+                result = max(result , right-left+1)
+            
+        return  len(nums) - result if result else -1
+```
+
+說明 :
+
+透過Sliding Windows的方式，去檢查目前 Windows 內的值總和是不是我們要的差額 (差額 = "所有總和-x" )
+
+如果是的話，用 len(nums) - len( Windows) ， 這個長度就是 "剩餘所有值相加 = 10"
+
+舉例來說: nums = [3, 2, 20, 1, 1, 3] , x = 10
+
+1. target = 30 - 10 = 20
+
+2. 當我們 滑動 Windows 到裡面只剩下 [`20`] 時， 剩餘的數字加總就會是 "x"  [`3, 2` , 20 , `1, 1, 3` ]
+
+3. 這時用 len(nums) - len(windows) = 6 - 1 = 5 
+
+4. 代表我們總共需要 5 個值 才可以組成 x  (也就是 3, 2, 1, 1, 3)
+
+
+當然，上述標準解法。
+
+---
+
+我個人一開始的想法:
+
+題目表示可以從左邊或右邊去尋找加總的值，但因為不知道要從左邊還是右邊。因此第一想法是透過BFS，找出所有路徑，只要遇到加總為 x 就 return。
+
+舉上面的案例來說: queue放入初始值 左1  跟 右1
+
+左1 : 下一步可以走 左2 或是 左1 + 右1
+右1 : 下一步可以走 左1+右1 或是 右2
+
+以此類推，這樣就可以從兩邊開始往中間推進，直到找出 sum 為 x 的 list。但這樣做的時間複雜度太高，都是TLE。
+
+但當我看到標準解法後才想到， `Sliding Windows內的值如果是 "差額"，那剩餘的值不就該好也是從左邊跟右邊加總而來`， 那我就不需要思考下一步到底要從左邊開始走，還是從右邊開始走。
+
+
+下面是BFS的解法，在Leetcode上跑到 73 Case就TLE
+
+```bash
+n =  len(nums)
+       
+queue = deque()        
+visited = set()
+
+queue.append( (1, n , nums[0] , 1))
+queue.append( (0,n-1,nums[n-1],1))
+visited.add( (1, n , nums[0]) )
+visited.add((0, n-1, nums[-1]))
+
+while queue:
+    
+    curr_l , curr_r , curr_sum, step = queue.popleft()
+    
+    if curr_sum ==x:
+        return step
+    if curr_sum >x:
+        continue
+    
+    if curr_l +1 < curr_r:
+        next_sum = curr_sum + nums[curr_l]
+        state = (curr_l+1 , curr_r , next_sum)
+        if state not in visited:
+            visited.add(state)
+            queue.append( (curr_l+1,curr_r,next_sum , step+1))
+
+    if curr_l <= curr_r-1:
+        next_sum = curr_sum + nums[curr_r-1]
+        state = (curr_l , curr_r-1, next_sum)
+        if state not in visited:
+            visited.add(state)
+            queue.append((curr_l,curr_r-1, next_sum ,step+1))
+                  
+return -1
+```
+
 # Array 
 ## 849. Maximize Distance to Closest Person `(Medium)`
 You are given an array representing a row of seats where seats[i] = 1 represents a person sitting in the ith seat, and seats[i] = 0 represents that the ith seat is empty (0-indexed).
