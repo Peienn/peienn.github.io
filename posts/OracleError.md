@@ -111,3 +111,39 @@ SQL*Net message to client 是什麼？
   使用 autoextend 應注意資料檔碎片的問題，定期重組(re-build)資料表與索引。
 
 ---
+
+
+
+# ORA-28040 No matching authentication protocol
+
+問題 : Client端以往都是連線Oracle 11g, Oracle 12c, 但今天連線的DB換成 Oracle 19c後就跳出 `ORA-28040`。
+
+原因 : 因為兩邊的 `密碼驗證協議` 不兼容，導致Client無法連線使用OracleDB
+
+
+解決方法: 進入Oracle Server，切換到 $ORACLE_HOME/network/admin下，找出sqlnet.ora (如果沒有的話可以自行建立)。
+在裡面加入  SQLNET.ALLOWED_LOGON_VERSION_SERVER=8
+
+- SQLNET.ALLOWED_LOGON_VERSION_SERVER=8 : 這台機器<u>接受連線時</u>允許的最低登入版本
+- SQLNET.ALLOWED_LOGON_VERSION_CLIENT=8 : 這台機器<u>連線出去時 (ex: DB Link) </u>允許的最低登入版本。
+
+加入後，Client端測試就會由 ORA-28040 變成 ORA-01017 
+
+# ORA-01017 invalid username/password; logon denied
+
+由 ORA-28040 轉變成的 ORA-01017，基本上是因為密碼的認證演算法的不同導致。
+
+因為之前`未允許低版本`可連線，導致該時所建立的帳號，其密碼版本是 11G, 12C (高版本)
+
+現在修改成允許低版本的Client 也可以連線，但會因為低版本Client 使用的密碼版本可能只支援 10G甚至更舊。
+
+此時就會引發 ORA-01017 logon denied。
+
+**解決方法** : `重新設定密碼`
+
+允許低版本 Client可以登入後，要將之前所建立的帳號 `重新設定密碼`，然後你就會發現帳號的密碼版本被修改為10G, 11G, 12C
+
+這時候低版本Client也可以連線，而問題就解決了
+
+
+---
