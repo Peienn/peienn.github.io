@@ -40,24 +40,24 @@ Index (索引) in Database (PostgreSQL 為例)
 - 要空間 ? 那你就要放棄時間
 - 要時間 ? 那你就要放棄空間
 
-所以 Index 實際上就是要`額外花費空間`去建置一個結構，這個結構通常是用B+。Tree在這個結構中去紀錄索引值以及實際位址。這樣當我們要進行查詢時，就可以透過B+ Tree的架構特性來縮短查詢時間 O(logN)。
+所以 Index 實際上就是要`額外花費空間`去建置一個結構，這個結構通常是用B+Tree。在這個結構中去紀錄索引值以及實際位址。這樣當我們要進行查詢時，就可以透過B+ Tree的架構特性來縮短查詢時間 O(logN)。
 
 
-舉例 : 
+簡單舉例 : 
 
 今天我們建立了一個 Table : user ，並且在裡面插入了五筆資料
 
-在資料庫內會幫我們建立一個資料頁 (Heap Table)，並且將這個資料頁切成固定大小的頁面 (Block, 通常8KB)，每一個Block 裡面會有很多列 (Row)，用來儲存真正的資料。
+在資料庫內會針對這個Table 會建立一個資料頁 (Heap Table)，並且將這個資料頁切成固定大小的頁面 (Block/Page, 通常8KB)，每一個Block 裡面會有很多列 (Row)，用來儲存真正的資料。
 
-如果我們去搜尋其中一筆資料，那資料庫就會逐筆的檢查條件。
+如果我們去搜尋其中一筆資料，那資料庫就會在Heap Table內 逐筆的檢查。
 
 ---
 
-接下來，因為我們常常會用到mail當作條件篩選，因此以mail 建立一個Index。
+接下來，假設我們常常會用到mail當作條件篩選，因此以mail 建立一個Index。
 
-這時候，資料庫會幫我們建立一個B+ Tree的結構，並將原本五筆資料的 mail作為排序。此樹的Leaf 只會包含每一筆資料的mail，其他的都不管 (因為是用mail作為Index)，以及TID。 
+這時候，資料庫會幫我們建立一個B+ Tree的結構，並將原本五筆資料的 mail作為排序。此樹的Leaf 只會包含每一筆資料的mail以及TID，而其他欄位不會被放入 (因為是用mail作為Index)，。 
 
-如果此時我們要去搜尋其中一筆資料，那資料庫就會按照B+Tree去搜尋，找到符合條件的再根據 TID 去Heap Table 找真正的資料。
+如果此時我們要去搜尋其中一筆資料，那資料庫就會先去 B+Tree 搜尋，找到符合條件的再根據 TID 去Heap Table 找真正的資料。
 
 
 ![123](index.png)
@@ -66,17 +66,22 @@ Index (索引) in Database (PostgreSQL 為例)
 
 ## 其他說明
 
+
 在PostgreSQL中，有一種抽象物件叫做 **"Relation**，裡面記錄著資料庫的物件的 What、How、Where。
 - What : 資料庫物件是甚麼類型 （例如：table、index、view）
 - How : 怎麼存這個物件
 - Where : 物件存放在哪
 
-所以每一筆SQL 都需要去查找對應的 Relation 來確認實體位址，才能進行操作。 Relation都寫在 system catalog內； system catalog是由多個 Table、System View、index..組合而成。
-
 SQL 語法中建立 Table ，在PostgreSQL的世界就是建立一個 Relation；每一個 Table/Relation 都是由多個 Page 組成，每個 Page 約 8K。 寫到 Page 裡面的東西就是真實寫到硬碟裡了。
 
-偶爾你會看到 Heap 出現， Heap 其實就是代表這個物件儲存修改時，"不排序，有空位就放"。
+所以每一筆SQL 都需要去查找對應的 Relation 來確認實體位址，才能進行操作。 Relation都寫在 system catalog內； system catalog是由多個 Table、System View、index..組合而成。
 
+
+舉例來說: `select * from user;`  
+
+當下了這一段SQL，資料庫首先會解析出 table 叫做 user ，在去 system catalog 查詢 user 這個 table 的 relation 紀錄，從記錄內找出這個 table的資訊都寫在哪些實際物理檔案，最後在將其回傳
+
+Postgre 中的 Heap 是個形容詞，代表 "不排序，有空位就儲存"
 ---
 
 ### SQL 操作 對應 資料庫底層行為
