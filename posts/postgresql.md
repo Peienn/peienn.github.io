@@ -1,10 +1,10 @@
 # 相關文章
-<a href="https://peienn.github.io/posts/templates.html?file=posts/docker.md" class="custom-link">資料庫 Index 介紹 </a>
+<a href="https://peienn.github.io/posts/templates.html?file=posts/index.md" class="custom-link">資料庫 Index 介紹 </a>
 
 <style>
 .custom-link {
   display: inline-block;
-  width: 80%;
+  width: 50%;
   padding: 10px 15px;
   background-color: rgba(255, 99, 71, 0.15);  /* 透明珊瑚橘 */
   color: #FF6347;
