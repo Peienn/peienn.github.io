@@ -42,6 +42,13 @@
         "excerpt": "Nginx, Node.js, React"
     },
     { 
+        "title": "資料庫 Index 介紹", 
+        "file": "index.md",
+        "date": "2025-12-28",
+        "category": "training",
+        "excerpt": "Index 的 What, How, When"
+    },
+    { 
         "title": "GitLab CI/CD 從GitLab建置開始", 
         "file": "GitLab.md",
         "date": "2025-11-09",
