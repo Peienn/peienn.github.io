@@ -169,7 +169,7 @@ upstream api_upstream {
 #  2. 建立 Nginx Container (Port 8080)
 docker run -d --name my-nginx \
   --network tech-showcase-net \
-  -v /Users/wupeien/Desktop/GitHib/tech-showcase-chat/dist:/usr/share/nginx/html:ro \
+  -v /Users/wupeien/Desktop/GitHub/tech-showcase-chat/dist:/usr/share/nginx/html:ro \
   -v /Users/wupeien/Desktop/GitHib/tech-showcase-chat/nginx/nginx.conf:/etc/nginx/nginx.conf:ro \
   -p 8080:8080 nginx
 
@@ -177,8 +177,8 @@ docker run -d --name my-nginx \
 # 如果之後前端更新了，要將新的打包檔 /dist 給nginx，可以執行下列
 # 它會將前端的程式碼進行 npm run build, 並把 /dist 放到tech-showcase-chat/dist，不需要restart就可以直接看到畫面更新了
 docker run --rm \
-  -v /Users/wupeien/Desktop/GitHib/tech-showcase-chat/frontend:/app \
-  -v /Users/wupeien/Desktop/GitHib/tech-showcase-chat/dist:/app/dist \
+  -v /Users/wupeien/Desktop/GitHub/tech-showcase-chat/frontend:/app \
+  -v /Users/wupeien/Desktop/GitHub/tech-showcase-chat/dist:/app/dist \
   node:20 /bin/bash -c "cd /app && npm install && npm run build"
 
 
