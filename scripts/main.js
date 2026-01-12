@@ -85,7 +85,7 @@ function renderPosts(posts) {
       <article class="article-card" data-category="${category}">
         <span class="article-category ${category}">${categoryName}</span>
         <h3>
-          <a href="posts/templates.html?file=posts/${post.file}" style="text-decoration: none; color: inherit;">
+          <a href="posts/templates.html?file=posts/markdown/${post.file}" style="text-decoration: none; color: inherit;">
             ${post.title}
           </a>
         </h3>
