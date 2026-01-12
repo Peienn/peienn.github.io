@@ -1,7 +1,7 @@
 上一篇文章提到，在多人聊天室架構中加入 Nginx，雖然能實現反向代理及流量控制，  
 但也導致使用者被隨機分配到不同的聊天室實例，無法保證在同一間聊天室中互動。
 
-![123](images/redis/noredis.png)
+![123](../images/redis/noredis.png)
 
 這個問題可以透過 Redis 的 **Pub/Sub** 功能來解決
 
@@ -134,7 +134,7 @@ $ CONFIG GET appendonly (Default: no )
 - 服務 * 1 (Port:5000) +  服務 * 1 (Port:5001)
 - <span style="color:green">NoSQL DB (redis) </span>
   
-![123](images/redis/redis.png)
+![123](../images/redis/redis.png)
 
 ---
 
@@ -208,7 +208,7 @@ await pushMessageToRedis(message);
 
 因為已經用Docker裝好了，所以直接啟用redis Server，並透過指令檢查是否正常可用 
 
-![123](images/redis/docker.jpg)
+![123](../images/redis/docker.jpg)
 
 ---
 
@@ -226,8 +226,8 @@ await pushMessageToRedis(message);
 
 
 
-![123](images/redis/result.png)
-![123](images/redis/result_phone.jpg)
+![123](../images/redis/result.png)
+![123](../images/redis/result_phone.jpg)
 
 下圖 Nginx/access.log中看出，不同的IP被導到不同的後端(Port:3000 & Port:3001)
 
@@ -235,7 +235,7 @@ await pushMessageToRedis(message);
 - 127.0.0.1 - - [27/Nov/2025      .....    upstream: 127.0.0.1:3000
 - 192.168.0.102 - - [27/Nov/2025   .....    upstream: 127.0.0.1:3001
   
-![123](images/redis/result_accesslog.png)
+![123](../images/redis/result_accesslog.png)
 
 
 ---
@@ -247,7 +247,7 @@ await pushMessageToRedis(message);
 - 檢查所有訊息可以看到確實就是剛剛的使用者 (aaa, bbb, ... , iPhone)
 - 最後刪除頻道的內容並離開
   
-![123](images/redis/redisserver_log.jpg)
+![123](../images/redis/redisserver_log.jpg)
 
 
 

@@ -131,7 +131,7 @@ location /nginx_status {
         }
 ```
 
-![123](images/monitor/Exporter.png)
+![123](../images/monitor/Exporter.png)
 
 ### Steps 3 ：Grafana 獲取資訊
 
@@ -142,6 +142,6 @@ Dashborad 可以直接上網查，不需要自己重頭開始建。如何設定�
 ### 實際結果
 
 
-![123](images/monitor/prometheus.png)
+![123](../images/monitor/prometheus.png)
 
-![123](images/monitor/grafana_postgre.png)
+![123](../images/monitor/grafana_postgre.png)

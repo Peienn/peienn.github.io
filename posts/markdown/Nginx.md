@@ -15,7 +15,7 @@ Nginx 是輕量且高效能的 Web 伺服器（Web Server），負責扮演網�
 當使用者訪問你的網站時，Web Server 會接收請求，尋找對應的資源（如網頁、圖片、影片等），再將這些資料傳送回使用者端。
 
 
-![Nginx](images/Nginx/diff.png)
+![Nginx](../images/Nginx/diff.png)
 
 從上圖可以看出發現，沒有Nginx的情況下，由使用者決定要去連到哪一台後端伺服器來獲取資訊，<br>但如果今天採用了Nginx，就會變成是使用者連線到Nginx，由Nginx來決定是哪一台後端伺服器提供資訊。至此可知，後端伺服器會有好幾台且都是相同的服務。
 
@@ -101,14 +101,14 @@ Nginx 的設定有多種方式可以實現流量處理，常見兩種方法，�
 - 後端伺服器 * 1
 - 服務 * 1 (Port:5000)
 
-![Nginx](images/Nginx/ori_practice.png)
+![Nginx](../images/Nginx/ori_practice.png)
 
 加入Nginx後會變成下圖。多一個服務 (Port:5001) 是為了要實現 "流量控制" 的效果。<br>
 - <span style="color:green">網頁伺服器 * 1 (Web Server)</span>
 - 後端伺服器 * 1
 - 服務 * 1 (Port:5000) +  <span style="color:green">服務 * 1 (Port:5001)</span>
 
-![Nginx](images/Nginx/Nginx_practice.png)
+![Nginx](../images/Nginx/Nginx_practice.png)
 
 
 --- 
@@ -184,7 +184,7 @@ const socket = io({
 npm run build
 # 打包的東西就會在 fronted/dist/，接著把下面的所有檔案全部丟到C:/nginx/www;
 ```
-![Nginx](images/Nginx/build_data.png)
+![Nginx](../images/Nginx/build_data.png)
 
 
 
@@ -252,7 +252,7 @@ nginx
 ```
 
 #### steps 5: 檢查結果
-![Nginx](images/Nginx/result1.png)
+![Nginx](../images/Nginx/result1.png)
 
 從圖中可以看出，上面兩個是同一個聊天室，下面兩個是同一個聊天室，說明如下：
 
@@ -271,7 +271,7 @@ nginx
 下圖，是關閉電腦防火牆，用手機輸入192.168.0.103進入聊天室。<br>
 同樣也可以發現，手機進入的是下方的聊天室 (因為都是透過192.168.0.103進入聊天室)
 
-![Nginx](images/Nginx/result2.png)
+![Nginx](../images/Nginx/result2.png)
 
 
 --- 

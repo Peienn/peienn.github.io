@@ -67,7 +67,7 @@ Index (索引) in Database (PostgreSQL 為例)
 如果此時我們要去搜尋其中一筆資料，那資料庫就會先去 B+Tree 搜尋，找到符合條件的再根據 TID 去Heap Table 找真正的資料。
 
 
-![123](index.png)
+![123](../images/postgresql/index.png)
 
 ---
 

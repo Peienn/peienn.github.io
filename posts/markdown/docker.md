@@ -52,7 +52,7 @@ Docker 利用的是 Linux 核心的 Namespace 和 cgroups 技術。
 在尚未使用Docker之前 (左圖)，我們的主機需要`安裝各種軟體以及相依套件`，導致系統環境日益複雜，且隨著安裝的軟體增加，問題也愈發明顯。<br>
 但是使用Docker之後，我們只需要在主機上`安裝 Docker engine 就好` (右圖) 。即便未來有 100 種軟體需要使用，只需要去`倉庫 (Docker Hub)` 裡面下載對應的 Image，主機就可以直接使用這項軟體了。
 
-![123](images/docker/compare.png)
+![123](../images/docker/compare.png)
 
 ---
 
@@ -259,7 +259,7 @@ docker run -d \
 
 跟之前的主機相比，是不是 <u>**乾淨許多**</u> ?
 
-![123](images/docker/Arch.png)
+![123](../images/docker/Arch.png)
 
 ---
 

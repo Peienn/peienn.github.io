@@ -136,29 +136,29 @@ gitlab-runner register
 # 接下來就會要求你輸入 GitLab URL, GitLab token, ... 
 # 按照其要求輸入即可 (GitLab token可以到GitLab Server的admin Runner中找到)
 ```
-  ![GitLab 架構圖](images/GitLab/register_runner.png)
-  ![GitLab 架構圖](images/GitLab/register_runner2.png)
+  ![GitLab 架構圖](../images/GitLab/register_runner.png)
+  ![GitLab 架構圖](../images/GitLab/register_runner2.png)
 
 # 測試結果
 
 先到GitLab建立Project (Repository)
-![GitLab 架構圖](images/GitLab/repository.png)
+![GitLab 架構圖](../images/GitLab/repository.png)
 
 ## 測試方法 1 - Web操作
 新增檔案 .gitlab-ci.yml，新增完後會直接觸發PipeLine，綠色勾勾代表執行成功。
-![GitLab 架構圖](images/GitLab/gitlab-ci.png)
-![GitLab 架構圖](images/GitLab/pipeline.png)
+![GitLab 架構圖](../images/GitLab/gitlab-ci.png)
+![GitLab 架構圖](../images/GitLab/pipeline.png)
 
 點進去可以看到這次pipeline的執行紀錄，並對照gitlab-ci是否相同。
 
-![GitLab 架構圖](images/GitLab/pipelineLog.png)
+![GitLab 架構圖](../images/GitLab/pipelineLog.png)
 ## 測試方法 2 - Git指令
 
 透過git clone先下載repository，並且新增一個檔案叫做testing.log，再把檔案push上去。最後會看到一樣的pipeline執行結果。
 
-![GitLab 架構圖](images/GitLab/gitCommand.png)
-![GitLab 架構圖](images/GitLab/gitpush.png)
-![GitLab 架構圖](images/GitLab/gitpipeline.png)
-![GitLab 架構圖](images/GitLab/gitpipelinelog.png)
+![GitLab 架構圖](../images/GitLab/gitCommand.png)
+![GitLab 架構圖](../images/GitLab/gitpush.png)
+![GitLab 架構圖](../images/GitLab/gitpipeline.png)
+![GitLab 架構圖](../images/GitLab/gitpipelinelog.png)
 
 成功

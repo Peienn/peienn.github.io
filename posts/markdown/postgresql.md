@@ -85,7 +85,7 @@ Port : 5432 (Default)
 輸入的密碼要記得。 (但忘記也可以找回)
 ```
 
-![123](images/postgresql/windows_download.png)
+![123](../images/postgresql/windows_download.png)
 
 #### 2. Ubuntu Linux 
 
@@ -235,18 +235,18 @@ sudo systemctl status postgresql
 
 1. 首先，確認資料庫是乾淨的。
 
-![123](images/postgresql/init_db.png)
+![123](../images/postgresql/init_db.png)
 
 
 2. 打開網站，輸入任意的名稱。 但會發現你進不去，因為要登記在資料庫的名稱才有權限可以進入。
 
-![123](images/postgresql/Login_non-authorization.png)
+![123](../images/postgresql/Login_non-authorization.png)
 
 
 3. 透過註冊，後端將名稱寫入資料庫，才允許該名稱進入聊天室。同時開始寫入Redis 和 PostgreSQL ("名稱" 已加入聊天室) <br>
    (這邊用兩個名稱 "amber" 與 "brent" 做後續測試)
 
-![123](images/postgresql/register.png)
+![123](../images/postgresql/register.png)
 
 
 
@@ -255,37 +255,37 @@ sudo systemctl status postgresql
 
 直到 "amber" 和 "brent" 註冊完也輸入完訊息後，再次檢查就會看到redis發生變動。
 
-![123](images/postgresql/redis.jpg)
+![123](../images/postgresql/redis.jpg)
 
 
 
 4. 這時候，我們到PostgreSQL查看 users表，會看到剛剛註冊的 "amber" , "brent" , 以及用來記錄系統資訊的 "system"
 
-![123](images/postgresql/register_db.png)
+![123](../images/postgresql/register_db.png)
 
 
 5. 成功進入聊天室後，開始寫訊息，中間測試 "brent" `登出`會呈現甚麼狀況。 <br>
 
    可以看到系統會顯示 "brent"已離開聊天室給所有聊天室成員看。
 
-![123](images/postgresql/logout.png)
+![123](../images/postgresql/logout.png)
 
 6. 當 "brent" 輸入名稱重新回來之後，滑到最上面會看到呈現的訊息與 "amber" 不同。  <br>
    因為每次進入聊天室的人，獲取到的訊息都是從Redis來的 (快速)，而Redis目前設定只保存 50筆 訊息。 <br>
    這時可以讓我們測試 `載入歷史訊息` 的功能是否正常。
 
-![123](images/postgresql/loginWithSession.png)
+![123](../images/postgresql/loginWithSession.png)
 
 
 7. 結合上圖可以發現，訊息有正確的被載入 4 的前面是 3 2 1 而且都由 "amber"輸入。(輸入訊息時是從1~50) <br>
    包含最初近來聊天室系統所發出的 "已加入聊天室"。
 
-![123](images/postgresql/loadHistory.png)
+![123](../images/postgresql/loadHistory.png)
 
 
 8. 最後，讓兩位使用者都離開聊天室。並進到PostgreSQL 查看訊息。
 
-![123](images/postgresql/message_db.png)
+![123](../images/postgresql/message_db.png)
 
 ---
 
@@ -301,7 +301,7 @@ sudo systemctl status postgresql
 
 
 
-![architecture](images/postgresql/architecture.png)
+![architecture](../images/postgresql/architecture.png)
 
 
 

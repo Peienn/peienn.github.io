@@ -8,7 +8,7 @@
 <br>
 <br>
 
-![123](images/session/nosession.png)
+![123](../images/session/nosession.png)
 
 # 主要流程
 
@@ -33,7 +33,7 @@
     - 每次請求都會攜帶，應避免放太大或敏感資料。
 
 
-![123](images/session/cookie.png)
+![123](../images/session/cookie.png)
 
 
 ---
@@ -52,7 +52,7 @@
 6. 如果沒有，就顯示最初登入畫面
 
 
-![123](images/session/session.png)
+![123](../images/session/session.png)
 
 
 
@@ -60,7 +60,7 @@
 
 但嘗試了多種方法都無法在Github Page上顯示 (vscode 可以)，所以暫時放棄用圖片。
 
-![123](images/session/mermaid.png)
+![123](../images/session/mermaid.png)
 
 ```bash
 sequenceDiagram
@@ -208,15 +208,15 @@ location ~ ^/(login|logout|check-session) {
 
 1. 首先進入聊天室，要求輸入名稱
 
-![123](images/session/result1.png)
+![123](../images/session/result1.png)
 
 2. 進去聊天室後，可以按下F12 --> 應用程式 --> Cookie檢查
 
-![123](images/session/result2.png)
+![123](../images/session/result2.png)
 
 3. 即便我一直按下F5，後端也一直在Console.log()，但聊天室仍然不會被登出
 
-![123](images/session/result3.png)
+![123](../images/session/result3.png)
 
 4. 從Redis裡面可以找出目前有哪些Session紀錄在內，從上面的網站中找出session id
       - s%3AyA19PpxIV7gCRCbDPlz_e_7txZfLK75u.UlGX0U%2F3AuoJtaHGwkANyz0e%2BW2s2IhH2wNFbTdXRdQ
@@ -233,7 +233,7 @@ location ~ ^/(login|logout|check-session) {
 
     可以發現這兩組SessionID 確實都存在redis中。 (3) and (5)
 
-![123](images/session/redis_session.jpg)
+![123](../images/session/redis_session.jpg)
 
 # 結論和延伸
 
