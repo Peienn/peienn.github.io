@@ -43,7 +43,7 @@
       if (!file) return;
     
       try {
-        const res = await fetch("../markdown/" + file);
+        const res = await fetch("../" + file);
         if (!res.ok) throw new Error("HTTP " + res.status);
         const md = await res.text();
     

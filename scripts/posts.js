@@ -6,7 +6,7 @@ if (!file) {
   content.innerHTML = '<p>未指定文章。</p>';
 } else {
   // ⭐ 這裡加 "../" 才會正確抓到 posts/GitLab.md
-  fetch(`../markdown/${file}`)
+  fetch(`../${file}`)
     .then(res => {
       if (!res.ok) throw new Error('載入失敗: ' + res.status);
       return res.text();
