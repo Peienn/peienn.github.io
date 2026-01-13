@@ -1,6 +1,6 @@
 // 1. Back to Index.html
 document.getElementById("index").addEventListener("click", () => {
-    window.location.href = "../markdwon/index.html"; // 回首頁路徑，可依實際調整
+    window.location.href = "..../index.html"; // 回首頁路徑，可依實際調整
   });
 
 
