@@ -40,10 +40,11 @@
     async function loadMarkdown() {
       const params = new URLSearchParams(window.location.search);
       const file = params.get('file');
+      console.log(file);
       if (!file) return;
     
       try {
-        const res = await fetch(file);
+        const res = await fetch( "/" + file);
         if (!res.ok) throw new Error("HTTP " + res.status);
         const md = await res.text();
     
