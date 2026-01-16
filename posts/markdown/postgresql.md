@@ -1,34 +1,3 @@
-# 相關文章
-<a href="https://peienn.github.io/posts/templates.html?file=posts/index.md" class="custom-link">資料庫 Index 介紹 </a>
-
-<style>
-.custom-link {
-  display: inline-block;
-  width: 50%;
-  padding: 10px 15px;
-  background-color: rgba(255, 99, 71, 0.15);  /* 透明珊瑚橘 */
-  color: #FF6347;
-  text-align: center;
-  text-decoration: none;
-  border: 2px solid rgba(255, 99, 71, 0.5);
-  border-radius: 12px;
-  font-weight: 600;
-  font-size: 1rem;
-  backdrop-filter: blur(6px);
-  transition: all 0.3s ease;
-}
-
-.custom-link:hover, 
-.custom-link:focus {
-  background-color: rgba(255, 99, 71, 0.35);
-  border-color: #FF6347;
-  color: #CC4A38;
-  cursor: pointer;
-  box-shadow: 0 8px 16px rgba(255, 99, 71, 0.3);
-}
-</style>
-
-
 
 # 主要流程
 
@@ -312,3 +281,32 @@ sudo systemctl status postgresql
 - ELK : :LogFile 分析平台
 
 
+# 相關文章
+## <a href="https://peienn.github.io/posts/markdown/templates.html?file=posts/markdown/index.md" class="custom-link">資料庫 Index 介紹 </a>
+
+<style>
+.custom-link {
+  display: inline-block;
+  width: 50%;
+  padding: 10px 15px;
+  background-color: rgba(255, 99, 71, 0.15);  /* 透明珊瑚橘 */
+  color: #FF6347;
+  text-align: center;
+  text-decoration: none;
+  border: 2px solid rgba(255, 99, 71, 0.5);
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  backdrop-filter: blur(6px);
+  transition: all 0.3s ease;
+}
+
+.custom-link:hover, 
+.custom-link:focus {
+  background-color: rgba(255, 99, 71, 0.35);
+  border-color: #FF6347;
+  color: #CC4A38;
+  cursor: pointer;
+  box-shadow: 0 8px 16px rgba(255, 99, 71, 0.3);
+}
+</style>
