@@ -42,6 +42,13 @@
         "excerpt": "Nginx, Node.js, React"
     },
     { 
+        "title": "JWT 介紹", 
+        "file": "jwt.md",
+        "date": "2026-01-17",
+        "category": "training",
+        "excerpt": "JWT 的建置和驗證"
+    },
+    { 
         "title": "資料庫 Index 介紹", 
         "file": "index.md",
         "date": "2025-12-28",
