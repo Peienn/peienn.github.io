@@ -25,7 +25,7 @@ Message Queue(MQ, 訊息佇列)，一種中介軟體。常用於不同系統之�
 
 
 <figure style="text-align: center;">
-  <img src="mq.png" alt="123" />
+  <img src="../images/MQ/mq.png" alt="123" />
   <figcaption><a href="https://blog.bytebytego.com/p/why-do-we-need-a-message-queue?open=false#%C2%A7benefits-of-message-queues">圖片來源</a></figcaption>
 </figure>
 
@@ -99,7 +99,7 @@ AI (Artificial Intelligence，人工智慧) 範圍相當廣泛，廣義上指的
 - 優點 : 即時通知、資源利用率高
 - 缺點 : 實現複雜且須雙方配合、資安風險
 
-![123](eventinform.png)
+![123](../images/MQ/eventinform.png)
 
 ### Polling vs Webhook 
 
@@ -121,7 +121,8 @@ Webhook 可即時主動推送事件，確保快速通知；而當 Webhook 因故
 
 ## 實作MQ + AI分析 
 
-這次聊天室會透過 MQ 將聊天室的訊息丟給 AI 分析模型，AI 分析模型分析完訊息摘要後，將資料寫入資料庫，接著主動通知前端已完成，讓前端可以即時的將摘要顯示於前端。而Polling會作為備用的方法以應變Webhook通知失敗。
+這次聊天室會透過 MQ 將聊天室的訊息丟給 AI 分析模型，AI 分析模型分析完訊息摘要後，將資料寫入資料庫，接著主動通知前端已完成，讓前端可以即時的將摘要顯示於前端。而Polling會作為備用的方法以應變Webhook意外失敗。
 
 
-![123](arch.png)
+
+![123](../images/MQ/arch.png)
