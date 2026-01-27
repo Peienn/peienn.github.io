@@ -2,7 +2,7 @@
     { 
         "title": "第七篇文章：Message Queue + AI Model 介紹與使用", 
         "file": "MQ.md",
-        "date": "2026-01-22",
+        "date": "2026-01-27",
         "category": "tech",
         "excerpt": "MQ, NLP Model, Prometheus, Grafana, Docker, PostgreSQL, Session, Mermaid, Redis, Nginx, Node.js, React"
     },
