@@ -121,8 +121,57 @@ Webhook 可即時主動推送事件，確保快速通知；而當 Webhook 因故
 
 ## 實作MQ + AI分析 
 
-聊天室專案會透過 MQ 將聊天室的訊息丟給 AI 分析模型，AI 分析模型分析完訊息摘要後，將資料寫入資料庫，接著主動通知前端已完成，讓前端可以即時的將摘要顯示於前端。而Polling會作為備用的方法以應變Webhook意外失敗。
+聊天室專案加入了 : 
+
+- 後端 (Node.js)
+  - 偵測使用者是否輸入 "closed" ，以此作為 AI 分析的啟動條件
+  - 撈取 PostgreSQL 最新的 50 筆訊息
+  - 建立 MQ 用以傳遞訊息給 AI Analysis Model
+  - 建置 API 提供 AI Analysis Model (webhook) 跟 前端使用 (Polling)
+
+- AI Analysis Model (Python) 接收到訊息後 : 
+  - 透過 NLP 分析 訊息摘要
+  - 將訊息摘要寫入資料庫
+  - 呼叫後端 API 告知已完成分析 `(Webhook)`
 
 
+- 前端 (React)
+  - 定時呼叫後端API 檢查分析結果 (Polling)
+  - 顯示分析結果
 
 ![123](../images/MQ/arch.png)
+
+流程說明 : 
+  
+1. 後端接收到 "closed" 後，去PostgreSQL 撈取最新的50筆訊息
+2. 將訊息透過 MQ 傳遞給 AI Analysis Model
+3. Socket emit 通知 前端開始 Polling
+4. AI Analysis Model 接收到訊息後開始分析 (此時前端不斷在 Call後端 API 實現Polling )
+5. 分析完成後，將結果寫入資料庫
+6. Call 後端API，告知已完成分析同時傳遞結果
+7. 後端收到結果後，帶著結果通知前端
+8. 前端收到結果後，將結果顯示於網頁，並且結束 Polling。
+
+
+
+**使用者輸入 "closed"**
+
+![AI_Analyzing](../images/MQ/AI_Analyzing.png)
+
+
+**AI 分析完成 (Webhook)**
+
+![AI_result](../images/MQ/AI_result.png)
+
+
+**AI 分析完成 (Polling)**
+
+後端收到 AI Analysis Model 的 Webhook通知時，不要傳給前端 (亂改 emit 資訊)
+
+![polling](../images/MQ/polling_revise.png)
+
+前端分析的結果是利用Polling 獲取的。
+
+![polling](../images/MQ/polling.png)
+
+
