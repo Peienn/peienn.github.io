@@ -49,6 +49,13 @@
         "excerpt": "Nginx, Node.js, React"
     },
     { 
+        "title": "Oracle 資料庫大寶典", 
+        "file": "oracle.md",
+        "date": "2026-01-31",
+        "category": "training",
+        "excerpt": "帶你從 0 到 99"
+    },
+    { 
         "title": "JWT 介紹", 
         "file": "jwt.md",
         "date": "2026-01-17",
@@ -68,6 +75,13 @@
         "date": "2025-11-09",
         "category": "training",
         "excerpt": "從零開始建置 GitLab CI/CD 自動化流程"
+    },
+    { 
+        "title": "graphAlgorithmTraining", 
+        "file": "graphAlgorithm.md",
+        "date": "ongoing",
+        "category": "training",
+        "excerpt": ""
     },
     { 
         "title": "Oracle-ORA整理", 
