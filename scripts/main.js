@@ -13,6 +13,7 @@ const categoryFilter = document.getElementById('category-filter');
 const postList = document.getElementById('post-list');
 const categoryStatsContainer = document.querySelector('.category-stats');
 const introTextContainer = document.getElementById('intro-text-container');
+const introTextContainer2 = document.getElementById('intro-text-container2');
 
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -115,6 +116,12 @@ function toggleIntroText(category) {
     introTextContainer.style.display = 'block';
   } else {
     introTextContainer.style.display = 'none';
+  }
+
+  if (category === 'sport') {
+    introTextContainer2.style.display = 'block';
+  } else {
+    introTextContainer2.style.display = 'none';
   }
 }
 
