@@ -49,6 +49,13 @@
         "excerpt": "Nginx, Node.js, React"
     },
     { 
+        "title": "咖啡", 
+        "file": "coffee.md",
+        "date": "ongoing",
+        "category": "sport",
+        "excerpt": "學習過程"
+    },
+    { 
         "title": "Oracle 資料庫大寶典", 
         "file": "oracle.md",
         "date": "2026-01-31",

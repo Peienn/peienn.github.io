@@ -406,3 +406,73 @@
         margin-right: auto;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       }
+
+
+
+    
+    .year-group {
+      margin-bottom: 48px;
+    }
+
+    .year-title {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 24px;
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 8px;
+    }
+
+    .event {
+      margin-bottom: 32px;
+      text-align: center;
+    }
+
+    .event-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .event img {
+      width: 220px;
+      border-radius: 10px;
+    }
+
+
+    .sport-header {
+  cursor: pointer;
+  font-size: 1.3rem;
+  font-weight: bold;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.sport-header::before {
+  content: "▶ ";
+}
+
+.sport-group.active .sport-header::before {
+  content: "▼ ";
+}
+
+.sport-content {
+  display: none;
+  padding: 10px 20px;
+}
+
+.sport-group.active .sport-content {
+  display: block;
+}
+
+.year-title {
+  margin-top: 12px;
+  font-size: 1.1rem;
+  border-left: 4px solid #aaa;
+  padding-left: 8px;
+}
+
+.event img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}

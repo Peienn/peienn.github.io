@@ -3,7 +3,7 @@ const categoryInfo = {
   tech: { name: '💻 後端技術筆記', icon: 'fas fa-code' },
   //life: { name: '☕ 日常生活', icon: 'fas fa-coffee' },
   training: { name: '📖 學習紀錄', icon: 'fas fa-book-open' },
-  sport: { name: '🏃 運動健身', icon: 'fas fa-running' }
+  sport: { name: '🏃 運動休閒', icon: 'fas fa-running' }
   //travel: { name: '✈️ 旅遊紀錄', icon: 'fas fa-plane' }
   
 };
@@ -12,8 +12,6 @@ const categoryInfo = {
 const categoryFilter = document.getElementById('category-filter');
 const postList = document.getElementById('post-list');
 const categoryStatsContainer = document.querySelector('.category-stats');
-const introTextContainer = document.getElementById('intro-text-container');
-const introTextContainer2 = document.getElementById('intro-text-container2');
 
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -112,6 +110,10 @@ function filterPosts(category) {
 
 // 顯示/隱藏介紹文字區塊（只在 tech 時顯示）
 function toggleIntroText(category) {
+
+  const introTextContainer = document.getElementById('intro-text-container');
+  const introTextContainer2 = document.getElementById('intro-text-container2');
+
   if (category === 'tech') {
     introTextContainer.style.display = 'block';
   } else {
