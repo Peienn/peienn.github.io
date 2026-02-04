@@ -119,23 +119,252 @@ Server Process 暫停搜尋並且要求DBWR將checkpoint queue內的dirty buffer
 
 ## DBA 如何管理
 
-### 日常備份
+作為一個半導體公司的半個DBA，每當建立一個新的資料庫時都必須先設置 `備份` 和 `監控` 才能開始使用。下面會介紹主要做了哪些事。
 
-### 備份偵測＆驗證
+### 日常備份＆驗證
+
+針對資料庫的內容進行備份是一件非常重要的事情，不論是`程式開發人員不小心異動錯誤` 或是`災難(停電/地震)`，都可以救回資料庫內的資料。
+
+在Oracle 資料庫中，常用的備份(Backup)方法是透過 `RMAN (Recovery Manager)`，一個強大的、Oracle專用的工具。不只可以透過 RMAN備份，也就可以透過RMAN 將備份檔還原 (Restore)，
+
+- 支援多種備份策略，如全量備份(Full-Backup)和增量備份(Incremental-Backup)。
+- 可配合自動化腳本執行，靈活度高。
+- 透過RMAN進行備份的紀錄都存放在v$rman_backup_job_details，透過table內的SESSION_RECID可以至v$rman_output找出該筆備份的LogFile.
+
+```bash
+# RMAN BACKUP SCRIPT
+RUN {
+ALLOCATE CHANNEL db_ch1 TYPE DISK;
+CROSSCHECK ARCHIVELOG ALL;
+BACKUP FULL
+   FORMAT '/bkpool/rman/database/%d_%s_%p.rman'
+   (DATABASE);
+SQL 'ALTER SYSTEM SWITCH LOGFILE';
+BACKUP
+   FORMAT '/bkpool/rman/archive/%d_%s_%p.rman'
+   (ARCHIVELOG ALL DELETE INPUT);
+
+VALIDATE BACKUP OF DATABASE;
+VALIDATE BACKUP OF ARCHIVELOG ALL;
+
+RELEASE CHANNEL db_ch1;
+}
+```
+#### 說明
+
+1. 指定一個備份的通道 channel (db_ch1)。
+2. CROSSCHECK ARCHIVELOG ALL : 避免在進行 SWITCH LOGFILE時找不到LOGFILE而發生錯誤。
+3. BACKUP FULL….(DATABASE) : 完全備份+指定備份路徑和檔名。
+4. SQL ‘ALTER … LOGFILE’ : 切換Redo Log , 把當前Redo Log的東西都寫入資料庫，並創建一個新的Redo Log, 確保資料的一致性。
+5. BACKUP … (ALL DELETE INPUT); : 備份Archivelog後刪除這些Archivelog,釋放空間(不刪除就拿掉括弧內的指令)。
+6. 驗證資料檔是否完整可讀
+7. 驗證歸檔日誌是否完整可讀
+8. 釋放通道並結束。
+
+上述Script只有備份Data File ，如果想備份的更完整，包括 Control File 和Spfile可以加上：
+
+```bash
+backup current controlfile format …;
+backup spfile format … ;
+```
+---
+
+雖然每日的備份檔都有進行驗證，但該驗證只是確定備份檔是完整可讀的，不保證還原時一定成功。因此我們需要定期實際的還原，但礙於生產環境不會允許 DBA 任意還原、異動，因此 RMAN 有提供一個`模擬完整還原的指令，這個指令會在不異動資料庫內容的情況下，模擬該備份檔是否可以成功還原`。因為是完整模擬還原，資源消耗也大，建議在非尖峰時刻進行且以週或月來進行。
+```bash
+# Weekly/ Monthly Validation
+RUN {
+  ALLOCATE CHANNEL db_ch1 TYPE DISK;
+
+  RESTORE DATABASE VALIDATE;
+
+  RESTORE ARCHIVELOG ALL VALIDATE;
+
+  RELEASE CHANNEL db_ch1;
+}
+```
+#### 說明
+
+1. 指定一個備份的通道 channel (db_ch1)。
+2. 模擬還原資料庫備份，確認備份檔可成功還原
+3. 模擬還原歸檔日誌備份，確認完整性
+4. 釋放通道並結束。
+
+---
+
+最後搭配 CronJob實現上述即可。
+
+```bash
+# 每天凌晨 02:00 做備份與驗證
+0 2 * * * /path/to/backup_validate.sh >> /path/to/backup_validate.log 2>&1
+# 每週日凌晨 03:00 做模擬還原驗證
+0 3 * * 0 /path/to/restore_validate.sh >> /path/to/restore_validate.log 2>&1
+```
+
+#### 其他備份方法介紹
+
+- 邏輯備份：透過Expdp , Impdp 針對資料庫的Schemas, Table, View進行導入和導出。
+- 冷備份（Cold Backup）：在資料庫關閉的狀態下直接複製數據檔案、控制檔案和聯結檔案，以確保數據的一致性。
+- 熱備份（Hot Backup）：在資料庫運行時進行備份，需運行在 ARCHIVELOG 模式下。
+
+
+---
+
+### 備份偵測
+
+備份是否成功執行，我們可以透過備份時產生的日誌檔 (Log) 來檢查有無錯誤訊息。但是當你管理 n 個資料庫時，每天收到 n 封 Log 檔案，光是檢查這些 Log 就要花費你半個上午的時間了。
+
+因此，我們可以利用 Oracle 資料庫內其中的一個 System Table `v$rman_backup_job_details` ，這個 Table 會記錄每一筆備份是否成功/執行時間/備份方法。所以在撰寫備份偵測的 Script 時需要注意 ：
+
+1. 當天是否有產生一筆 Backup Record ?
+2. 如果有，該筆資訊裡面的欄位 "status" 是否為 Completed ?
+
+如果當天的備份是 Failed，這時候你需要檢查備份時的 Log 來確認錯誤原因，但在System Table `v$rman_backup_job_details` 裡面沒有 Log，它只會記錄一些簡單的資訊。這時候就需要到另一個 System Table `v$rman_output` 裡面，欄位 output 中記錄備份的 Log。
+
+所以，最終我們在寫備份偵測的腳本時 :
+
+- 當日缺少紀錄 : 直接發信告知  <u>備份未啟動</u>
+- 當日有一筆紀錄，且備份成功 : 直接發信告知 <u>成功</u>
+- 當日有一筆紀錄，但備份失敗 : 
+    1. 獲取該筆紀錄的 SESSION_RECID
+    2. 透過這個 SESSION_RECID 到 `v$rman_output` 裡面找出該筆的 output
+    3. 發信告知 <u>失敗</u> 並附上備份的 Log
+    (如果不想附上整段Log ，也可以自己做點過濾，基本上錯誤訊息都是 `ORA- / RMAN-` 開頭)
+
+(`每一筆紀錄都會有自己唯一的 id，備份紀錄也是 ` 。 因此這兩個 System Table都會有一個欄位叫做 "SESSION_RECID"。 )
+
+
+```bash
+# 多個 Instance 的 Loop
+for db_name in "${db_names[@]}"; do
+    echo "Connecting to database: $db_name"
+    export ORACLE_SID="$db_name"
+
+    query_result=$(sqlplus -S "/as sysdba" <<EOF
+        set heading off
+        set feedback off
+        set pagesize 0
+        set linesize 1000
+        SELECT session_recid, start_time, input_type, status
+          FROM v\$rman_backup_job_details
+         WHERE TO_CHAR(start_time, 'yyyymmdd') = TO_CHAR(TRUNC(SYSDATE) - ${day}, 'yyyymmdd');
+        exit;
+EOF
+    )
+
+    echo "$query_result"
+    final_result+="Database: $db_name\n$query_result\n"
+
+    # 無備份記錄
+    if [ -z "$query_result" ]; then
+        source "$curl" "${hostname%%.*}" "$db_name" "not available" "Backup is Null at $yesterday" "$day"
+        ((curl_num++))
+        # 下一個 Instance
+        continue
+    fi
+
+    # 備份非 Completed 狀態
+    error_keyword=('FAILED' 'WITH' 'RUNNING')
+
+    for keyword in "${error_keyword[@]}"; do
+        if [[ "$query_result" == *"$keyword"* ]]; then
+            error_sid=$(echo "$query_result" | awk -v kw="$keyword" '$0 ~ kw {print $1}')
+            for sid in $error_sid; do
+                error_log=$(sqlplus -S "/as sysdba" <<EOF
+                    set linesize 32767
+                    set trimspool on
+                    set pagesize 0
+                    set feedback off
+                    SELECT output FROM v\$rman_output WHERE SESSION_RECID = $sid;
+                    exit;
+EOF
+                )
+                # 過濾並記錄錯誤訊息
+                temp=$(echo "$error_log" | egrep "^(ORA-|RMAN-)" | grep -v -E "^(RMAN-00571:|RMAN-00569:)" )
+                echo "$temp" > "${error_logfile}/${db_name}_${sid}_errorlog.txt"
+                # 彈性告警
+                source "$curl" "${hostname%%.*}" "$db_name" "$keyword" "$temp" "$day"
+                ((curl_num++))    
+            done
+            break
+        fi
+    done
+done
+```
 
 ### 資料庫行為偵測
 
+在生產環境中，資料庫內的資料是不容許隨意異動的，更遑論帳號/帳號權限的異動。因此對於這一類的行為需要嚴格偵測。 我們可以開啟 Oracle 的 Audit 功能，並且針對語句進行審計。例如 :
+
+當你開啟 Audit 功能，並且設定 AUDIT CREATE USER;
+
+如果使用者 SCOTT 執行：`CREATE USER testuser IDENTIFIED BY password;`
+
+你就可以在系統 table 中找到一筆下面的紀錄。
+
+```
+SELECT username, action_name, timestamp, sql_text, returncode
+FROM dba_audit_trail
+WHERE action_name = 'CREATE USER'
+ORDER BY timestamp DESC;
+```
+
+|USERNAME	|ACTION_NAME|	TIMESTAMP	|OBJECT_NAME|	SQL TEXT|	RETURN_CODE|
+|------------|-------------|------------|----|------------|-----------|
+SCOTT	|CREATE USER|	2024-02-04 10:35:23	|	|CREATE USER testuser...	|0 (成功)
+|
+
+
+如果偵測到之後，你還需要有後續的動作，例如發信告知 DBA ，那麼你可以透過 Job/Procedure/cronjob 等方式的搭配來完成。方法有非常多，看你想怎麼做以及各個方案的優缺點
+
+
+舉例: 任務是 `偵測是否有人 create user , 將該筆資訊 POST 到公司的資安網站呈現`。
+
+方案1 :
+1. 建立一個 table 儲存紀錄
+2. 建立一個 Trigger 偵測行為，並寫入 table
+3. 建立一個 Job，將table的內容寫成 txt，透過 Directory 放到 OS 目錄下
+4. 建立 Script 檢查 OS 目錄下有無 txt，有的話就讀取並且 POST 到公司網站
+5. 建立 CronJob ，每天早上執行上述Script
+
+方案2 :
+
+1. 建立一個 table 儲存紀錄
+2. 建立一個 Procedure 可以將資訊包成 Json 後 POST 到公司網站
+3. 建立一個 Trigger 偵測行為，寫入table的同時也呼叫 Procedure
+
+---
+
 ### 監控
 
-### 空間管理
+Oracle Server 通常架設在 Linux 上，因此會影響資料庫效能的不只是Client的使用，也包含 OS 方面的資源。 所以在監控方法有兩部分 : OS 監控 和 資料庫監控。現在常用的開源監控軟體是 `Promethues + Grafana。`
+
+#### OS 監控
+
+針對該台 Server的 CPU/Memory/Disk空間等等進行監控
+
+- CPU 使用率：長時間超過 80% 需關注。
+- 記憶體使用率與 swap 使用量：避免 swap 過高。
+- 磁碟空間：特別是 Oracle 安裝目錄（如 /u01）剩餘空間不足。
+- 磁碟 I/O 等待時間：過高會影響資料庫效能。
 
 
+#### 資料庫管理
+
+- Tablespace 空間使用率：超過 80% 以上需擴充。
+- Buffer Cache 命中率：高於 90% 較理想。
+- 活躍 Session 數量：過高可能造成資源瓶頸。
+- 鎖定和死結情況：需避免過多，影響執行效率。
+
+
+
+---
 
 # Oracle 錯誤
 
-Oracle錯誤統一都是會出現 `ora-XXXXX` 的樣式。
+Oracle錯誤訊息基本上會出現 `ora-XXXXX` 樣式，並且會在後面帶出錯誤訊息。現在相關資訊已經非常多，只要根據錯誤訊息去 Google ，很快就可以找出錯誤原因並解決。
 
-## <a href="https://peienn.github.io/posts/markdown/templates.html?file=posts/markdown/OracleError.md" > Oracle Error Code 紀錄 </a>
+下面是個人經驗：
+
 
  
 
