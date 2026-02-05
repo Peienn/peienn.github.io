@@ -13,7 +13,7 @@ Oracle 資料庫主要由兩個部分組成，資料庫(Databae) +  執行處理
 
 有兩種結構，實體結構 (Physical Structure) 和邏輯結構 (Logical Structure)。
 
-1. 實體結構 : 真實存放在 Disk 的檔案，例如: Controlfile, DataFile 等。
+1. 實體結構 : 真實存放在 Disk 的檔案，例如: Controlfile, DataFile , PFILE 等。
     - Controlfile : 存放資料庫相關的重要資訊，如資料庫的實體結構位置，若是遺失恐導致 Instance 找不到 Datafile，進而影響資料庫無法開啟。最少 1 個，最多 8 個，且每個都要相同。
     - DataFile : 實際存放資料 (Data)，不論是Table、Index 還是資料字典都會放在DataFile內。
     - Online Redo Logfile : 當災難發生時用來還原資料庫的交易。資料庫正常運行下此檔案毫無作用。
@@ -40,6 +40,89 @@ Oracle 資料庫主要由兩個部分組成，資料庫(Databae) +  執行處理
     - CKPT (Checkpoint): 當發生檢查點事件，CKPT 會要求 DBWR將Dirty Cache寫回DataFile，並將檢查點資訊寫到 ControlFile 和 Datafile Header 。同時，每3秒會將重做位元組位置 (Redo Byte Address) 寫到 ControlFile中，當進行 Instance Recovery時可以依據 Redo Byte Address 去 Online Redo Logfile 找出 Redo Entry，並用以復原檔案。
 
 ![oracle server 架構圖](../images/oracle/arch.png)
+
+
+### Database 與 Instacne
+
+從上述可知， Database 只是負責儲存實體的檔案，真正操作讀取是透過 Instance。透過這一層關係可以得出，當 Oracle 要被啟動時，一定是要`透過 Instance 讀取 Database的檔案，然後在呈現給使用者看`。 因此接下來要討論兩者是如何合作並開啟資料庫
+
+
+#### Oracle 開機三階段 : NOMOUHT --> MOUNT --> OPEN
+
+當我們甚麼都還沒做時，Instance 是屬於 shutdown (關閉) 狀態； Database不用說，就是一堆實體檔案
+
+- NOMOUNT : Instance 由 shutdown 轉成 NOMOUNT 時，會根據參數檔的設定跟 OS 要求分配 SGA 空間以及啟動 Background Process。現階段 Instance 與 Database 之間尚無關聯。在 NOMOUNT 狀態下，DBA只能做:
+    1. 建立資料庫
+    2. 重建控制檔
+
+- MOUNT :  Instance 透過參數檔的設定來檢查 ControlFile是否可以正常使用，若是可以的話就可以成功與資料庫掛載。在 MOUNT 狀態下，DBA 能做:
+    1. 復原資料庫 (Restore)
+    2. 變更資料庫日誌模式
+    3. 修改 Datafile/Online Redo Logfile的名稱
+
+- OPEN : Instance會根據 ControlFile 來開啟所有狀態是 Online 的 Datafile 跟 Online Redo Logfile，並檢查兩者間的 Last Checkpoint Number 是否一致，來判斷上一次的關機是否為正常關閉，如果不一致代表上次關機是有問題的，此時 Background Process的 SMON 將執行 Instance Recovery。
+
+#### Oracle 關機三階段 : CLOSE --> DISMOUNT --> SHUTDOWN
+
+就是反向操作。
+
+- CLOSE : 因為要關閉資料庫，所以需要先要求 DBWR 將 Buffer Cache內的 Dirty Cache 寫回 Datafile 來確保資料一致性。並且要求 LGWR 將 Log Buffer內容也寫回 Online Redo Logfile，最後要求 CKPT 將檢查點資訊寫入每個 Datafile 和 Controlfile。做完才可以關閉 Datafile 和 Online Redo Logfile。
+
+- DISMOUNT : Instance 會關閉所有的 Controlfile，此時 Instance 已經關閉所有實體檔案，與 Database 之間已無關連。
+
+- SHUTDOWN : 停止 Background Processes 和回收 SGA空間給 OS。
+
+
+#### 開關機指令
+
+基本上，DBA 不會一步一步的來開關機，太慢了。 而 Oracle也有提供指令可以一次完成三階段。
+
+```bash
+# 開機
+> startup
+
+# 關機
+> shutdown immediate
+```
+
+### Listener (監聽器)
+
+上面講完了 Oracle Server 的架構以及如何開啟，但今天使用者要操作這個資料庫，不可能要進入到那一台 Server 然後一行一行指令慢慢輸入吧 ?  一定是有一個 Client 可以用來連線 Oracle 資料庫並且操作。那要如何連線呢? 就是需要在 Oracle Server 開啟動 Listener，讓使用者在 Client端上輸入 ServerName/SID/Listener ，這樣才可以連線近來使用資料庫。
+
+
+### Tablespace 表格空間
+
+Oracle 資料庫基本上一定要有 SYSTEM , SYSAUX , 暫時 (Temporary), 還原(UNDO) 四個 Tablespace
+
+1. SYSTEM : 主要是用來放資料庫的重要資訊，例如資料辭典 (Data Dictionary)
+
+2. SYSAUX (SYStem AUXiliary) : 輔助 SYSTEM Tablespace 用。用於存放 AWR、XML資料庫、JVM、Oracle TEXT等功能的表格。
+
+3. Temporary : 用於存放暫時區段。當使用者執行 SQL 時若包含 `GROUP BY ORDER BY GROUP FUNCTION(MAX, MIN..)`，這些排序操作都是在 Server Process 的 PGA 空間中進行 (Memory Sort)，但若資料量太大 (1億筆資料排序) 導致 PGA 空間不夠無法完成，這時候就會將排序的資料暫時寫到 Temporary Tablespace，搭配 PGA 進行操作 (Disk Sort)。
+
+    Temporary 可以設定 由STSYEM 兼任，但是不建議，因為SYSTEM是用來存放重要的資料庫資訊，可能會導致資料庫效能發生異常。 因此若是可以就盡量不要排序資料，如果一定要就盡可能使用 Memory Sort ，萬不得以要用到 Disk Sort ，也要確保 Temporary Tablespace設定正確。
+
+4. UNDO : 在進行資料異動操作 (DML)時，會產生該 SQL 對應的 Undo Entry，這些 Undo Entry就是儲存在 UNDO Tablespace。UNDO Tablespace 內的 Undo Entry用於交易退回 (RollBack)、交易復原 (Recovery)、讀取一致性 (Consistent)。
+
+
+
+Tablespace 的狀態可以分三種 : ONLINE、READ ONLY、OFFLINE
+
+1. ONLINE : 該表格可以被讀寫或任何操作。 預設皆為 ONLINE
+2. READ ONLY : 只允許查詢的操作，不能異動資料
+3. OFFLINE : 不可查詢也不可異動。
+
+
+資料辭典 (Data Dictionary) : 由 SYS 擁有，用來描述資料庫中的相關結構。例如資料庫的邏輯結構、表格結構、索引結構等。 Instance可以透過查詢資料辭典了解整個資料庫的結構。
+
+資料辭典視觀表 (Data Dictionary View) : 是一層對資料辭典系統表的封裝，讓用戶以 SQL 查詢方式輕鬆取得資料庫結構。由於資料辭典底層是以複雜的系統表(即 metadata)形式紀錄，使用者直接查詢較困難，因此資料辭典視觀表透過簡單的 SQL 查詢呈現底層資料，使得使用者能方便地取得資料庫各種結構及狀態資訊。常用的表有 : 
+
+- DBA_TABLESPACES : 表格空間的相關資料，例如資料區塊大小 (BLOCK_SIZE) 和表格空間狀態 (STATUS) 等資訊。
+- DBA_DATA_FILES  : 表格空間是由哪些資料檔 (Datafile) 組成、以及資料檔的大小 (Bytes) 和 AUTOEXTEND等設定。
+- DBA_SEGMENTS : 描述區段的相關資料，例如這個區段由哪幾個 EXTENTS 組成、這個區段是放在哪一個 Tablespace。
+- DBA_EXTENTS  : 描述擴充區塊的相關資訊。
+- DBA_FREE_SPACE  : 描述 Tablespace 還有多少可用的 Extents，以及每個 Extents的大小。
+
 
 ---
 
@@ -500,8 +583,6 @@ SQL*Net message to client 是什麼？
 
 
 ---
-
-#### 名詞解釋區
 
 <a id="1"> </a>
 - [[返]](#b1) 邏輯結構使資料庫更有效率原因 :  
