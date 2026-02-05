@@ -41,6 +41,7 @@ Oracle 資料庫主要由兩個部分組成，資料庫(Databae) +  執行處理
 
 ![oracle server 架構圖](../images/oracle/arch.png)
 
+---
 
 ### 運作流程
 
@@ -67,7 +68,6 @@ Server Process 暫停搜尋並且要求DBWR將checkpoint queue內的dirty buffer
 
 當今天一個使用者在SQL中下了 UPDATE/INSERT/DELETE ，資料庫會怎麼做
 
-!
 ![oracle server 架構圖](../images/oracle/update.png)
 
 
@@ -94,34 +94,17 @@ Server Process 暫停搜尋並且要求DBWR將checkpoint queue內的dirty buffer
 
 
 
-### 名詞解釋
-
-
-<a id="1"> </a>
-- [[返]](#b1) 邏輯結構使資料庫更有效率原因 :  
-  1. 每次讀取資料使用 Block (8kb)，一次拿一塊，而不是一個一個 Byte慢慢讀。
-  2. 連續的 Extent 可以讓硬碟讀寫時不用跳來跳去,速度比較快。
-  3. 配合 Buffer Cache 記憶體區塊，大幅減少讀寫硬碟的次數。
-
-<a id="2"> </a>
-- [[返]](#b2) Instance Recovery : 當資料庫異常關閉(如當機、斷電)時,重啟後自動執行的恢復程序。主要功能:
-  
-  - **前滾(Roll Forward)**: 利用 Redo Log 重新執行已提交但尚未寫入 datafile 的交易
-  - **回滾(Roll Back)**: 撤銷未提交的交易,確保資料一致性
-  - **目的**: 將資料庫恢復到異常發生前的穩定狀態
-  
-<a id="3"> </a>
-- [[返]](#b3) Dirty Cache : Buffer Cache 的內容是從 datafile 讀取的,所以正常情況下兩邊的內容應該要一致。但如果今天使用者異動了資料,導致 Buffer Cache 中的某一個 Block 與 datafile 內容不同時,此區塊就是 Dirty Cache (髒緩衝)。
-  
-  - **處理方式**: 由 `DBWR 背景程序定期`或在 `特定條件下` 將 Dirty Cache 寫回 datafile
+<!-- ## 名詞解釋 -->
 
 
 
-## DBA 如何管理
+
+
+# DBA 如何管理
 
 作為一個半導體公司的半個DBA，每當建立一個新的資料庫時都必須先設置 `備份` 和 `監控` 才能開始使用。下面會介紹主要做了哪些事。
 
-### 日常備份＆驗證
+## 日常備份＆驗證
 
 針對資料庫的內容進行備份是一件非常重要的事情，不論是`程式開發人員不小心異動錯誤` 或是`災難(停電/地震)`，都可以救回資料庫內的資料。
 
@@ -209,7 +192,7 @@ RUN {
 
 ---
 
-### 備份偵測
+## 備份偵測
 
 備份是否成功執行，我們可以透過備份時產生的日誌檔 (Log) 來檢查有無錯誤訊息。但是當你管理 n 個資料庫時，每天收到 n 封 Log 檔案，光是檢查這些 Log 就要花費你半個上午的時間了。
 
@@ -291,7 +274,7 @@ EOF
 done
 ```
 
-### 資料庫行為偵測
+## 資料庫行為偵測
 
 在生產環境中，資料庫內的資料是不容許隨意異動的，更遑論帳號/帳號權限的異動。因此對於這一類的行為需要嚴格偵測。 我們可以開啟 Oracle 的 Audit 功能，並且針對語句進行審計。例如 :
 
@@ -334,11 +317,11 @@ SCOTT	|CREATE USER|	2024-02-04 10:35:23	|	|CREATE USER testuser...	|0 (成功)
 
 ---
 
-### 監控
+## 監控
 
 Oracle Server 通常架設在 Linux 上，因此會影響資料庫效能的不只是Client的使用，也包含 OS 方面的資源。 所以在監控方法有兩部分 : OS 監控 和 資料庫監控。現在常用的開源監控軟體是 `Promethues + Grafana。`
 
-#### OS 監控
+### OS 監控
 
 針對該台 Server的 CPU/Memory/Disk空間等等進行監控
 
@@ -348,7 +331,7 @@ Oracle Server 通常架設在 Linux 上，因此會影響資料庫效能的不�
 - 磁碟 I/O 等待時間：過高會影響資料庫效能。
 
 
-#### 資料庫管理
+### 資料庫管理
 
 - Tablespace 空間使用率：超過 80% 以上需擴充。
 - Buffer Cache 命中率：高於 90% 較理想。
@@ -517,3 +500,23 @@ SQL*Net message to client 是什麼？
 
 
 ---
+
+#### 名詞解釋區
+
+<a id="1"> </a>
+- [[返]](#b1) 邏輯結構使資料庫更有效率原因 :  
+  1. 每次讀取資料使用 Block (8kb)，一次拿一塊，而不是一個一個 Byte慢慢讀。
+  2. 連續的 Extent 可以讓硬碟讀寫時不用跳來跳去,速度比較快。
+  3. 配合 Buffer Cache 記憶體區塊，大幅減少讀寫硬碟的次數。
+
+<a id="2"> </a>
+- [[返]](#b2) Instance Recovery : 當資料庫異常關閉(如當機、斷電)時,重啟後自動執行的恢復程序。主要功能:
+  
+  - **前滾(Roll Forward)**: 利用 Redo Log 重新執行已提交但尚未寫入 datafile 的交易
+  - **回滾(Roll Back)**: 撤銷未提交的交易,確保資料一致性
+  - **目的**: 將資料庫恢復到異常發生前的穩定狀態
+  
+<a id="3"> </a>
+- [[返]](#b3) Dirty Cache : Buffer Cache 的內容是從 datafile 讀取的,所以正常情況下兩邊的內容應該要一致。但如果今天使用者異動了資料,導致 Buffer Cache 中的某一個 Block 與 datafile 內容不同時,此區塊就是 Dirty Cache (髒緩衝)。
+  
+  - **處理方式**: 由 `DBWR 背景程序定期`或在 `特定條件下` 將 Dirty Cache 寫回 datafile
