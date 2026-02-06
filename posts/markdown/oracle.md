@@ -6,8 +6,8 @@
 
 Oracle 資料庫主要由兩個部分組成，資料庫(Databae) +  執行處理(Instance)
 
-- Database 是一堆實體檔案，負責保存資料
-- Instance 是一堆程式，負責處理資料
+- Database 是一堆實體檔案，負責保存資料。就像是個倉庫
+- Instance 是管理記憶體和背景程序的運作環境，負責資料的讀寫與處理。就像是倉庫的管理員，確保資料的運作順暢。
 
 ### Database
 
@@ -48,7 +48,7 @@ Oracle 資料庫主要由兩個部分組成，資料庫(Databae) +  執行處理
 從上述可知， Database 只是負責儲存實體的檔案，真正操作讀取是透過 Instance。透過這一層關係可以得出，當 Oracle 要被啟動時，一定是要`透過 Instance 讀取 Database的檔案，然後在呈現給使用者看`。 因此接下來要討論兩者是`如何合作開啟資料庫和處理 SQL 指令 `。
 
 
-#### Oracle 開機三階段 : NOMOUHT --> MOUNT --> OPEN
+#### - Oracle 開機三階段 : NOMOUHT --> MOUNT --> OPEN
 
 當我們甚麼都還沒做時，Instance 是屬於 shutdown (關閉) 狀態； Database不用說，就是一堆實體檔案
 
@@ -63,7 +63,7 @@ Oracle 資料庫主要由兩個部分組成，資料庫(Databae) +  執行處理
 
 - OPEN : Instance會根據 ControlFile 來`開啟所有狀態是 Online 的 Datafile 跟 Online Redo Logfile`，並檢查兩者間的 Last Checkpoint Number 是否一致，來判斷上一次的關機是否為正常關閉，如果不一致代表上次關機是有問題的，此時 Background Process的 SMON 將執行 Instance Recovery。如果一致則資料庫成功開啟，可以開始使用。
 
-#### Oracle 關機三階段 : CLOSE --> DISMOUNT --> SHUTDOWN
+#### - Oracle 關機三階段 : CLOSE --> DISMOUNT --> SHUTDOWN
 
 就是反向操作。
 
@@ -74,7 +74,7 @@ Oracle 資料庫主要由兩個部分組成，資料庫(Databae) +  執行處理
 - SHUTDOWN : `停止 Background Processes 和回收 SGA空間給 OS`。
 
 
-#### 開關機指令
+#### - 開關機指令
 
 基本上，DBA 不會一步一步的來開關機，太慢了。 而 Oracle也有提供指令可以一次完成三階段。
 
@@ -87,7 +87,7 @@ Oracle 資料庫主要由兩個部分組成，資料庫(Databae) +  執行處理
 ```
 
 
-#### SQL 指令處理流程
+#### - SQL 指令處理流程
 
 當今天一個使用者在SQL中下了 SELECT ，資料庫會怎麼做
 
@@ -132,18 +132,6 @@ Server Process 暫停搜尋並且要求DBWR將checkpoint queue內的dirty buffer
 1. 資料異動前，要先產生該筆資訊的 Redo Entry (重作項目)，這是因為如果資料庫發生異常，可以透過 Redo Entry 恢復。<br>假設今天直接去Buffer Cache 修改資料 且不產生 Redo Entry ，此時發生停電當機。這時候因為buffer cache還未被DBWR 寫回Datafile，因此這筆更新會消失，但對於使用者來說，他已經提交(commit) 且資料庫也說完成，`導致資料庫ACID的 Durability (永久性) 失效。`<br>因此在修改 Buffer Cache之前，先產生一筆 Redo Entry ，當出現提交(commit)時，LGWR會將Log buffer 內所有的 Redo Log寫入 Online Redo Logfile (實際檔案, I/O operations)。即便這時候停電，重開機時 Oracle Server仍可以從寫入 Online Redo Logfile 中找出當初做了甚麼，以此來重做一遍。
 
 2. 更新一筆資料前，`更應該要產生 Undo 的資料`， 如果你的這筆SQL 執行到一半發生錯誤，就必須透過 Undo的方式 Rollback。如果沒有 Undo 導致無法RollBack，這樣就`缺少資料庫 ACID的 Atomicity (原子性): 一筆資料只能全部成功或是全部失敗。`
-
-
-
-
-
-
-
-
-
-
-
-
 
 ### Listener 
 
@@ -216,15 +204,23 @@ result = cursor.fetchone()
 
 ```
 
-
 ---
-
 
 ## 元件介紹 
 
-### TABLESPACE
+接下來我們將介紹 Database 中兩種結構的關係
 
-表格空間。Oracle 資料庫基本上一定要有 SYSTEM , SYSAUX , 暫時 (Temporary), 還原(UNDO) 四個 Tablespace
+![Connect](../images/oracle/unit.png)
+
+### 表格空間 
+
+表格空間是 Oracle 資料庫中，用來邏輯管理資料檔（data files）空間的一種結構。它由一個或多個資料檔組成，這些資料檔為 Oracle 儲存資料的物理檔案。
+
+表格空間的主要功能是在資料庫內，把大塊的儲存空間切分成多個邏輯單位，以方便管理和分配空間。使用者在建立表格和索引時，可以指定存放的表格空間，讓資料物件分布在適當的空間中，以提升效能或便於備份與恢復。
+
+
+
+Oracle 資料庫基本上一定要有 SYSTEM , SYSAUX , 暫時 (Temporary), 還原(UNDO) 四個表格空間 。
 
 1. SYSTEM : 主要是用來放資料庫的重要資訊，例如資料辭典 (Data Dictionary)
 
@@ -238,7 +234,7 @@ result = cursor.fetchone()
 
 
 
-Tablespace 的狀態可以分三種 : ONLINE、READ ONLY、OFFLINE
+#### - Tablespace 的狀態可以分三種 : ONLINE、READ ONLY、OFFLINE
 
 1. ONLINE : 該表格可以被讀寫或任何操作。 預設皆為 ONLINE
 2. READ ONLY : 只允許查詢的操作，不能異動資料
@@ -255,16 +251,8 @@ Tablespace 的狀態可以分三種 : ONLINE、READ ONLY、OFFLINE
 - DBA_EXTENTS  : 描述擴充區塊的相關資訊。
 - DBA_FREE_SPACE  : 描述 Tablespace 還有多少可用的 Extents，以及每個 Extents的大小。
 
-###
 
 ---
-
-
-
-<!-- ## 名詞解釋 -->
-
-
-
 
 
 # DBA 如何管理
