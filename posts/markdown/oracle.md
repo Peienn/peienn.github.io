@@ -41,10 +41,11 @@ Oracle 資料庫主要由兩個部分組成，資料庫(Databae) +  執行處理
 
 ![oracle server 架構圖](../images/oracle/arch.png)
 
+---
 
 ### Database 與 Instacne
 
-從上述可知， Database 只是負責儲存實體的檔案，真正操作讀取是透過 Instance。透過這一層關係可以得出，當 Oracle 要被啟動時，一定是要`透過 Instance 讀取 Database的檔案，然後在呈現給使用者看`。 因此接下來要討論兩者是如何合作並開啟資料庫
+從上述可知， Database 只是負責儲存實體的檔案，真正操作讀取是透過 Instance。透過這一層關係可以得出，當 Oracle 要被啟動時，一定是要`透過 Instance 讀取 Database的檔案，然後在呈現給使用者看`。 因此接下來要討論兩者是`如何合作開啟資料庫和處理 SQL 指令 `。
 
 
 #### Oracle 開機三階段 : NOMOUHT --> MOUNT --> OPEN
@@ -60,7 +61,7 @@ Oracle 資料庫主要由兩個部分組成，資料庫(Databae) +  執行處理
     2. 變更資料庫日誌模式
     3. 修改 Datafile/Online Redo Logfile的名稱
 
-- OPEN : Instance會根據 ControlFile 來`開啟所有狀態是 Online 的 Datafile 跟 Online Redo Logfile`，並檢查兩者間的 Last Checkpoint Number 是否一致，來判斷上一次的關機是否為正常關閉，如果不一致代表上次關機是有問題的，此時 Background Process的 SMON 將執行 Instance Recovery。
+- OPEN : Instance會根據 ControlFile 來`開啟所有狀態是 Online 的 Datafile 跟 Online Redo Logfile`，並檢查兩者間的 Last Checkpoint Number 是否一致，來判斷上一次的關機是否為正常關閉，如果不一致代表上次關機是有問題的，此時 Background Process的 SMON 將執行 Instance Recovery。如果一致則資料庫成功開啟，可以開始使用。
 
 #### Oracle 關機三階段 : CLOSE --> DISMOUNT --> SHUTDOWN
 
@@ -85,108 +86,8 @@ Oracle 資料庫主要由兩個部分組成，資料庫(Databae) +  執行處理
 > shutdown immediate
 ```
 
-### Listener (監聽器)
 
-討論完 Oracle Server 的架構及啟動流程後，接下來要探討的是 `使用者如何連線並與資料庫互動` 的關鍵機制。使用者不會直接在資料庫伺服器上執行指令，而是透過各種客戶端應用程式，從遠端連接到資料庫伺服器進行操作。例如 Toad for Oracle。
-
-Listener 就像是一道門，關係著你是否可以透過這一道門進入到 Oracle Server。 實踐的方法是 Listener 占用這台 VM 的 一個埠 (預設 1521)，等待客戶端應用程式的連線請求 (TCP/UDP)。 客戶端應用程式就透過 1521 Port 這道門進入 VM，再進入 Oracle Server 開始異動資料。
-
-Listener 不會隨著 Oracle Server 建立而自動產生，需要自己手動建立。
-
-- 透過 netca (GUI) 安裝
-- 建立或修改 listener.ora
-
-```bash
-# 透過已下指令檢查 LISTENER 狀態
-> lsnrctl status "LISTENER 名稱"
-> lsnrctl start  "LISTENER 名稱"
-> lsnrctl stop   "LISTENER 名稱"
-```
-
-上述說到，既然 Listener 不會隨著 Oracle Server 建立而自動產生，那就代表 `Listener 的狀態跟 Oracle Server的狀態是毫不相干的`。也就是說雖然 Listener 有正常在 VM 上面 監聽，但這不代表 VM 的 Oracle Server 是正常啟動的。
-
-
-![Connect](../images/oracle/toad_connect.png)
-
----
-
-### [HOW] 啟動和連線
-
-在一台安裝已經安裝好 Oracle Server 跟 Listener 的 VM上，要如何正確啟動並且讓使用者可以連線 ? 
-
-1. 開啟 Oracle Server 
-```
-> sqlplus "/as sysdba"
-> startup
-```
-2. 開啟 Listener
-``` bash
-# 先打開 listener.ora 確認 LISTENER的名稱 ex: ora_LISTENER
-> lsnrctl start  ora_LISTENER
-> lsnrctl status ora_LISTENER 
-```
-3. 用戶端連線 : 因為用客戶端應用程式 (Toad for Oracle)連線很簡單，只要根據欄位輸入連線資訊即可。因此下面透過 Python 連線 作為舉例
-
-```bash
-# 假設連線資訊如下
-# VM IP : 192.168.1.22 
-# SID : oral
-# LISTENER Port : 1521
-# schema : TEST
-# passwd of schema : passwdTEST123
-
-import cx_Oracle
-# 建立資料庫連接
-connection = cx_Oracle.connect('TEST', 'passwdTEST123', '192.168.1.22:1521/oral')
-cursor = connection.cursor()
-cursor.execute("SELECT MAX(times) FROM mxictest01.recovery_record")
-result = cursor.fetchone()
-```
-
-
-
----
-
-
-## 元件介紹 
-
-### Tablespace 表格空間
-
-Oracle 資料庫基本上一定要有 SYSTEM , SYSAUX , 暫時 (Temporary), 還原(UNDO) 四個 Tablespace
-
-1. SYSTEM : 主要是用來放資料庫的重要資訊，例如資料辭典 (Data Dictionary)
-
-2. SYSAUX (SYStem AUXiliary) : 輔助 SYSTEM Tablespace 用。用於存放 AWR、XML資料庫、JVM、Oracle TEXT等功能的表格。
-
-3. Temporary : 用於存放暫時區段。當使用者執行 SQL 時若包含 `GROUP BY ORDER BY GROUP FUNCTION(MAX, MIN..)`，這些排序操作都是在 Server Process 的 PGA 空間中進行 (Memory Sort)，但若資料量太大 (1億筆資料排序) 導致 PGA 空間不夠無法完成，這時候就會將排序的資料暫時寫到 Temporary Tablespace，搭配 PGA 進行操作 (Disk Sort)。
-
-    Temporary 可以設定 由STSYEM 兼任，但是不建議，因為SYSTEM是用來存放重要的資料庫資訊，可能會導致資料庫效能發生異常。 因此若是可以就盡量不要排序資料，如果一定要就盡可能使用 Memory Sort ，萬不得以要用到 Disk Sort ，也要確保 Temporary Tablespace設定正確。
-
-4. UNDO : 在進行資料異動操作 (DML)時，會產生該 SQL 對應的 Undo Entry，這些 Undo Entry就是儲存在 UNDO Tablespace。UNDO Tablespace 內的 Undo Entry用於交易退回 (RollBack)、交易復原 (Recovery)、讀取一致性 (Consistent)。
-
-
-
-Tablespace 的狀態可以分三種 : ONLINE、READ ONLY、OFFLINE
-
-1. ONLINE : 該表格可以被讀寫或任何操作。 預設皆為 ONLINE
-2. READ ONLY : 只允許查詢的操作，不能異動資料
-3. OFFLINE : 不可查詢也不可異動。
-
-
-資料辭典 (Data Dictionary) : 由 SYS 擁有，用來描述資料庫中的相關結構。例如資料庫的邏輯結構、表格結構、索引結構等。 Instance可以透過查詢資料辭典了解整個資料庫的結構。
-
-資料辭典視觀表 (Data Dictionary View) : 是一層對資料辭典系統表的封裝，讓用戶以 SQL 查詢方式輕鬆取得資料庫結構。由於資料辭典底層是以複雜的系統表(即 metadata)形式紀錄，使用者直接查詢較困難，因此資料辭典視觀表透過簡單的 SQL 查詢呈現底層資料，使得使用者能方便地取得資料庫各種結構及狀態資訊。常用的表有 : 
-
-- DBA_TABLESPACES : 表格空間的相關資料，例如資料區塊大小 (BLOCK_SIZE) 和表格空間狀態 (STATUS) 等資訊。
-- DBA_DATA_FILES  : 表格空間是由哪些資料檔 (Datafile) 組成、以及資料檔的大小 (Bytes) 和 AUTOEXTEND等設定。
-- DBA_SEGMENTS : 描述區段的相關資料，例如這個區段由哪幾個 EXTENTS 組成、這個區段是放在哪一個 Tablespace。
-- DBA_EXTENTS  : 描述擴充區塊的相關資訊。
-- DBA_FREE_SPACE  : 描述 Tablespace 還有多少可用的 Extents，以及每個 Extents的大小。
-
-
----
-
-### 運作流程
+#### SQL 指令處理流程
 
 當今天一個使用者在SQL中下了 SELECT ，資料庫會怎麼做
 
@@ -234,6 +135,129 @@ Server Process 暫停搜尋並且要求DBWR將checkpoint queue內的dirty buffer
 
 
 
+
+
+
+
+
+
+
+
+
+
+### Listener 
+
+討論完 Oracle Server 的架構及啟動流程後，接下來要探討的是 `使用者如何連線並與資料庫互動` 的關鍵機制。使用者不會直接在資料庫伺服器上執行指令，而是透過各種客戶端應用程式，從遠端連接到資料庫伺服器進行操作，例如 Toad for Oracle。兩者連線依靠的就是 **Listener (監聽器)**。
+
+Listener 可以想像是一道門，關係著你是否可以透過這一道門進入到 Oracle Server。 當你啟用 Listener 服務，它會占用這台 VM 的 一個埠 (預設 1521) ， 並持續監聽來自客戶端的連線請求 (TCP/UDP)。此時客戶端應用程式就可以透過 1521 Port 這道門進入 VM，再進入 Oracle Server 開始異動資料。
+
+
+注意 : **Listener 不會隨著 Oracle Server 建立而自動產生，需要自己手動建立。** 方法如下 : 
+
+- 透過 netca (GUI) 安裝
+- 手動建立或修改 listener.ora
+
+```bash
+# 透過已下指令檢查 LISTENER 狀態
+> lsnrctl status "LISTENER 名稱"
+> lsnrctl start  "LISTENER 名稱"
+> lsnrctl stop   "LISTENER 名稱"
+```
+
+上述說到，既然 Listener 不會隨著 Oracle Server 建立而自動產生，那就代表 `Listener 的狀態跟 Oracle Server的狀態是毫不相干的`。也就是說雖然 Listener 有正常在 VM 上面 監聽，但這不代表 VM 的 Oracle Server 是正常啟動的。
+
+
+![Connect](../images/oracle/toad_connect.png)
+
+---
+
+### 啟動和連線
+
+在一台安裝已經安裝好 Oracle Server 跟 Listener 的 VM上，要如何正確啟動並且讓使用者可以連線 ? 
+
+1. 開啟 Oracle Server 
+```bash
+> sqlplus "/as sysdba"
+> startup
+```
+2. 開啟 Listener
+``` bash
+# 先打開 listener.ora 確認 LISTENER的名稱 ex: ora_LISTENER
+> lsnrctl start  ora_LISTENER
+> lsnrctl status ora_LISTENER 
+```
+3. 用戶端連線 : 因為用客戶端應用程式 (Toad for Oracle)連線很簡單，只要根據欄位輸入連線資訊即可。因此下面透過 Python 連線 作為舉例
+
+```bash
+# 假設連線資訊如下
+# VM IP : 192.168.1.22 
+# SID : oral
+# LISTENER Port : 1521
+# schema : TEST
+# passwd of schema : passwdTEST123
+
+import cx_Oracle
+# 建立資料庫連接
+connection = cx_Oracle.connect('TEST', 'passwdTEST123', '192.168.1.22:1521/oral')
+cursor = connection.cursor()
+cursor.execute("SELECT MAX(times) FROM mxictest01.recovery_record")
+result = cursor.fetchone()
+```
+
+關機其實就是
+
+``` bash
+# 關閉 LISTENER
+> lsntctl stop ora_LISTENER
+
+# 關閉資料庫
+> sqlplus "/as sysdba"
+> shtudown immediate
+
+```
+
+
+---
+
+
+## 元件介紹 
+
+### TABLESPACE
+
+表格空間。Oracle 資料庫基本上一定要有 SYSTEM , SYSAUX , 暫時 (Temporary), 還原(UNDO) 四個 Tablespace
+
+1. SYSTEM : 主要是用來放資料庫的重要資訊，例如資料辭典 (Data Dictionary)
+
+2. SYSAUX (SYStem AUXiliary) : 輔助 SYSTEM Tablespace 用。用於存放 AWR、XML資料庫、JVM、Oracle TEXT等功能的表格。
+
+3. Temporary : 用於存放暫時區段。當使用者執行 SQL 時若包含 `GROUP BY ORDER BY GROUP FUNCTION(MAX, MIN..)`，這些排序操作都是在 Server Process 的 PGA 空間中進行 (Memory Sort)，但若資料量太大 (1億筆資料排序) 導致 PGA 空間不夠無法完成，這時候就會將排序的資料暫時寫到 Temporary Tablespace，搭配 PGA 進行操作 (Disk Sort)。
+
+    Temporary 可以設定 由STSYEM 兼任，但是不建議，因為SYSTEM是用來存放重要的資料庫資訊，可能會導致資料庫效能發生異常。 因此若是可以就盡量不要排序資料，如果一定要就盡可能使用 Memory Sort ，萬不得以要用到 Disk Sort ，也要確保 Temporary Tablespace設定正確。
+
+4. UNDO : 在進行資料異動操作 (DML)時，會產生該 SQL 對應的 Undo Entry，這些 Undo Entry就是儲存在 UNDO Tablespace。UNDO Tablespace 內的 Undo Entry用於交易退回 (RollBack)、交易復原 (Recovery)、讀取一致性 (Consistent)。
+
+
+
+Tablespace 的狀態可以分三種 : ONLINE、READ ONLY、OFFLINE
+
+1. ONLINE : 該表格可以被讀寫或任何操作。 預設皆為 ONLINE
+2. READ ONLY : 只允許查詢的操作，不能異動資料
+3. OFFLINE : 不可查詢也不可異動。
+
+
+資料辭典 (Data Dictionary) : 由 SYS 擁有，用來描述資料庫中的相關結構。例如資料庫的邏輯結構、表格結構、索引結構等。 Instance可以透過查詢資料辭典了解整個資料庫的結構。
+
+資料辭典視觀表 (Data Dictionary View) : 是一層對資料辭典系統表的封裝，讓用戶以 SQL 查詢方式輕鬆取得資料庫結構。由於資料辭典底層是以複雜的系統表(即 metadata)形式紀錄，使用者直接查詢較困難，因此資料辭典視觀表透過簡單的 SQL 查詢呈現底層資料，使得使用者能方便地取得資料庫各種結構及狀態資訊。常用的表有 : 
+
+- DBA_TABLESPACES : 表格空間的相關資料，例如資料區塊大小 (BLOCK_SIZE) 和表格空間狀態 (STATUS) 等資訊。
+- DBA_DATA_FILES  : 表格空間是由哪些資料檔 (Datafile) 組成、以及資料檔的大小 (Bytes) 和 AUTOEXTEND等設定。
+- DBA_SEGMENTS : 描述區段的相關資料，例如這個區段由哪幾個 EXTENTS 組成、這個區段是放在哪一個 Tablespace。
+- DBA_EXTENTS  : 描述擴充區塊的相關資訊。
+- DBA_FREE_SPACE  : 描述 Tablespace 還有多少可用的 Extents，以及每個 Extents的大小。
+
+###
+
+---
 
 
 
