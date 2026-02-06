@@ -51,26 +51,26 @@ Oracle 資料庫主要由兩個部分組成，資料庫(Databae) +  執行處理
 
 當我們甚麼都還沒做時，Instance 是屬於 shutdown (關閉) 狀態； Database不用說，就是一堆實體檔案
 
-- NOMOUNT : Instance 由 shutdown 轉成 NOMOUNT 時，會根據參數檔的設定跟 OS 要求分配 SGA 空間以及啟動 Background Process。現階段 Instance 與 Database 之間尚無關聯。在 NOMOUNT 狀態下，DBA只能做:
+- NOMOUNT : Instance 由 shutdown 轉成 NOMOUNT 時，會根據參數檔的設定`跟 OS 要求分配 SGA 空間以及啟動 Background Process`。現階段 Instance 與 Database 之間尚無關聯。在 NOMOUNT 狀態下，DBA只能做:
     1. 建立資料庫
     2. 重建控制檔
 
-- MOUNT :  Instance 透過參數檔的設定來檢查 ControlFile是否可以正常使用，若是可以的話就可以成功與資料庫掛載。在 MOUNT 狀態下，DBA 能做:
+- MOUNT :  Instance 透過參數檔的設定來`檢查 ControlFile是否可以正常使用`，若是可以的話就可以成功與資料庫掛載。在 MOUNT 狀態下，DBA 能做:
     1. 復原資料庫 (Restore)
     2. 變更資料庫日誌模式
     3. 修改 Datafile/Online Redo Logfile的名稱
 
-- OPEN : Instance會根據 ControlFile 來開啟所有狀態是 Online 的 Datafile 跟 Online Redo Logfile，並檢查兩者間的 Last Checkpoint Number 是否一致，來判斷上一次的關機是否為正常關閉，如果不一致代表上次關機是有問題的，此時 Background Process的 SMON 將執行 Instance Recovery。
+- OPEN : Instance會根據 ControlFile 來`開啟所有狀態是 Online 的 Datafile 跟 Online Redo Logfile`，並檢查兩者間的 Last Checkpoint Number 是否一致，來判斷上一次的關機是否為正常關閉，如果不一致代表上次關機是有問題的，此時 Background Process的 SMON 將執行 Instance Recovery。
 
 #### Oracle 關機三階段 : CLOSE --> DISMOUNT --> SHUTDOWN
 
 就是反向操作。
 
-- CLOSE : 因為要關閉資料庫，所以需要先要求 DBWR 將 Buffer Cache內的 Dirty Cache 寫回 Datafile 來確保資料一致性。並且要求 LGWR 將 Log Buffer內容也寫回 Online Redo Logfile，最後要求 CKPT 將檢查點資訊寫入每個 Datafile 和 Controlfile。做完才可以關閉 Datafile 和 Online Redo Logfile。
+- CLOSE : 因為要關閉資料庫，所以需要先要求 DBWR 將 Buffer Cache內的 Dirty Cache 寫回 Datafile 來確保資料一致性。並且要求 LGWR 將 Log Buffer內容也寫回 Online Redo Logfile，最後要求 CKPT 將檢查點資訊寫入每個 Datafile 和 Controlfile。做完才可以`關閉 Datafile 和 Online Redo Logfile`。
 
-- DISMOUNT : Instance 會關閉所有的 Controlfile，此時 Instance 已經關閉所有實體檔案，與 Database 之間已無關連。
+- DISMOUNT : Instance 會`關閉所有的 Controlfile`，此時 Instance 已經關閉所有實體檔案，與 Database 之間已無關連。
 
-- SHUTDOWN : 停止 Background Processes 和回收 SGA空間給 OS。
+- SHUTDOWN : `停止 Background Processes 和回收 SGA空間給 OS`。
 
 
 #### 開關機指令
@@ -87,8 +87,68 @@ Oracle 資料庫主要由兩個部分組成，資料庫(Databae) +  執行處理
 
 ### Listener (監聽器)
 
-上面講完了 Oracle Server 的架構以及如何開啟，但今天使用者要操作這個資料庫，不可能要進入到那一台 Server 然後一行一行指令慢慢輸入吧 ?  一定是有一個 Client 可以用來連線 Oracle 資料庫並且操作。那要如何連線呢? 就是需要在 Oracle Server 開啟動 Listener，讓使用者在 Client端上輸入 ServerName/SID/Listener ，這樣才可以連線近來使用資料庫。
+討論完 Oracle Server 的架構及啟動流程後，接下來要探討的是 `使用者如何連線並與資料庫互動` 的關鍵機制。使用者不會直接在資料庫伺服器上執行指令，而是透過各種客戶端應用程式，從遠端連接到資料庫伺服器進行操作。例如 Toad for Oracle。
 
+Listener 就像是一道門，關係著你是否可以透過這一道門進入到 Oracle Server。 實踐的方法是 Listener 占用這台 VM 的 一個埠 (預設 1521)，等待客戶端應用程式的連線請求 (TCP/UDP)。 客戶端應用程式就透過 1521 Port 這道門進入 VM，再進入 Oracle Server 開始異動資料。
+
+Listener 不會隨著 Oracle Server 建立而自動產生，需要自己手動建立。
+
+- 透過 netca (GUI) 安裝
+- 建立或修改 listener.ora
+
+```bash
+# 透過已下指令檢查 LISTENER 狀態
+> lsnrctl status "LISTENER 名稱"
+> lsnrctl start  "LISTENER 名稱"
+> lsnrctl stop   "LISTENER 名稱"
+```
+
+上述說到，既然 Listener 不會隨著 Oracle Server 建立而自動產生，那就代表 `Listener 的狀態跟 Oracle Server的狀態是毫不相干的`。也就是說雖然 Listener 有正常在 VM 上面 監聽，但這不代表 VM 的 Oracle Server 是正常啟動的。
+
+
+![Connect](../images/oracle/toad_connect.png)
+
+---
+
+### [HOW] 啟動和連線
+
+在一台安裝已經安裝好 Oracle Server 跟 Listener 的 VM上，要如何正確啟動並且讓使用者可以連線 ? 
+
+1. 開啟 Oracle Server 
+```
+> sqlplus "/as sysdba"
+> startup
+```
+2. 開啟 Listener
+``` bash
+# 先打開 listener.ora 確認 LISTENER的名稱 ex: ora_LISTENER
+> lsnrctl start  ora_LISTENER
+> lsnrctl status ora_LISTENER 
+```
+3. 用戶端連線 : 因為用客戶端應用程式 (Toad for Oracle)連線很簡單，只要根據欄位輸入連線資訊即可。因此下面透過 Python 連線 作為舉例
+
+```bash
+# 假設連線資訊如下
+# VM IP : 192.168.1.22 
+# SID : oral
+# LISTENER Port : 1521
+# schema : TEST
+# passwd of schema : passwdTEST123
+
+import cx_Oracle
+# 建立資料庫連接
+connection = cx_Oracle.connect('TEST', 'passwdTEST123', '192.168.1.22:1521/oral')
+cursor = connection.cursor()
+cursor.execute("SELECT MAX(times) FROM mxictest01.recovery_record")
+result = cursor.fetchone()
+```
+
+
+
+---
+
+
+## 元件介紹 
 
 ### Tablespace 表格空間
 
