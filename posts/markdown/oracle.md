@@ -133,6 +133,8 @@ Server Process 暫停搜尋並且要求DBWR將checkpoint queue內的dirty buffer
 
 2. 更新一筆資料前，`更應該要產生 Undo 的資料`， 如果你的這筆SQL 執行到一半發生錯誤，就必須透過 Undo的方式 Rollback。如果沒有 Undo 導致無法RollBack，這樣就`缺少資料庫 ACID的 Atomicity (原子性): 一筆資料只能全部成功或是全部失敗。`
 
+---
+
 ### Listener 
 
 討論完 Oracle Server 的架構及啟動流程後，接下來要探討的是 `使用者如何連線並與資料庫互動` 的關鍵機制。使用者不會直接在資料庫伺服器上執行指令，而是透過各種客戶端應用程式，從遠端連接到資料庫伺服器進行操作，例如 Toad for Oracle。兩者連線依靠的就是 **Listener (監聽器)**。
@@ -251,6 +253,42 @@ Oracle 資料庫基本上一定要有 SYSTEM , SYSAUX , 暫時 (Temporary), 還�
 - DBA_EXTENTS  : 描述擴充區塊的相關資訊。
 - DBA_FREE_SPACE  : 描述 Tablespace 還有多少可用的 Extents，以及每個 Extents的大小。
 
+
+### 區段
+
+1 個 Tablespace 裡面可以放很多區段 (Segment)，每一個 Segment 就是一個物件，也就是一張表 (Table) 或是 一個索引 (Index)。
+
+所以你今天在資料庫內建立一個 table : messages 並指定放在 tablespace : chatroomD。
+其實就是在 chatroomD 的 tablespace 內 ，建立一個叫做 messsages 的 Segment。
+
+### 擴充區間
+
+Segment 就是由 擴充區間 (Extent) 組合而來，當 Segment 被資料不斷的塞滿，就需要額外配置一個可用的 Extent 給 Segment ，才能繼續使用該 Segment。 Extent是 `一塊連續的 Data Block 資料區塊`，至少要由 2 個 Data Block組成。
+
+
+### 資料區塊
+
+資料區塊 (Data Block) 是資料庫 I/O 的最小單位，即便你今天只想讀取某一筆 (ROW)，Server Process還是需要把整塊 Block 讀到 Buffer Cache中。 為了讓資料庫更有效率，一個 Block 會是 OS 區塊的數倍，常見的是 4K、8K、16K 三種。
+
+Data Block 結構分三層 : 快取層 (Cache Layer)、交易層 (Transaction Layer)、資料層 (Data Layer)
+
+
+### 疑問
+
+看到這，大家應該會想說為甚麼要分那麼多層?
+
+- Tablespace 內有很多 Segment (Table/Index)
+- Segment 內有很多 Extent 
+- Extent  內有很多 Data Block
+- Data Block = 資料庫內最小的 I/O 單位
+
+Tablespace 切成多個 Segment 是因為不同 Table 有不同應用，之後如果有還原、刪除等操作時會更有效率，但為甚麼 Segment 下面需要有 Extent 這種邏輯結構? 直接套 Data Block不就好了?
+
+最大的原因是 : `連續的 Data Block`。連續的 Data Block 可以幫助 OS 在讀取時不需要在不同 Data Block 之間跳來跳去，直接從頭讀到尾然後回傳，方便檔案系統與 OS 快速存取資料，提升效率。
+
+情境 : 假設你的 Table 是一個倉庫，用來存放貨物。你希望你的貨物是按照貨架 (Extent) 依序地擺放，還是不按照順序，只要有空位就擺放 (Data Block)。不論是擺放或是領取，都是按照貨架的方式有效率吧！ 
+
+同理，當系統在寫入資料時如果也是連續性的寫入，這樣在讀取的時候也會找得更有效率。
 
 ---
 
