@@ -1,6 +1,9 @@
 
-# Oracle Server 資料庫
+為甚麼要使用資料庫?
 
+
+
+# Oracle Server 資料庫
 
 ## 設計架構
 
@@ -254,39 +257,79 @@ Oracle 資料庫基本上一定要有 SYSTEM , SYSAUX , 暫時 (Temporary), 還�
 - DBA_FREE_SPACE  : 描述 Tablespace 還有多少可用的 Extents，以及每個 Extents的大小。
 
 
+---
+
 ### 區段
 
-1 個 Tablespace 裡面可以放很多區段 (Segment)，每一個 Segment 就是一個物件，也就是一張表 (Table) 或是 一個索引 (Index)。
+1 個 Tablespace 裡面可以放很多區段 (Segment)，每一個 Segment 就是一個物件，也就是一張表格 (Table) 或是 一個索引 (Index)。
 
-所以你今天在資料庫內建立一個 table : messages 並指定放在 tablespace : chatroomD。
-其實就是在 chatroomD 的 tablespace 內 ，建立一個叫做 messsages 的 Segment。
+所以你今天在資料庫內建立一個 `table : messages` 並指定放在 `tablespace : chatroomD`。
+其實就是在 chatroomD 這個 tablespace 內 ，建立一個叫做 messsages 的 Segment。
+
+Segmenet 內有不同的 Type : 
+
+- TABLE : 存放 `資料表` 的資料
+- INDEX : 存放 `索引結構` 的資料
+- LOBSEGMENT : 用來存放 `大型物件 (LOB)` 資料。
+- UNDO SEGMENT : 這一區段專門存放 `撤銷資料`，交易回滾用。
+- TEMP SEGMENT :　臨時區段。用於排序、哈希等臨時運算。
+
+其中，Table 是最重要的一種。因為我們使用資料庫的終極目的就是 `永久的保存資料`，後面會討論 TABLE。
+
+---
 
 ### 擴充區間
 
 Segment 就是由 擴充區間 (Extent) 組合而來，當 Segment 被資料不斷的塞滿，就需要額外配置一個可用的 Extent 給 Segment ，才能繼續使用該 Segment。 Extent是 `一塊連續的 Data Block 資料區塊`，至少要由 2 個 Data Block組成。
 
+---
 
 ### 資料區塊
 
-資料區塊 (Data Block) 是資料庫 I/O 的最小單位，即便你今天只想讀取某一筆 (ROW)，Server Process還是需要把整塊 Block 讀到 Buffer Cache中。 為了讓資料庫更有效率，一個 Block 會是 OS 區塊的數倍，常見的是 4K、8K、16K 三種。
+資料區塊 (Data Block) 是資料庫 I/O 的最小單位，即便你今天只想讀取某一筆 (ROW) 資料，Server Process還是需要把整塊 Block 讀到 Buffer Cache中。 為了讓資料庫更有效率，一個 Block Size 會是 OS 區塊的數倍，常見的是 4K、8K、16K 三種。不同 Size 的 Data Block 適合不同的應用場景。
 
-Data Block 結構分三層 : 快取層 (Cache Layer)、交易層 (Transaction Layer)、資料層 (Data Layer)
+- Block Size 大 : 能有效降低 I/O 次數，適用處理大型掃描與 OLAP 場景
+- Block Size 小 : 適合 OLTP 高併發小資料存取。
 
 
-### 疑問
+#### Data Block 結構
 
-看到這，大家應該會想說為甚麼要分那麼多層?
+分三層 : 快取層 (Cache Layer)、交易層 (Transaction Layer)、資料層 (Data Layer)。而 資料區塊標頭 (Data Block Header) 一般是指快取層和交易層。
+
+快取層 : 儲存區塊管理資訊與控制訊號，包含區塊狀態、鎖定資訊、系統變更號 (SCN) 等。
+
+交易層 : 記錄交易相關資訊與回滾 (Undo) 資料，支援讀一致性與交易回滾。
+
+資料層 : 真正存放使用者資料列 (Rows) 及資料內容的區域。
+
+- Table Directory : 資料列在區塊中的組織與位置。
+
+- Row Directory : 資料列的索引或目錄，記錄每筆資料位置。
+
+- Free Space : Data Block 空間扣除 Data Overhead 與 所有 Row Data 後，剩餘的空間稱之。
+
+- Row Data : 資料列的實際內容。
+
+
+區塊負擔 (Block Overhead) :  非儲存實際資料的空間，也就是那些用來記錄資訊的空間 。由快取層、交易層、資料層的 Table Directory 和 資料層的 Row Directory 組成。
+
+
+![Connect](../images/oracle/data-block.png)
+
+---
+
+看到這，應該會想說為甚麼要分那麼多層?
 
 - Tablespace 內有很多 Segment (Table/Index)
 - Segment 內有很多 Extent 
 - Extent  內有很多 Data Block
 - Data Block = 資料庫內最小的 I/O 單位
 
-Tablespace 切成多個 Segment 是因為不同 Table 有不同應用，之後如果有還原、刪除等操作時會更有效率，但為甚麼 Segment 下面需要有 Extent 這種邏輯結構? 直接套 Data Block不就好了?
+Tablespace 切成多個 Segment 是因為不同 Table 有不同應用，之後如果有 Restore、Rollback、Backup 等各種操作時會更有效率，但為甚麼 Segment 下面需要有 Extent 這種邏輯結構? 直接套 Data Block不就好了?
 
 最大的原因是 : `連續的 Data Block`。連續的 Data Block 可以幫助 OS 在讀取時不需要在不同 Data Block 之間跳來跳去，直接從頭讀到尾然後回傳，方便檔案系統與 OS 快速存取資料，提升效率。
 
-情境 : 假設你的 Table 是一個倉庫，用來存放貨物。你希望你的貨物是按照貨架 (Extent) 依序地擺放，還是不按照順序，只要有空位就擺放 (Data Block)。不論是擺放或是領取，都是按照貨架的方式有效率吧！ 
+舉個例子 : 假設你的 Table 是一個倉庫，用來存放貨物。你希望你的貨物是按照貨架 (Extent) 依序地擺放，還是不按照順序，只要有空位就擺放 (Data Block)。不論是擺放或是領取，都是按照貨架的方式有效率吧！ 
 
 同理，當系統在寫入資料時如果也是連續性的寫入，這樣在讀取的時候也會找得更有效率。
 
