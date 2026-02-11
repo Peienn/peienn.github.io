@@ -60,7 +60,7 @@
         "file": "oracle.md",
         "date": "2026-01-31",
         "category": "training",
-        "excerpt": "帶你從 0 到 99"
+        "excerpt": "帶你從 0 到 1"
     },
     { 
         "title": "JWT 介紹", 
@@ -89,13 +89,6 @@
         "date": "ongoing",
         "category": "training",
         "excerpt": ""
-    },
-    { 
-        "title": "Oracle-ORA整理", 
-        "file": "OracleError.md",
-        "date": "ongoing",
-        "category": "training",
-        "excerpt": "整理常見的 Oracle 錯誤代碼與解決方案"
     },
     { 
         "title": "LeetCode練習紀錄", 
