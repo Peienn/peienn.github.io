@@ -570,7 +570,7 @@ TRUNCATE TABLE departments;
    
 ### Index 索引
 
-另一篇文章 <a href="https://peienn.github.io/posts/markdown/templates.html?file=posts/markdown/jwt.md"> 資料庫 Index 介紹 </a> 已經有完整的介紹了。 這邊就快速的帶過。
+另一篇文章 <a href="https://peienn.github.io/posts/markdown/templates.html?file=posts/markdown/index.md"> 資料庫 Index 介紹 </a> 已經有完整的介紹了。 這邊就快速的帶過。
 
 Index 類似書本的「目錄」，主要用來加速查詢資料的速度，尤其是 WHERE 條件與 JOIN 操作時。當資料表非常大時，Index 能幫助資料庫快速定位所需要的記錄，而不必掃描整張表。
 
