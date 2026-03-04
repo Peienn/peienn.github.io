@@ -612,3 +612,188 @@ ex: forbidden = [5,10,14,18,23], a = 7, b = 3, x =19
 
 
 ---
+
+# Monotonic Stack
+
+## 496. Next Greater Element I
+
+The next greater element of some element x in an array is the first greater element that is to the right of x in the same array.
+
+You are given two distinct 0-indexed integer arrays nums1 and nums2, where nums1 is a subset of nums2.
+
+For each 0 <= i < nums1.length, find the index j such that nums1[i] == nums2[j] and determine the next greater element of nums2[j] in nums2. If there is no next greater element, then the answer for this query is -1.
+
+Return an array ans of length nums1.length such that ans[i] is the next greater element as described above.
+
+
+### Solution 1
+stack儲存的是nums2中的值，並用這些值去比較，因為使用的是值不是index, 所以搭配Dictory，直接對應
+
+```
+#    init loop1      loop2     loop3       loop4       loop5
+#     
+#    | |        | |        | |        | |         | |         | |
+#    | |  -->   | |   -->  |1|  -->   |2|   -->   | |   -->   | |    Done
+#    | |        |3|        |3|        |3|         |4|         |6|    
+#    |_|        |_|        |_|        |_|         |_|         |_|
+ 
+#       push(3)      push(1)    pop(1)     pop(2)      pop(4)    
+#                               push(2)    pop(3)      push(6)
+#                                          push(4)
+```
+```bash
+# Coding
+class Solution(object):
+    def nextGreaterElement(self, nums1, nums2):
+        """
+        :type nums1: List[int]
+        :type nums2: List[int]
+        :rtype: List[int]
+        """
+        stack=[]
+        mapping={}
+        for n in nums2:
+            
+            while stack and n> stack[-1]:
+                
+                mapping[stack.pop()]=n
+                
+            stack.append(n)
+        return [mapping.get(n,-1) for n in nums1]
+```
+
+### Solution 2
+stack儲存的是 Index ,這時候就不需要用dictinory, 而是用list, 這個list就是根據Index  來儲存答案
+
+```bash
+class Solution(object):
+    def nextGreaterElement(self, nums1, nums2):
+        """
+        :type nums1: List[int]
+        :type nums2: List[int]
+        :rtype: List[int]
+        """
+        stack=[]
+        result=[-1] * len(nums2)
+        for i in range(len(nums2)):
+            while stack and  nums2[i] > nums2[stack[-1]]:
+                
+                result[stack.pop()] = nums2[i]
+            
+            stack.append(i)
+
+        return [result[nums2.index(n)]  for n in nums1]
+```
+
+## 503. Next Greater Element II (Medium)
+
+Given a circular integer array nums (i.e., the next element of nums[nums.length - 1] is nums[0]), return the next greater number for every element in nums.
+
+The next greater number of a number x is the first greater number to its traversing-order next in the array, which means you could search circularly to find its next greater number. If it doesn't exist, return -1 for this number.
+
+Input: nums = [1,2,1] <br>
+Output: [2,-1,2] <br>
+Explanation: The first 1's next greater number is 2;  <br>
+The number 2 can't find next greater number. 
+The second 1's next greater number needs to search circularly, which is also 2.
+
+### Solution 1
+
+Base on Next Greater Element I - Solution 2
+
+```bash
+class Solution(object):
+    def nextGreaterElements(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[int]
+        """
+        stack = []
+        result = [float("inf")] * len(nums)
+        for i in range(len(nums)):
+            
+            while stack and nums[i] >  nums[stack[-1]]:
+                result[stack.pop()]=nums[i]
+            stack.append(i)
+
+        #print(result)
+
+        for i in range(len(nums)):
+            
+            if result[i]==float("inf"):
+                
+                for j in range(len(nums)):
+                    if nums[j]>nums[i]:      
+                        result[i] = nums[j]
+                        break
+        #print(result)
+        for i in range(len(nums)):
+            if result[i]==float("inf"):
+                result[i]=-1
+
+
+        return result
+```
+### Solution 2
+
+ 1. 從最後一個元素往前面去 維護一個Decreasing Monotonic stack，
+
+ 2. 如果一直pop直到最後 stack為空的話，代表目前你是最大的
+
+ 3. 如果stack不為空的話，代表當前 nums 比 stack[-1]還小  (因為前面有判斷 while stack[-1]<=num)。因此 nums 所在的res 位置就要被設為stack[-1] , 並且將nums加入倒monotomic當作第二大的
+
+ 4. 一直到兩輪結束，最大的值不會被更改，搭配預設所有人都是-1
+```bash
+class Solution(object):
+    def nextGreaterElements(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[int]
+        """
+
+        n = len(nums)
+        res = [-1] * n  # Initialize the result array with -1
+        stack = [] 
+        for i in range(2 * n - 1, -1, -1):
+            num = nums[i % n]  # Current element (handle circular index)
+            
+            # Remove elements from the stack that are <= the current element
+            while stack and stack[-1] <= num:
+                stack.pop()
+            
+            # If the stack is not empty, the top of the stack is the next greater element
+            if stack:
+                res[i % n] = stack[-1]
+            
+            # Push the current element onto the stack
+            stack.append(num)
+            
+            i-=1
+
+        return res
+```
+### Solution 3
+
+把nums 變成兩倍 ex: [1,2,3,4,3] + [1,2,3,4,3] 。
+這樣就有一個cycle 並且可以直接用 Next Greater Element I 的方法
+
+```bash
+class Solution(object):
+    def nextGreaterElements(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[int]
+        """
+        stack =[]
+        nums_map = {}
+        ln = len(nums)
+        result = [-1] * (ln*2)
+        nums += nums
+        for i in range(len(nums)):
+            while stack and nums[stack[-1]] < nums[i]:
+                result[stack.pop()] = nums[i]
+            stack.append(i)
+
+        return  result[:ln]
+```
+
