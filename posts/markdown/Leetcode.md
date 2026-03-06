@@ -152,6 +152,91 @@ class Solution(object):
 
 ---
 
+## 67. Add Binary `(Eazy)`
+
+Given two binary strings a and b, return their sum as a binary string.
+
+Example 1:
+
+Input: a = "11", b = "1" <br>
+Output: "100"
+
+### Solution 1:
+
+```bash
+class Solution(object):
+    def addBinary(self, a, b):
+        """
+        :type a: str
+        :type b: str
+        :rtype: str
+        """
+        def binaryToInt(string):
+            
+            result = 0
+            for i in range(len(string)-1 , -1 ,-1):
+                result +=  2**  (len(string)-1-i) * int(string[i])
+            return result
+
+        def IntToBinary(integer):
+                
+            if integer==0:
+                return '0'
+
+            result=""
+            while integer>0:
+                result = str(integer %2) + result
+                integer//=2
+            
+            return result
+        
+        return IntToBinary( binaryToInt(a) + binaryToInt(b))
+```
+
+說明 : 
+
+這個方法主要是寫兩個 function，一個是將binary String 轉 Integer，另一個是將 Integer 轉回去 binary string。
+
+所以就只要將兩個 binary string 都轉成 Integer 後相加，再轉回去 binary string 即可。
+
+### Solution 2
+
+```bash
+class Solution(object):
+    def addBinary(self, a, b):
+        """
+        :type a: str
+        :type b: str
+        :rtype: str
+        """
+        res = ""
+        i, j, carry = len(a) - 1, len(b) - 1, 0
+        while i >= 0 or j >= 0:
+            sum = carry
+            if i >= 0 : sum += ord(a[i]) - ord('0') 
+            if j >= 0 : sum += ord(b[j]) - ord('0')
+            i, j = i - 1, j - 1
+            carry = 1 if sum > 1 else 0
+            res = str(sum % 2) + res
+            
+        if carry != 0 : res = str(carry)+res;
+
+        return res
+```
+說明 :
+
+1. 用 carry 去 Keep 住要不要進位
+2. 用 sum 去計算相加後是多少 (還要加上 carry)，並判斷下一輪的 carry 以及這一輪的餘數
+
+Ex:  a = "11", b = "1"
+
+- init: carry=0, a=1, b=0
+- Loop1: sum=0, `ord(a[i]) - ord('0')=1`, `ord(b[j]) - ord('0')=1`, 所以 sum=2。 因為 sum >1 所以要進位，carry = 1 , 這一輪的餘數就是 sum%2  
+- 如果最後結束 carry ==1 , 代表最後一輪還有進位，要補上去
+
+---
+
+
 # Two Point
 ## 2161. Partition Array According to Given Pivot `(Medium)`
 
@@ -518,6 +603,161 @@ class Solution(object):
 
 ---
 
+## 80. Remove Duplicates from Sorted Array II  `(Medium)`
+
+Given an integer array nums sorted in non-decreasing order, remove some duplicates in-place such that each unique element appears at most twice. The relative order of the elements should be kept the same.
+
+Since it is impossible to change the length of the array in some languages, you must instead have the result be placed in the first part of the array nums. More formally, if there are k elements after removing the duplicates, then the first k elements of nums should hold the final result. It does not matter what you leave beyond the first k elements.
+
+Return k after placing the final result in the first k slots of nums.
+
+Do not allocate extra space for another array. You must do this by modifying the input array in-place with O(1) extra memory.
+
+**Custom Judge:**
+
+The judge will test your solution with the following code:
+```
+int[] nums = [...]; // Input array
+int[] expectedNums = [...]; // The expected answer with correct length
+
+int k = removeDuplicates(nums); // Calls your implementation
+
+assert k == expectedNums.length;
+for (int i = 0; i < k; i++) {
+    assert nums[i] == expectedNums[i];
+}
+```
+
+If all assertions pass, then your solution will be accepted.
+
+Example 1:
+
+Input: nums = [1,1,1,2,2,3] <br>
+Output: 5, nums = [1,1,2,2,3,_]  <br>
+Explanation: Your function should return k = 5, with the first five elements of nums being 1, 1, 2, 2 and 3 respectively.It does not matter what you leave beyond the returned k (hence they are underscores).
+
+```bash
+# Code
+class Solution(object):
+    def removeDuplicates(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        current = nums[-1]
+        number=1
+        for i in range(len(nums)-2 , -1 ,-1):
+            
+            if nums[i]==current:
+                
+                if 2> number:
+                    number+=1
+                else:
+                    nums.pop(i)
+            else:
+                current = nums[i]
+                number=1
+```
+
+說明 :
+
+題目要求把重複超過兩次的數字給移除，且不能用額外的空間。最後找出還有幾個數字存在。
+
+方法主要就是從最後面開始，如果遇到重複的數字就 number +1 ， number 如果超過2 就 pop()出去。
+用 current 去 keep 當前的數字是多少。
+
+```bash
+# Others Solution
+class Solution:
+    def removeDuplicates(self, nums: List[int]) -> int:
+        j = 1
+        for i in range(1, len(nums)):
+            if j == 1 or nums[i] != nums[j - 2]:
+                nums[j] = nums[i]
+                j += 1
+        return j
+```
+說明 :
+
+一種經典解法，用 J 來 Keep 住` 哪個位置要被置換`
+
+1. j == 1 是為了讓陣列的前兩個元素能直接保留，初始化時就支持兩個元素。那為甚麼不要直接 `j=2 + for i in range(2,len(nums))` ? 因為這樣在 陣列長度等於 1 時會出錯。
+
+2. nums[i] != nums[j-2] 是用來判斷目前掃描到的元素，是否與`結果陣列`中倒數第二個元素不同
+
+3. 舉例 : 因為初始化  j=1 + if (j==1)，會直接讓 j=2,
+
+
+    - 首先，我們在 j 以前的都是結果陣列，也就是正確的答案 [`1, 1` , 1 , 2, 2, 3] 
+    - 當 i=2, j=2 時出現第三個 1，此時 j 不動，i 繼續往下。 因為 nums[i] 跟結果陣列中的倒數第二個一致，代表連續出現三個。而 j 是為了 Keep 住哪個位置要被置換，所以不能走
+    - i=3 , j=2 時出現 2 ，與結果陣列的倒數第二個不同，因此把 j 換成 nums[i]
+    - [1, 1 , `1` , 2, 2, 3]  -->  [1, 1 , `2` , 2, 2, 3] ，以此類推往下
+
+
+#### 過程
+
+| Step | i 指向元素 | 判斷條件 (j == 1 or nums[i] != nums[j-2]) | 動作 (寫入 & 移動 j)      | nums狀態                   | j 位置 |
+|-------|------------|-------------------------------------------|---------------------------|----------------------------|---------|
+| init     | -          | -                                         | 初始化 j = 1               | [1, 1, 1, 2, 2, 3]         | 1       |
+| 1     | 1 (nums[1]=1) | j==1 (True)                           | nums[1] = 1，j → 2        | [1, 1, 1, 2, 2, 3]         | 2       |
+| 2     | 2 (nums[2]=1) | nums[2] == nums[0] → 1 == 1 (False) | **跳過**                   | [1, 1, 1, 2, 2, 3]         | 2       |
+| 3     | 3 (nums[3]=2) | 2 != nums[0] (1) (True)              | nums[2] = 2，j → 3        | [1, 1, 2, 2, 2, 3]         | 3       |
+| 4     | 4 (nums[4]=2) | 2 != nums[1] (1) (True)              | nums[3] = 2，j → 4        | [1, 1, 2, 2, 2, 3]         | 4       |
+| 5     | 5 (nums[5]=3) | 3 != nums[2] (2) (True)              | nums[4] = 3，j → 5        | [1, 1, 2, 2, 3, 3]         | 5       |
+
+
+---
+
+## 73. Set Matrix Zeroes  `(Medium)`
+
+Given an m x n integer matrix matrix, if an element is 0, set its entire row and column to 0's.
+
+You must do it in place.
+
+
+Input: matrix = [[1,1,1],[1,0,1],[1,1,1]]
+
+Output: [[1,0,1],[0,0,0],[1,0,1]]
+
+
+說明 : 因為必須 in place 替換，為避免被 `替換的 0 ` 被當作`初始的 0 `，所以先找出所有`初始 0 ` 的位置，再依序的根據每個`初始 0` 的座標去置換。
+```bash
+class Solution(object):
+    def setZeroes(self, matrix):
+        """
+        :type matrix: List[List[int]]
+        :rtype: None Do not return anything, modify matrix in-place instead.
+        """
+        rows = len(matrix)
+
+        cols = len(matrix[0]) 
+
+        count_row=[]
+        count_col=[]
+        for row in range(rows):
+            
+            for col in range(cols):
+                
+                if matrix[row][col] == 0:
+                    
+                    count_row.append(row)
+                    count_col.append(col)
+                    
+
+        for i in count_row:
+            matrix[i] = [0] * len(matrix[0])
+            
+            
+
+        for i in count_col:
+            
+            for row in matrix: row[i] = 0
+            
+```
+
+---
+
+
 
 # BFS
 
@@ -613,9 +853,412 @@ ex: forbidden = [5,10,14,18,23], a = 7, b = 3, x =19
 
 ---
 
+
+# Dynamic Programming
+
+## 139. Word Break `(Medium)`
+
+Given a string s and a dictionary of strings wordDict, return true if s can be segmented into a space-separated sequence of one or more dictionary words.
+
+Note that the same word in the dictionary may be reused multiple times in the segmentation.
+
+Example 1:
+
+Input: s = "leetcode", wordDict = ["leet","code"] <br>
+Output: true <br>
+Explanation: Return true because "leetcode" can be segmented as "leet code".
+
+```bash
+class Solution(object):
+    def wordBreak(self, s, wordDict):
+        """
+        :type s: str
+        :type wordDict: List[str]
+        :rtype: bool
+        """
+
+        dp = [False] * ((len(s)+1))
+
+        dp[0]=True
+
+        for i in range(1 , len(dp)):
+
+            for j in range(i):
+
+                if dp[j] and s[j:i] in wordDict:
+                    dp[i]=True
+                    break
+
+        return dp[-1]
+```
+
+說明 : 
+
+dp[j]
+- 若為True  代表 dp[:j] 是可以被 wordDict 內的單詞組合而成 <br>
+    
+- 若為False 代表 dp[0:j] , dp[1:j] ... dp[j-1:j] 都是無法被Dict組成
+
+
+if dp[j] and s[j:i] in wordDict 的判斷意思為:
+    
+- 如果 dp[j]是可以被Dict 單詞給組成，  且 s[j:i] (剩餘的string)也 存在於wordDict  <br>
+  -> 整個string都可以被 wordDict組成
+
+Ex: s= 'leetcode', wordDict = ['leet', 'code']
+1. (init)  dp =  [T, F, F, F, F, F, F, F, F]
+2.  l, le, lee 都不存在於 wordDict ，所以 dp =  [T, F, F, F, F, F, F, F, F]
+3.  i = 4 ; j=0 時， `dp[0] default=True` + `s[0:4] in wordDict` 因此 dp[4] 設 True，<br> 同時也代表 s[0:4] = leet 存在 wordDict 。
+4. 依序直到最後 dp = [T, F, F, F, T, F, F, F, F] ，i = 8 時
+5. j=0 ~ j=3 因為 dp[j]==False 代表 l, le, lee 都不存在於 wordDict。而 j=4 時發現 dp[4]=  True，代表 dp[0:4] = 'leet' 有在 wordDict，因此再判斷 s[4:8]='code' 有無 in wordDict，因為 'code' 存在 worDict 因此將 dp[i]=dp[8] 設為 True。
+
+6. 最後，檢查最後一個字母 dp[-1] 能不能被組成即可，也就是說 dp[-1]==True。
+
+
+---
+
+## 198. House Robber `(Medium)`
+
+
+You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed, the only constraint stopping you from robbing each of them is that adjacent houses have security systems connected and it will automatically contact the police if two adjacent houses were broken into on the same night.
+
+Given an integer array nums representing the amount of money of each house, return the maximum amount of money you can rob tonight without alerting the police.
+
+
+Example 1:
+
+Input: nums = [1,2,3,1] <br>
+Output: 4  <br>
+Explanation: Rob house 1 (money = 1) and then rob house 3 (money = 3).
+Total amount you can rob = 1 + 3 = 4.
+
+```bash
+class Solution(object):
+    def rob(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        
+        dp = [0] * (len(nums)+1)
+        dp[1] = nums[0]
+
+        for i in range(2 , len(nums)+1):
+            
+            dp[i] = max(dp[i-1] , dp[i-2]+nums[i-1])
+            
+
+        return dp[-1]
+
+```
+
+說明 : 
+
+算是蠻標準的 DP 題目，可以透過儲存每一個位置的最大值，來推斷最後的最大值。
+
+每一格的最大值可能是 `前一格` or `前兩格 + 自己` ，為甚麼不會是前三格前四格? 因為這些都會被包含前一格或前兩格。 
+
+- 如果你要考慮前三格，為何不選擇前三格 + 前一格? 而前一格的嘉總值一定大於前三格。 
+
+- 如果你要考慮前四格? 為何不選擇前四格 + 前兩格。同理，前兩格一定大於前四格
+
+EX: nums [1,2,3,1]
+
+1. (init) dp=[0,1,0,0,0] ; 
+2.  i=2 ，我們計算 dp[2] 的時候，上一次只會是從前兩格來的。或是上一次是選前一格而這一次不選。<br>因此 dp[2] = max( dp[2-1] , dp[2-2]+ nums[2] ) 。 dp=[0,1,2,0,0]
+
+3. i=3 同理， dp[3] = max( dp[3-1] , dp[3-2]+ nums[3]) 。 dp=[0,1,2,4,0]
+4. i=4 同理， dp[4] = max( dp[4-1] , dp[4-2]+ nums[4]) 。 dp=[0,1,2,4,4]。
+
+最後，我們知道走到最後最大值是 4 ，而且可以 `往回推論出` 是從 3 --> 1 加總而來。
+
+---
+
+# Stack (implemented using list)
+
+## 150. Evaluate Reverse Polish Notation `(Medium)`
+
+You are given an array of strings tokens that represents an arithmetic expression in a Reverse Polish Notation.
+
+Evaluate the expression. Return an integer that represents the value of the expression.
+
+Note that:
+
+- The valid operators are '+', '-', '*', and '/'.
+- Each operand may be an integer or another expression.
+- The division between two integers always truncates toward zero.
+- There will not be any division by zero.
+- The input represents a valid arithmetic expression in a reverse polish notation.
+- The answer and all the intermediate calculations can be represented in a 32-bit integer.
+
+Example 1:
+
+Input: tokens = ["2","1","+","3","*"] <br>
+Output: 9  <br>
+Explanation: ((2 + 1) * 3) = 9
+
+```bash
+class Solution(object):
+    def evalRPN(self, tokens):
+        """
+        :type tokens: List[str]
+        :rtype: int
+        """
+        st = []
+
+        for c in tokens:
+            if c == "+":
+                st.append(st.pop() + st.pop())
+            elif c == "-":
+                second, first = st.pop(), st.pop()
+                st.append(first - second)
+            elif c == "*":
+                st.append(st.pop() * st.pop())
+            elif c == "/":
+                second, first = st.pop(), st.pop()
+                st.append(int(float(first) / float(second)))
+            else:
+                st.append(int(c))
+        
+        return st[0]
+            
+```
+
+說明 : 
+
+這種數字計算的後序 (Postfix) 就是標準的使用 Stack 來計算，包含前序中序也是。
+
+只要遇到運算元 (Operands) 就丟到 stack 中， 遇到運算子 (Operator) 就從裡面拿兩個 Operands 出來計算後，丟回去 stack ，直到結束。 如果結束後 Stack 不是剩下一個值 代表這個 Postfix 有誤。
+
+```
+#    
+#     
+#    | |        | |        | |  (+)   | |         | |   (*)   | |
+#    | |  -->   | |   -->  |1|  -->   | |   -->   |3|   -->   | |    Done
+#    | |        |2|        |2|        |3|         |3|         |9|    
+#    |_|        |_|        |_|        |_|         |_|         |_|
+ 
+#       push(2)      push(1)    pop(1)     push(3)      pop(3)    
+#                               pop(2)                  pop(3)
+#                               1+2=3                   3*3=9
+#                               push(3)                 push(9)
+```
+
+### Prefix 
+
+同場加映 : 前序
+```bash
+# (((5*6) +3) /3) - ((8-2)/3)
+tokens = [ "-", "/", "+", "*",  "5"  , "6"  , "3" ,"3"  , "/", "-" ,"8" ,"2" ,"3"]
+
+st = []
+
+for c in tokens[::-1]:
+    if c == "+":
+        st.append(st.pop() + st.pop())
+    elif c == "-":
+        st.append(st.pop() - st.pop())
+    elif c == "*":
+        st.append(st.pop() * st.pop())
+    elif c == "/":
+        st.append(int(float(st.pop()) / float(st.pop())))
+    else:
+        st.append(int(c))
+```
+### Infix 
+同場加映 : 中序
+
+中序因為要考慮到 `運算元的順序` ，因此會比較複雜一點。
+
+```bash
+
+token = ["5", "*", "6", "+", "3", "/", "3", "-", "8", "-", "3", "/", "3"]
+token = ["9", "-", "6", "/", "2", "*", "3", "+", "10", "-", "9", "+", "3", "*","2"]
+
+def compute(a,b,operator):
+    a = float(a)
+    b = float(b)
+    if operator == '+': return a + b
+    if operator == '-': return a - b
+    if operator == '*': return a * b
+    if operator == '/': return a / b
+precedence = {
+    '+' : 1,
+    '-' : 1,
+    '*' : 2,
+    '/' : 2
+}
+operator = ['+', '-', '*', '/']
+operator_st = []
+operand_st = []
+i = 0
+while i < len(token):
+
+    if token[i] in operator:
+
+        while operator_st and  precedence[token[i]] <= precedence[operator_st[-1]]:
+            b = operand_st.pop()
+            a = operand_st.pop()
+            data = compute(  a, b, operator_st.pop())
+            operand_st.append(data)
+        operator_st.append(token[i])
+
+    else:
+        operand_st.append(token[i])
+
+    i+=1
+
+while operator_st:
+    b = operand_st.pop()
+    a = operand_st.pop()
+    data = compute(  a, b, operator_st.pop())
+    operand_st.append(data)
+    
+print("Result : ", operand_st[-1])    
+
+```
+### Prefix_to_Postfix 
+
+前序轉後序
+
+```bash
+prefixTokens = ["-", "/", "+", "*", "5", "6", "3", "3", "/", "-", "8", "2", "3"]
+stack = []
+operators = {'+', '-', '*', '/'}
+for token in prefixTokens[::-1]:
+    if token in operators:
+        # pop 2 個元素組合 postfix（left right op）
+        op1 = stack.pop()
+        op2 = stack.pop()
+        expr = op1 + op2 + [token]
+        stack.append(expr)
+    else:
+        # 遇到數字，直接放入 stack (作為 list)
+        stack.append([token])
+        
+print(f"Prefix : {prefixTokens}")
+print("Doing prefixToPostfix")
+print(f"Postfix : {stack[0]}")
+
+```
+
+### Postfix_to_Prefix 
+
+後序轉前序
+
+```bash
+postfixTokens = ['5', '6', '*', '3', '+', '3', '/', '8', '2', '-', '3', '/', '-']
+stack = []
+operators = {'+', '-', '*', '/'}
+
+for token in postfixTokens:
+    if token in operators:
+        
+        first_item = stack.pop()
+        second_item = stack.pop()
+        
+        current_item = [token] + second_item + first_item 
+        stack.append(current_item)
+    
+    else:
+        stack.append([token])
+
+print(f"Postfix : {postfixTokens}")
+print("Doing postfixToPrefix")
+print(f"Prefix : {stack[0]}")
+```
+
+---
+
+## 155. Min Stack `(Medium)`
+
+Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
+
+Implement the MinStack class:
+
+- MinStack() initializes the stack object.
+- void push(int val) pushes the element val onto the stack.
+- void pop() removes the element on the top of the stack.
+- int top() gets the top element of the stack.
+- int getMin() retrieves the minimum element in the stack.
+
+You must implement a solution with O(1) time complexity for each function.
+
+
+Example 1:
+
+Input<br>
+["MinStack","push","push","push","getMin","pop","top","getMin"]<br>
+[[],[-2],[0],[-3],[],[],[],[]]
+
+Output<br>
+[null,null,null,null,-3,null,0,-2]
+
+Explanation <br>
+MinStack minStack = new MinStack();<br>
+minStack.push(-2);<br>
+minStack.push(0);<br>
+minStack.push(-3);<br>
+minStack.getMin(); // return -3<br>
+minStack.pop();<br>
+minStack.top();    // return 0<br>
+minStack.getMin(); // return -2<br>
+
+
+```bash
+class MinStack(object):
+
+    def __init__(self):
+        self.items=[]
+        self.min_stack=[]
+
+    def push(self, val):
+        self.items.append(val)
+        if not self.min_stack or val <=self.min_stack[-1]:
+            self.min_stack.append(val)
+       
+    def pop(self):
+        if self.items:
+            top_value = self.items.pop()
+            if top_value == self.min_stack[-1]:
+                self.min_stack.pop()  
+
+    def top(self):
+        if self.items:
+            return self.items[-1]
+        return None
+            
+    def getMin(self):
+        if self.min_stack:
+            return self.min_stack[-1]
+        return None
+```
+
+說明 : 
+
+這一題原本很簡單，但因為題目加了一個限制 `"O(1) time complexity for each function"`，這會導致原本只要維護一個 stack ，變成要維護兩個 stack。
+
+1. 如果不考慮 O(1)，只要用一個 stack 去儲存每次的值
+    - stack.append()  --> 尾端加入元素 O(1)
+    - stack.pop()   --> 尾端刪除並回傳元素 O(1)
+    - stack[-1]    --> 尾端刪除並回傳元素 O(1)
+    - min(stack)   --> 遍歷整個stack O(n)
+    
+2. 用一個變數去儲存 min，每次 push 時判斷是否為最小值並且更新 min。但這樣會引發一個問題，如果今天 pop() 的剛好是最小值，會導致 min 異常。
+
+3. 因此，我們將變數儲存 min，改由 min_stack 儲存 min，每次遇到最小值才會加入到 min_stack 。如果今天最小值被 pop()後，只會遇到兩個情況
+
+    1. min_stack 不為空，下一個是倒數第二小的值
+    2. min_stack 為空， stack 也一定為空，整個 stack 沒有任何資料，回傳 None <br>
+
+    Q : 為甚麼 min_stack 為空 stack 就一定為空? 因為在 push() 時第一個判斷的就是 `if not self.min_stack` ，第一個值進來時，不管它是多少，都會被塞入 min_stack，因為它是目前唯一的值，是最大值也是最小值。如果連 stack 中的第一個值也被 pop()，stack 自然為空。
+
+
+---
+
 # Monotonic Stack
 
-## 496. Next Greater Element I
+## 496. Next Greater Element I `(Eazy)`
 
 The next greater element of some element x in an array is the first greater element that is to the right of x in the same array.
 
