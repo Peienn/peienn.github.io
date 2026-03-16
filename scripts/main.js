@@ -3,7 +3,8 @@ const categoryInfo = {
   tech: { name: '💻 後端技術筆記', icon: 'fas fa-code' },
   //life: { name: '☕ 日常生活', icon: 'fas fa-coffee' },
   training: { name: '📖 學習紀錄', icon: 'fas fa-book-open' },
-  sport: { name: '🏃 運動休閒', icon: 'fas fa-running' }
+  sport: { name: '🏃 運動休閒', icon: 'fas fa-running' },
+  AI_Gen: { name: '🧠 AI 文章', icon: 'fas fa-plane' }
   //travel: { name: '✈️ 旅遊紀錄', icon: 'fas fa-plane' }
   
 };

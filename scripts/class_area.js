@@ -13,7 +13,24 @@ fetch("/components/backend.html")
   });
 
 
-    fetch("/components/sport.html")
+fetch("/components/AI_Generated.html")
+  .then(res => res.text())
+  .then(html => {
+    const slot = document.getElementById("intro-AI_Generated-slot");
+    slot.innerHTML = html;
+
+    // ⭐ 一定要在這裡找！
+    const introTextContainer2 =
+      document.getElementById("intro-AI_Generated-container");
+
+    console.log(introTextContainer2); // OK
+    initSportAccordion();
+  });
+
+
+
+
+fetch("/components/sport.html")
   .then(res => res.text())
   .then(html => {
     const slot = document.getElementById("intro-sport-slot");

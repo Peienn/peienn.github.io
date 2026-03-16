@@ -103,5 +103,16 @@
         "date": "2026-03-16",
         "category": "AI_Gen",
         "excerpt": "「資料庫連線池已耗盡，服務無法響應。」這則告警訊息，相信許多 DevOps 工程師都曾在深夜收到過。連線池耗盡（Connection Pool Exhaustion）是生產環境中最常見卻也最容易被忽視..."
+    },
+    {
+        "title": "Capacity Planning 實戰指南：從流量預測到資源規劃的完整方法論",
+        "file": "2026-03-16-Capacity-Planning預測.md",
+        "date": "2026-03-16",
+        "category": "AI_Gen",
+        "excerpt": "良好的容量規劃不僅能確保系統在流量高峰時維持穩定，更能在成本與效能之間取得平衡。"
     }
+
+
+
+   
 ]
