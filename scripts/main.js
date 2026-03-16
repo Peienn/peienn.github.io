@@ -98,14 +98,25 @@ function renderPosts(posts) {
 
 // 篩選文章並顯示/隱藏
 function filterPosts(category) {
-  const articles = document.querySelectorAll('.article-card');
-  
-  articles.forEach(article => {
-    if (category === 'all' || article.dataset.category === category) {
-      article.classList.remove('hidden');
-    } else {
-      article.classList.add('hidden');
-    }
+  const articles = Array.from(document.querySelectorAll('.article-card'));
+
+  // 先篩選出要顯示的文章
+  let filteredArticles = articles.filter(article => 
+    category === 'all' || article.dataset.category === category
+  );
+
+  // 如果是 AI_Gen，反轉順序
+  if (category === 'AI_Gen') {
+    filteredArticles.reverse();
+  }
+
+  // 先隱藏所有文章
+  articles.forEach(article => article.classList.add('hidden'));
+
+  // 顯示篩選後的文章
+  filteredArticles.forEach(article => {
+    article.classList.remove('hidden');
+    postList.appendChild(article); // 重新排序
   });
 }
 
@@ -114,6 +125,7 @@ function toggleIntroText(category) {
 
   const introTextContainer = document.getElementById('intro-text-container');
   const introTextContainer2 = document.getElementById('intro-text-container2');
+  const introTextContainer3 = document.getElementById('intro-text-container3');
 
   if (category === 'tech') {
     introTextContainer.style.display = 'block';
@@ -126,6 +138,12 @@ function toggleIntroText(category) {
   } else {
     introTextContainer2.style.display = 'none';
   }
+  if (category === 'AI_Gen') {
+    introTextContainer3.style.display = 'block';
+  } else {
+    introTextContainer3.style.display = 'none';
+  }
+
 }
 
 // 更新分類統計區
