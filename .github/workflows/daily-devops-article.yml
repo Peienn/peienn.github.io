@@ -53,7 +53,7 @@ jobs:
       - name: 🗂️ 更新 posts.json
         run: |
           python update_posts.py \
-            "posts/posts.json" \             # ← 問題2 post → posts
+            "posts/posts.json" \             
             "${{ steps.get_filename.outputs.filename }}" \
             "${{ steps.get_filename.outputs.filepath }}"
 
