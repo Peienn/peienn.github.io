@@ -1,11 +1,8 @@
 name: 每日 DevOps 文章生成
 
 on:
-  
   schedule:
-    #- cron: "0 0 * * *"  # 每天台灣時間早上 8:00 自動執行
-    - cron: "*/5 * * * *"   # 每 5 分鐘執行一次
-  # 也可以手動觸發，方便測試
+    - cron: "*/5 * * * *"
   workflow_dispatch:
     inputs:
       topic:
@@ -16,9 +13,8 @@ on:
 jobs:
   generate-article:
     runs-on: ubuntu-latest
-
     permissions:
-      contents: write  # 允許推送文章到 repo
+      contents: write
 
     steps:
       - name: 📥 Checkout 程式碼
@@ -35,8 +31,8 @@ jobs:
       - name: 📝 產生 DevOps 文章
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          ARTICLE_LANG: "zh-TW"        # 可改為 en 或 zh-CN
-          ARTICLE_AUDIENCE: "intermediate"  # beginner | intermediate | senior
+          ARTICLE_LANG: "zh-TW"
+          ARTICLE_AUDIENCE: "intermediate"
           OUTPUT_DIR: "posts/markdown"
         run: |
           if [ -n "${{ github.event.inputs.topic }}" ]; then
@@ -45,10 +41,26 @@ jobs:
             python generate_article.py
           fi
 
+      - name: 📋 取得剛產生的文章檔名        # ← 問題1 補上這個步驟
+        id: get_filename
+        run: |
+          LATEST=$(ls -t posts/markdown/*.md | head -1)
+          FILENAME=$(basename "$LATEST")
+          echo "filepath=$LATEST" >> $GITHUB_OUTPUT
+          echo "filename=$FILENAME" >> $GITHUB_OUTPUT
+          echo "產生的檔案：$FILENAME"
+
+      - name: 🗂️ 更新 posts.json
+        run: |
+          python update_posts.py \
+            "posts/posts.json" \             # ← 問題2 post → posts
+            "${{ steps.get_filename.outputs.filename }}" \
+            "${{ steps.get_filename.outputs.filepath }}"
+
       - name: 📤 推送文章到 GitHub
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "GitHub Actions Bot"
-          git add posts/markdown/
-          git diff --staged --quiet || git commit -m "📝 Auto: 每日 DevOps 文章 $(date +'%Y-%m-%d')"
+          git add posts/markdown/ posts/posts.json # ← 問題3 補上兩個檔案
+          git diff --staged --quiet || git commit -m "🤖 AI_Gen: DevOps 文章 $(date +'%Y-%m-%d')"
           git push
