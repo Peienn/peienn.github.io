@@ -1,0 +1,54 @@
+name: 每日 DevOps 文章生成
+
+on:
+  
+  schedule:
+    #- cron: "0 0 * * *"  # 每天台灣時間早上 8:00 自動執行
+    - cron: "*/5 * * * *"   # 每 5 分鐘執行一次
+  # 也可以手動觸發，方便測試
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: "自訂文章主題（留空則隨機選擇）"
+        required: false
+        default: ""
+
+jobs:
+  generate-article:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write  # 允許推送文章到 repo
+
+    steps:
+      - name: 📥 Checkout 程式碼
+        uses: actions/checkout@v4
+
+      - name: 🐍 設定 Python 環境
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 📦 安裝相依套件
+        run: pip install anthropic
+
+      - name: 📝 產生 DevOps 文章
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ARTICLE_LANG: "zh-TW"        # 可改為 en 或 zh-CN
+          ARTICLE_AUDIENCE: "intermediate"  # beginner | intermediate | senior
+          OUTPUT_DIR: "posts/markdown"
+        run: |
+          if [ -n "${{ github.event.inputs.topic }}" ]; then
+            python generate_article.py "${{ github.event.inputs.topic }}"
+          else
+            python generate_article.py
+          fi
+
+      - name: 📤 推送文章到 GitHub
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "GitHub Actions Bot"
+          git add posts/markdown/
+          git diff --staged --quiet || git commit -m "📝 Auto: 每日 DevOps 文章 $(date +'%Y-%m-%d')"
+          git push
