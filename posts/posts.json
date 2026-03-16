@@ -1,100 +1,107 @@
 [
-    { 
-        "title": "第七篇文章：Message Queue + AI Model 介紹與使用", 
+    {
+        "title": "第七篇文章：Message Queue + AI Model 介紹與使用",
         "file": "MQ.md",
         "date": "2026-01-27",
         "category": "tech",
         "excerpt": "MQ, NLP Model, Prometheus, Grafana, Docker, PostgreSQL, Session, Mermaid, Redis, Nginx, Node.js, React"
     },
-    { 
-        "title": "第六篇文章：Prometheus + Grafana 介紹與使用", 
+    {
+        "title": "第六篇文章：Prometheus + Grafana 介紹與使用",
         "file": "monitor.md",
         "date": "2026-01-08",
         "category": "tech",
         "excerpt": "Prometheus, Grafana, Docker, PostgreSQL, Session, Mermaid, Redis, Nginx, Node.js, React"
     },
-    { 
-        "title": "第五篇文章：Docker介紹與使用", 
+    {
+        "title": "第五篇文章：Docker介紹與使用",
         "file": "docker.md",
         "date": "2025-12-23",
         "category": "tech",
         "excerpt": "Docker, PostgreSQL, Session, Mermaid, Redis, Nginx, Node.js, React"
     },
-     { 
-        "title": "第四篇文章：PostgreSQL介紹與使用", 
+    {
+        "title": "第四篇文章：PostgreSQL介紹與使用",
         "file": "postgresql.md",
         "date": "2025-12-09",
         "category": "tech",
         "excerpt": "PostgreSQL, Session, Mermaid, Redis, Nginx, Node.js, React"
     },
-    { 
-        "title": "第三篇文章：Session介紹與使用", 
+    {
+        "title": "第三篇文章：Session介紹與使用",
         "file": "session.md",
         "date": "2025-11-30",
         "category": "tech",
         "excerpt": "Session, Mermaid, Redis, Nginx, Node.js, React"
     },
-    { 
-        "title": "第二篇文章：Redis介紹與使用", 
+    {
+        "title": "第二篇文章：Redis介紹與使用",
         "file": "redis.md",
         "date": "2025-11-27",
         "category": "tech",
         "excerpt": "Redis, Nginx, Node.js, React"
     },
-    { 
-        "title": "第一篇文章：Nginx介紹與使用", 
+    {
+        "title": "第一篇文章：Nginx介紹與使用",
         "file": "Nginx.md",
         "date": "2025-11-16",
         "category": "tech",
         "excerpt": "Nginx, Node.js, React"
     },
-    { 
-        "title": "Oracle 資料庫大寶典", 
+    {
+        "title": "Oracle 資料庫大寶典",
         "file": "oracle.md",
         "date": "2026-01-31",
         "category": "training",
         "excerpt": "帶你從 0 到 1"
     },
-    { 
-        "title": "JWT 介紹", 
+    {
+        "title": "JWT 介紹",
         "file": "jwt.md",
         "date": "2026-01-17",
         "category": "training",
         "excerpt": "JWT 的建置和驗證"
     },
-    { 
-        "title": "資料庫 Index 介紹", 
+    {
+        "title": "資料庫 Index 介紹",
         "file": "index.md",
         "date": "2025-12-28",
         "category": "training",
         "excerpt": "Index 的 What, How, When"
     },
-    { 
-        "title": "GitLab CI/CD 從GitLab建置開始", 
+    {
+        "title": "GitLab CI/CD 從GitLab建置開始",
         "file": "GitLab.md",
         "date": "2025-11-09",
         "category": "training",
         "excerpt": "從零開始建置 GitLab CI/CD 自動化流程"
     },
-    { 
-        "title": "graphAlgorithmTraining", 
+    {
+        "title": "graphAlgorithmTraining",
         "file": "graphAlgorithm.md",
         "date": "ongoing",
         "category": "training",
         "excerpt": ""
     },
-    { 
-        "title": "LeetCode練習紀錄", 
+    {
+        "title": "LeetCode練習紀錄",
         "file": "Leetcode.md",
         "date": "ongoing",
         "category": "training",
         "excerpt": "記錄 LeetCode 刷題心得與解題思路"
     },
-    { 
-        "title": "咖啡", 
+    {
+        "title": "咖啡",
         "file": "coffee.md",
         "date": "ongoing",
         "category": "sport",
         "excerpt": "學習過程"
+    },
+    {
+        "title": "資料庫連線池調優：別讓連線耗盡成為你的凌晨三點噩夢",
+        "file": "2026-03-16-資料庫連線池調優如何避免連線耗盡問題.md",
+        "date": "2026-03-16",
+        "category": "AI_Gen",
+        "excerpt": "「資料庫連線池已耗盡，服務無法響應。」這則告警訊息，相信許多 DevOps 工程師都曾在深夜收到過。連線池耗盡（Connection Pool Exhaustion）是生產環境中最常見卻也最容易被忽視..."
     }
 ]
