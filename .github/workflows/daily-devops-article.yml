@@ -50,17 +50,23 @@ jobs:
           echo "filename=$FILENAME" >> $GITHUB_OUTPUT
           echo "產生的檔案：$FILENAME"
 
-      - name: 🗂️ 更新 posts.json
-        run: |
-          python update_posts.py \
-            "posts/posts.json" \             
-            "${{ steps.get_filename.outputs.filename }}" \
-            "${{ steps.get_filename.outputs.filepath }}"
-
-      - name: 📤 推送文章到 GitHub
+      - name: 📤 先推送文章 md 檔
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "GitHub Actions Bot"
-          git add posts/markdown/ posts/posts.json # ← 問題3 補上兩個檔案
+          git add posts/markdown/
           git diff --staged --quiet || git commit -m "🤖 AI_Gen: DevOps 文章 $(date +'%Y-%m-%d')"
+          git push
+
+      - name: 🗂️ 更新 posts.json
+        run: |
+          python update_posts.py \
+            "posts/posts.json" \
+            "${{ steps.get_filename.outputs.filename }}" \
+            "${{ steps.get_filename.outputs.filepath }}"
+
+      - name: 📤 推送 posts.json
+        run: |
+          git add posts/posts.json
+          git diff --staged --quiet || git commit -m "🗂️ 更新 posts.json $(date +'%Y-%m-%d')"
           git push
