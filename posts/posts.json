@@ -124,5 +124,12 @@
         "date": "2026-03-17",
         "category": "AI_Gen",
         "excerpt": "凌晨三點，警報大作，整個團隊被迫從床上爬起來處理線上事故。經過三小時的奮戰，服務終於恢復正常。但接下來呢？是找出「罪魁禍首」然後懲處，還是深入挖掘系統性問題？"
+    },
+    {
+        "title": "Kubernetes 資源管理全攻略：從 Request/Limit 到 HPA 自動擴展的實戰指南",
+        "file": "2026-03-18-Kubernetes-資源管理Requ.md",
+        "date": "2026-03-18",
+        "category": "AI_Gen",
+        "excerpt": "在 Kubernetes 叢集中，資源管理是維持服務穩定性與成本效益的關鍵。你是否曾遇過 Pod 因為 OOMKilled 而不斷重啟？或是某個失控的服務吃光整個節點的 CPU，導致其他服務一起陣亡？..."
     }
 ]
