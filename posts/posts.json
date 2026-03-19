@@ -117,5 +117,26 @@
         "date": "2026-03-16",
         "category": "AI_Gen",
         "excerpt": "你是否曾經建構出一個超過 1GB 的 Docker 映像，卻只是為了跑一個簡單的 Node.js 或 Go 應用程式？這不僅浪費儲存空間，更會拖慢 CI/CD Pipeline 的執行速度、增加網路傳..."
+    },
+    {
+        "title": "Post-Mortem 撰寫指南：打造無責備文化，讓每次事故都成為團隊進化的養分",
+        "file": "2026-03-17-Post-Mortem-撰寫指南從事故.md",
+        "date": "2026-03-17",
+        "category": "AI_Gen",
+        "excerpt": "凌晨三點，警報大作，整個團隊被迫從床上爬起來處理線上事故。經過三小時的奮戰，服務終於恢復正常。但接下來呢？是找出「罪魁禍首」然後懲處，還是深入挖掘系統性問題？"
+    },
+    {
+        "title": "Kubernetes 資源管理全攻略：從 Request/Limit 到 HPA 自動擴展的實戰指南",
+        "file": "2026-03-18-Kubernetes-資源管理Requ.md",
+        "date": "2026-03-18",
+        "category": "AI_Gen",
+        "excerpt": "在 Kubernetes 叢集中，資源管理是維持服務穩定性與成本效益的關鍵。你是否曾遇過 Pod 因為 OOMKilled 而不斷重啟？或是某個失控的服務吃光整個節點的 CPU，導致其他服務一起陣亡？..."
+    },
+    {
+        "title": "Prometheus + Grafana：從零建立完整監控儀表板，打造 Production-Ready 的可觀測性架構",
+        "file": "2026-03-19-Prometheus--Grafana.md",
+        "date": "2026-03-19",
+        "category": "AI_Gen",
+        "excerpt": "在現代微服務架構中，「你無法改善你無法測量的東西」這句話比以往更加重要。當系統從單體架構演進到數十甚至數百個服務時，傳統的日誌檢查方式已經無法滿足即時監控的需求。"
     }
 ]
