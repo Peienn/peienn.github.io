@@ -36,9 +36,9 @@ jobs:
           OUTPUT_DIR: "posts/markdown"
         run: |
           if [ -n "${{ github.event.inputs.topic }}" ]; then
-            python generate_article.py "${{ github.event.inputs.topic }}"
+            python article/generate_article.py "${{ github.event.inputs.topic }}"
           else
-            python generate_article.py
+            python article/generate_article.py
           fi
 
       - name: 📋 取得剛產生的文章檔名        # ← 問題1 補上這個步驟
@@ -60,7 +60,7 @@ jobs:
 
       - name: 🗂️ 更新 posts.json
         run: |
-          python update_posts.py \
+          python article/update_posts.py \
             "posts/posts.json" \
             "${{ steps.get_filename.outputs.filename }}" \
             "${{ steps.get_filename.outputs.filepath }}"

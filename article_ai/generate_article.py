@@ -9,55 +9,54 @@ import random
 import os
 from datetime import datetime
 
-# ── 主題池：每天從這裡隨機選一個 ──────────────────────────────────────
+# ── 大方向主題池 ──────────────────────────────────────────────────────
 TOPICS = [
     # ── SRE ──────────────────────────────────────────────────────
-    "SLO / SLI / Error Budget：如何定義與追蹤服務可靠性",
-    "On-Call 文化建立：Runbook 撰寫與事故回應流程",
-    "Post-Mortem 撰寫指南：從事故中學習而不究責",
-    "Chaos Engineering 實戰：用 Chaos Monkey 主動找出系統弱點",
-    "Capacity Planning：預測流量與資源規劃方法論",
-    "分散式系統的可觀測性：Metrics、Logs、Traces 三支柱",
-    "Alert 設計原則：減少 Alert Fatigue 的最佳實踐",
-    "Toil 識別與消除：SRE 如何釋放工程師的時間",
-    "Multi-Region 高可用架構設計與 Failover 策略",
-    "服務降級與熔斷器（Circuit Breaker）模式實戰",
+    "SLO / SLI / Error Budget",
+    "On-Call 與事故管理",
+    "Chaos Engineering",
+    "Capacity Planning",
+    "系統可觀測性 Observability",
+    "Alert 與監控設計",
+    "服務降級與熔斷器",
 
     # ── DevOps ───────────────────────────────────────────────────
-    "CI/CD Pipeline 最佳實踐：從程式碼提交到自動部署",
-    "GitOps 工作流：以 Git 為核心的部署哲學",
-    "ArgoCD 實現 Kubernetes GitOps 持續交付",
-    "Terraform 進階技巧：Module 設計與 State 管理",
-    "Helm Chart 開發與版本管理最佳實踐",
-    "DevSecOps：在 CI/CD Pipeline 中嵌入安全掃描",
-    "容器安全掃描：Trivy + Harbor 實戰",
-    "Ansible 自動化組態管理：從安裝到 Playbook 設計",
-    "藍綠部署 vs 金絲雀發布：選型與實作比較",
-    "GitHub Actions 進階：可重用 Workflow 與 Matrix Build",
-    "Kubernetes 資源管理：Request、Limit 與 HPA 自動擴展",
-    "AWS EKS 叢集建置：Node Group、IAM Role 與網路設定",
-    "Vault 秘密管理：動態憑證與 Kubernetes 整合",
-    "Prometheus + Grafana：從零建立完整監控儀表板",
-    "Log 集中管理：ELK Stack vs Loki 選型與部署",
-    "Docker 多階段建構：縮小映像大小的實戰技巧",
-    "服務網格（Service Mesh）：Istio vs Linkerd 比較",
+    "CI/CD Pipeline",
+    "GitOps",
+    "ArgoCD",
+    "Terraform",
+    "Helm",
+    "DevSecOps",
+    "Ansible",
+    "Kubernetes",
+    "AWS EKS",
+    "Vault 秘密管理",
+    "Prometheus & Grafana",
+    "ELK Stack / Loki",
+    "Docker",
+    "Service Mesh",
 
-    # ── Backend Engineer ─────────────────────────────────────────
-    "RESTful API 設計原則：版本控制、錯誤處理與分頁",
-    "gRPC vs REST：什麼時候該選用 gRPC？",
-    "資料庫索引設計：如何分析 Slow Query 並優化",
-    "Redis 快取策略：Cache Aside、Write Through 與失效設計",
-    "Message Queue 選型：Kafka vs RabbitMQ vs SQS",
-    "分散式鎖實作：Redis RedLock 與 ZooKeeper 比較",
-    "JWT 與 OAuth 2.0：API 認證授權機制完整解析",
-    "資料庫連線池調優：如何避免連線耗盡問題",
-    "非同步任務處理：Celery + Redis 實戰架構",
-    "API Rate Limiting 實作：Token Bucket 與 Sliding Window",
-    "PostgreSQL JSONB vs MongoDB：文件型資料的選型思考",
-    "微服務拆分原則：從單體到微服務的漸進式策略",
-    "Event-Driven Architecture：CQRS 與 Event Sourcing 入門",
-    "後端效能分析：Profiling 工具與瓶頸定位方法",
-    "Zero Downtime Deployment：資料庫 Migration 不停機技巧",
+    # ── Backend ───────────────────────────────────────────────────
+    "RESTful API 設計",
+    "gRPC",
+    "資料庫索引優化",
+    "Redis 快取",
+    "Message Queue",
+    "JWT 與 OAuth 2.0",
+    "非同步任務處理",
+    "API Rate Limiting",
+    "PostgreSQL",
+    "MongoDB",
+    "微服務架構",
+    "Event-Driven Architecture",
+    "後端效能分析",
+
+    # ── Database ──────────────────────────────────────────────────
+    "Oracle Database",
+    "MySQL",
+    "PostgreSQL 進階",
+    "資料庫備份與還原",
+    "資料庫連線池",
 ]
 
 # ── 設定 ──────────────────────────────────────────────────────────────
@@ -78,29 +77,32 @@ def build_prompt(topic: str) -> str:
     audience = AUDIENCE_MAP.get(AUDIENCE, AUDIENCE_MAP["intermediate"])
     today = datetime.now().strftime("%Y-%m-%d")
 
-    return f"""請用{lang}撰寫一篇關於「{topic}」的 DevOps 技術文章。
+    return f"""你是一位資深 DevOps / Backend 工程師，今天要寫一篇關於「{topic}」的技術文章。
+
+請你先自己決定一個具體的小主題角度（例如：{topic} 的某個常見問題、某個實用技巧、某個工具比較等），
+然後以該角度撰寫一篇完整的技術文章。
 
 要求：
+- 語言：{lang}
 - 目標讀者：{audience}
 - 長度：約 1000～1200 字
 - 格式：標準 Markdown
 - 結構：
-  1. 吸引人的文章標題（H1）
+  1. 吸引人的文章標題（H1，要具體反映你選的小主題）
   2. 前言（說明問題背景與為何重要）
   3. 3～5 個主要段落，每段有 H2 小標題
   4. 每段盡量包含具體指令、工具名稱或程式碼範例（用 code block）
   5. 結論與行動建議
 - 在文章最後加上 metadata 區塊：
-  ```
+```
   ---
   date: {today}
   topic: {topic}
   tags: [devops, 相關tag1, 相關tag2]
   ---
-  ```
+```
 
 請直接輸出 Markdown 內容，不需要任何前言說明。"""
-
 
 def save_article(content: str, topic: str) -> str:
     os.makedirs(OUTPUT_DIR, exist_ok=True)

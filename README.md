@@ -72,16 +72,3 @@ cd devops-articles
 ---
 
 ## 💡 進階整合
-
-### 自動發布到 Notion
-
-在 workflow 中加入 Notion API 步驟，將生成的文章同步到 Notion Database。
-
-### 自動發布到 Medium / Dev.to
-
-使用各平台的 API，將文章自動發布到技術部落格。
-
-### 搭配 GitHub Pages
-
-將 `articles/` 資料夾設為 Jekyll 或 Hugo 的來源，自動建立靜態部落格網站。
-
