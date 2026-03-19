@@ -1,74 +1,52 @@
-# 🤖 DevOps 每日文章自動生成器
+# 個人撰寫文章  &   🤖DevOps 每日文章自動生成器
 
-使用 Claude API + GitHub Actions，每天自動產生一篇 DevOps 技術文章並存入此 Repo。
+
 
 ## 📁 專案結構
 
 ```
-├── generate_article.py              # 文章生成主程式
 ├── .github/
 │   └── workflows/
-│       └── daily-devops-article.yml # GitHub Actions 排程設定
-├── articles/                        # 自動生成的文章（自動建立）
-│   ├── 2025-01-01-CICD-Pipeline.md
-│   ├── 2025-01-02-Kubernetes.md
-│   └── ...
+│       └── daily-devops-article.yml   # GitHub Actions 排程（每天自動產生文章）
+
+├── article_AI/                        # 🤖 AI 自動產文系統
+│   ├── generate_article.py            # 文章生成主程式
+│   └── update_posts.py                # 更新 posts.json 以利 Github Page 呈現
+
+
+├── posts/
+│   ├── posts.json                     # 前端讀取的文章清單
+│   └── markdown/                      # 📝 所有文章（GitHub Pages 讀這裡）
+│       ├── 2025-01-01-CICD-Pipeline.md
+│       ├── 2025-01-02-Kubernetes.md
+│       ├── Oracle.md
+│       └── ...
+
+├── index.html                         # 主頁
+
+
+├── components/                        # 主頁中每個區塊的文字
+|   ├── backend.html                        
+│   ├── sport.html  
+|   └── ... 
+
+├── scrips/                            # 主頁使用的js
+|   ├── main.js                        
+│   ├── posts.js  
+|   └── ... 
+|                    
+├── css/                               # 主頁使用的 css
+│   ├── style.css
+│   └── templates.css
+
 └── README.md
 ```
 
-## 🚀 快速開始
 
-### 1. Fork 或 Clone 此 Repo
+## 個人撰寫文章
 
-```bash
-git clone https://github.com/YOUR_USERNAME/devops-articles.git
-cd devops-articles
-```
+下班時間自行學習、實作後產出的文章
 
-### 2. 設定 API Key（重要！）
 
-前往 GitHub Repo → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**
-
-| Secret 名稱 | 值 |
-|---|---|
-| `ANTHROPIC_API_KEY` | 你的 Claude API Key（`sk-ant-...`） |
-
-### 3. 啟用 GitHub Actions
-
-確認 Repo 的 Actions 功能已開啟（Settings → Actions → Allow all actions）。
-
-### 4. 測試手動執行
-
-前往 **Actions** → **每日 DevOps 文章生成** → **Run workflow**
-
-可以輸入自訂主題，或留空讓程式隨機選擇。
-
----
-
-## ⚙️ 自訂設定
-
-編輯 `.github/workflows/daily-devops-article.yml` 中的環境變數：
-
-| 變數 | 說明 | 選項 |
-|---|---|---|
-| `ARTICLE_LANG` | 文章語言 | `zh-TW` / `en` / `zh-CN` |
-| `ARTICLE_AUDIENCE` | 目標讀者 | `beginner` / `intermediate` / `senior` |
-| `OUTPUT_DIR` | 輸出資料夾 | 預設 `articles` |
-
-### 修改排程時間
-
-編輯 `cron` 表達式（UTC 時區）：
-
-```yaml
-- cron: "0 0 * * *"   # UTC 00:00 = 台灣時間 08:00
-- cron: "0 1 * * *"   # UTC 01:00 = 台灣時間 09:00
-- cron: "0 16 * * *"  # UTC 16:00 = 台灣時間 00:00
-```
-
-### 新增自訂主題
-
-編輯 `generate_article.py` 的 `TOPICS` 清單，加入你想要的主題。
-
----
-
-## 💡 進階整合
+## 🤖DevOps 每日文章自動生成器
+使用 Claude API + GitHub Actions，每天自動產生一篇 DevOps 技術文章並存入此 Repo。
