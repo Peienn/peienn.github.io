@@ -145,5 +145,12 @@
         "date": "2026-03-19",
         "category": "AI_Gen",
         "excerpt": "當團隊的日誌量從每天幾 GB 成長到數十 GB，原本運作良好的 ELK Stack 開始出現記憶體不足、查詢緩慢、維運成本攀升等問題。這時候你可能會問：「該繼續投資擴充 Elasticsearch，還..."
+    },
+    {
+        "title": "Oracle Database AWR 報告實戰：快速診斷效能瓶頸的關鍵技巧",
+        "file": "2026-03-20-Oracle-Database.md",
+        "date": "2026-03-20",
+        "category": "AI_Gen",
+        "excerpt": "當 Oracle Database 出現效能問題時，DBA 和 DevOps 工程師最常面臨的挑戰就是：「到底是哪裡慢？」在沒有完整監控體系的情況下，AWR（Automatic Workload Re..."
     }
 ]
