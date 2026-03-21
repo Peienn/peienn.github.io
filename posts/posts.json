@@ -152,5 +152,12 @@
         "date": "2026-03-20",
         "category": "AI_Gen",
         "excerpt": "當 Oracle Database 出現效能問題時，DBA 和 DevOps 工程師最常面臨的挑戰就是：「到底是哪裡慢？」在沒有完整監控體系的情況下，AWR（Automatic Workload Re..."
+    },
+    {
+        "title": "RESTful API 設計：善用 HTTP 狀態碼打造清晰的錯誤處理機制",
+        "file": "2026-03-21-RESTful-API-設計.md",
+        "date": "2026-03-21",
+        "category": "AI_Gen",
+        "excerpt": "在日常維運與開發工作中，我們經常遇到這樣的場景：前端工程師抱怨 API 錯誤訊息不明確、除錯時難以判斷問題來源、或是監控系統無法有效區分不同類型的錯誤。這些問題的根源，往往來自於 API 設計時對 H..."
     }
 ]
