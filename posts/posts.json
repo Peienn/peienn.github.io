@@ -166,5 +166,12 @@
         "date": "2026-03-22",
         "category": "AI_Gen",
         "excerpt": "當團隊規模從單人擴展到多人協作時，Terraform 使用者幾乎都會遇到一個令人頭痛的問題：State 鎖定衝突。你可能曾經看過這段熟悉的錯誤訊息："
+    },
+    {
+        "title": "解決 JWT Token 過期困境：OAuth 2.0 Refresh Token 輪替策略實戰指南",
+        "file": "2026-03-23-JWT-與-OAuth-20.md",
+        "date": "2026-03-23",
+        "category": "AI_Gen",
+        "excerpt": "在實作 OAuth 2.0 認證流程時，許多團隊都會遇到一個棘手問題：JWT Access Token 設定太短，使用者頻繁被登出體驗差；設定太長，又增加 Token 被盜用的風險窗口。這個看似兩難的..."
     }
 ]
