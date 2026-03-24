@@ -173,5 +173,12 @@
         "date": "2026-03-23",
         "category": "AI_Gen",
         "excerpt": "在實作 OAuth 2.0 認證流程時，許多團隊都會遇到一個棘手問題：JWT Access Token 設定太短，使用者頻繁被登出體驗差；設定太長，又增加 Token 被盜用的風險窗口。這個看似兩難的..."
+    },
+    {
+        "title": "用 Prometheus 建立有效的 Capacity Planning 預警機制：避免半夜被叫醒的實戰指南",
+        "file": "2026-03-24-Capacity-Planning.md",
+        "date": "2026-03-24",
+        "category": "AI_Gen",
+        "excerpt": "你是否有過這樣的經驗：半夜三點收到告警，發現某台服務器的磁碟空間已經 100% 滿了，或是記憶體 OOM 導致服務崩潰？這些問題其實都可以透過良好的 Capacity Planning 預警機制提前發..."
     }
 ]
