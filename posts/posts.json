@@ -187,5 +187,12 @@
         "date": "2026-03-25",
         "category": "AI_Gen",
         "excerpt": "你是否遇過這樣的情況：某個 API 原本回應時間只需要 50ms，某天突然飆升到 3 秒以上？當你檢查程式碼發現沒有任何變更，問題很可能出在資料庫索引上。"
+    },
+    {
+        "title": "Terraform State 鎖定衝突：多人協作環境下的實戰解決方案",
+        "file": "2026-03-26-Terraform.md",
+        "date": "2026-03-26",
+        "category": "AI_Gen",
+        "excerpt": "當團隊從單人開發 Terraform 轉向多人協作時，最常遇到的痛點之一就是 State 鎖定衝突。你可能曾經看過這樣的錯誤訊息：`Error acquiring the state lock`，然後..."
     }
 ]
