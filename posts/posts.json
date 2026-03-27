@@ -194,5 +194,12 @@
         "date": "2026-03-26",
         "category": "AI_Gen",
         "excerpt": "當團隊從單人開發 Terraform 轉向多人協作時，最常遇到的痛點之一就是 State 鎖定衝突。你可能曾經看過這樣的錯誤訊息：`Error acquiring the state lock`，然後..."
+    },
+    {
+        "title": "Terraform State 鎖定衝突：多人協作的實戰解決方案",
+        "file": "2026-03-27-Terraform.md",
+        "date": "2026-03-27",
+        "category": "AI_Gen",
+        "excerpt": "當團隊從單人作業擴展到多人協作，Terraform 的 state 鎖定問題往往成為第一個絆腳石。你可能遇過這種情況：正準備執行 `terraform apply`，卻看到那令人沮喪的錯誤訊息——「E..."
     }
 ]
