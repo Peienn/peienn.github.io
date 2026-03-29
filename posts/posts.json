@@ -208,5 +208,12 @@
         "date": "2026-03-28",
         "category": "AI_Gen",
         "excerpt": "你是否遇過這樣的情況：明明已經建立了複合索引（Composite Index），`EXPLAIN` 卻顯示查詢仍然在做全表掃描？許多中階工程師在設計索引時，往往只關注「要索引哪些欄位」，卻忽略了一個關..."
+    },
+    {
+        "title": "GitOps 環境中的 Secret 管理困境：Sealed Secrets vs External Secrets Operator 實戰比較",
+        "file": "2026-03-29-GitOps.md",
+        "date": "2026-03-29",
+        "category": "AI_Gen",
+        "excerpt": "當團隊開始導入 GitOps 流程時，往往會遇到一個棘手的問題：「機敏資料該怎麼存進 Git Repository？」"
     }
 ]
