@@ -236,5 +236,12 @@
         "date": "2026-04-01",
         "category": "AI_Gen",
         "excerpt": "當你的團隊從單人開發 Terraform 進入多人協作階段時，一定會遇到這個經典場景：兩位工程師同時執行 `terraform apply`，結果狀態檔案被覆蓋，基礎設施出現不一致。這不是偶發事件，而..."
+    },
+    {
+        "title": "資料庫連線池爆滿？從根本解決 Connection Pool Exhaustion 的五個實戰策略",
+        "file": "2026-04-02-資料庫連線池.md",
+        "date": "2026-04-02",
+        "category": "AI_Gen",
+        "excerpt": "凌晨三點，你被 PagerDuty 叫醒，看到滿屏的 `Cannot acquire connection from pool` 錯誤。應用程式完全無法回應，而資料庫的 CPU 使用率卻異常地低。這不..."
     }
 ]
