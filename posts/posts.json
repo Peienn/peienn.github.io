@@ -243,5 +243,12 @@
         "date": "2026-04-02",
         "category": "AI_Gen",
         "excerpt": "凌晨三點，你被 PagerDuty 叫醒，看到滿屏的 `Cannot acquire connection from pool` 錯誤。應用程式完全無法回應，而資料庫的 CPU 使用率卻異常地低。這不..."
+    },
+    {
+        "title": "gRPC 服務健康檢查實戰：從零建置完整的 Health Check 機制",
+        "file": "2026-04-03-gRPC.md",
+        "date": "2026-04-03",
+        "category": "AI_Gen",
+        "excerpt": "在微服務架構中，服務的健康檢查是維運的基石。然而，當你從 REST API 轉向 gRPC 時，傳統的 HTTP 健康檢查端點突然變得不適用。Kubernetes 的 `httpGet` probe ..."
     }
 ]
