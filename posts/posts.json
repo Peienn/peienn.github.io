@@ -250,5 +250,12 @@
         "date": "2026-04-03",
         "category": "AI_Gen",
         "excerpt": "在微服務架構中，服務的健康檢查是維運的基石。然而，當你從 REST API 轉向 gRPC 時，傳統的 HTTP 健康檢查端點突然變得不適用。Kubernetes 的 `httpGet` probe ..."
+    },
+    {
+        "title": "RESTful API 設計：如何優雅處理版本控制策略",
+        "file": "2026-04-04-RESTful-API-設計.md",
+        "date": "2026-04-04",
+        "category": "AI_Gen",
+        "excerpt": "在微服務架構盛行的今天，API 版本控制是每位後端工程師都會遇到的挑戰。當你的 API 需要進行破壞性變更，卻有數十個內部服務與外部客戶仍在使用舊版本時，該如何平穩過渡？選錯版本控制策略，輕則造成團隊..."
     }
 ]
