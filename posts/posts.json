@@ -257,5 +257,12 @@
         "date": "2026-04-04",
         "category": "AI_Gen",
         "excerpt": "在微服務架構盛行的今天，API 版本控制是每位後端工程師都會遇到的挑戰。當你的 API 需要進行破壞性變更，卻有數十個內部服務與外部客戶仍在使用舊版本時，該如何平穩過渡？選錯版本控制策略，輕則造成團隊..."
+    },
+    {
+        "title": "在 CI/CD Pipeline 中整合 SAST 工具：以 Semgrep 為例的實戰指南",
+        "file": "2026-04-05-DevSecOps.md",
+        "date": "2026-04-05",
+        "category": "AI_Gen",
+        "excerpt": "當團隊開始實踐 DevSecOps 時，最常遇到的第一個問題就是：「安全檢測應該在 Pipeline 的哪個階段執行？用什麼工具？」許多工程師嘗試導入 SAST（Static Application ..."
     }
 ]
