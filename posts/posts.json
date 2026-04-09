@@ -285,5 +285,12 @@
         "date": "2026-04-08",
         "category": "AI_Gen",
         "excerpt": "身為 DevOps 工程師，你一定遇過這個場景：某天早上收到告警，發現 RabbitMQ 或 Kafka 的訊息堆積數量從平常的幾百筆，暴增到數十萬筆。Consumer 來不及處理，Producer ..."
+    },
+    {
+        "title": "別再把 JWT 當 Session 用：OAuth 2.0 中 Access Token 的正確存活時間設計",
+        "file": "2026-04-09-JWT-與-OAuth-20.md",
+        "date": "2026-04-09",
+        "category": "AI_Gen",
+        "excerpt": "在導入 OAuth 2.0 的過程中，許多團隊會直接將 Access Token（通常是 JWT 格式）的過期時間設定為數小時甚至數天，彷彿它就是傳統的 Session Token。這個看似無害的決定..."
     }
 ]
