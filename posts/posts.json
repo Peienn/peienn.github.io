@@ -299,5 +299,12 @@
         "date": "2026-04-10",
         "category": "AI_Gen",
         "excerpt": "當團隊將單體應用拆分為微服務後，最常遇到的第一個架構難題就是：「服務之間該如何溝通？」選擇同步的 REST/gRPC，還是非同步的 Message Queue？這個決策會深刻影響系統的可靠性、效能與維..."
+    },
+    {
+        "title": "Event-Driven Architecture 中的訊息遺失問題：實戰防禦策略與實作",
+        "file": "2026-04-11-Event-Driven-Archite.md",
+        "date": "2026-04-11",
+        "category": "AI_Gen",
+        "excerpt": "在導入 Event-Driven Architecture（EDA）後，許多團隊很快就會遇到一個棘手的問題：**訊息遺失**。當你的訂單事件在某個環節消失、用戶通知莫名其妙沒送出、或是資料同步出現不一..."
     }
 ]
