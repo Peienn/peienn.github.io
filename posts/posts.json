@@ -306,5 +306,12 @@
         "date": "2026-04-11",
         "category": "AI_Gen",
         "excerpt": "在導入 Event-Driven Architecture（EDA）後，許多團隊很快就會遇到一個棘手的問題：**訊息遺失**。當你的訂單事件在某個環節消失、用戶通知莫名其妙沒送出、或是資料同步出現不一..."
+    },
+    {
+        "title": "PostgreSQL 連線池調校實戰：用 PgBouncer 解決連線數爆炸問題",
+        "file": "2026-04-12-PostgreSQL.md",
+        "date": "2026-04-12",
+        "category": "AI_Gen",
+        "excerpt": "在生產環境中，你是否曾遇過這樣的錯誤訊息：`FATAL: too many connections for role \"app_user\"`？隨著應用程式規模擴大，每個 Pod、每個 Worker 都..."
     }
 ]
