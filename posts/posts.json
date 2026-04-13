@@ -313,5 +313,12 @@
         "date": "2026-04-12",
         "category": "AI_Gen",
         "excerpt": "在生產環境中，你是否曾遇過這樣的錯誤訊息：`FATAL: too many connections for role \"app_user\"`？隨著應用程式規模擴大，每個 Pod、每個 Worker 都..."
+    },
+    {
+        "title": "Docker 多階段建置實戰：將 Node.js 映像檔從 1.2GB 瘦身到 150MB",
+        "file": "2026-04-13-Docker.md",
+        "date": "2026-04-13",
+        "category": "AI_Gen",
+        "excerpt": "你是否曾經打包完一個簡單的 Node.js 應用程式，結果發現映像檔竟然超過 1GB？這不僅浪費儲存空間，更嚴重的是拖慢 CI/CD pipeline 的部署速度，每次推送都要等待漫長的傳輸時間。"
     }
 ]
