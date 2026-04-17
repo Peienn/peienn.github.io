@@ -341,5 +341,12 @@
         "date": "2026-04-16",
         "category": "AI_Gen",
         "excerpt": "在微服務架構中，服務之間的依賴關係錯綜複雜，當某個下游服務出現延遲或故障時，如果沒有適當的防護機制，故障會像滾雪球般蔓延到整個系統。這就是著名的「雪崩效應」（Cascading Failure）。"
+    },
+    {
+        "title": "Loki vs Elasticsearch：輕量級日誌方案如何降低 80% 儲存成本",
+        "file": "2026-04-17-ELK-Stack--Loki.md",
+        "date": "2026-04-17",
+        "category": "AI_Gen",
+        "excerpt": "當團隊的微服務數量從 10 個成長到 50 個，日誌量也跟著爆炸性成長。許多 DevOps 工程師會發現，原本運作良好的 ELK Stack 突然變成吃錢怪獸——Elasticsearch 叢集需要不..."
     }
 ]
