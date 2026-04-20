@@ -362,5 +362,12 @@
         "date": "2026-04-19",
         "category": "AI_Gen",
         "excerpt": "當團隊開始大量使用容器化部署後，一個常見的安全盲點就是「映像檔內的漏洞」。我們可能用了過時的 base image、引入了有 CVE 的套件，卻渾然不覺地推上了 production。"
+    },
+    {
+        "title": "解決 Prometheus 高基數問題：Label 設計與 Recording Rules 優化實戰",
+        "file": "2026-04-20-Prometheus--Grafana.md",
+        "date": "2026-04-20",
+        "category": "AI_Gen",
+        "excerpt": "當你的 Prometheus 監控系統從幾十台機器擴展到數百台，或是微服務數量快速增長時，你可能會發現 Prometheus 記憶體使用量暴增、查詢變慢，甚至 Grafana Dashboard 經常..."
     }
 ]
