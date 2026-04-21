@@ -369,5 +369,12 @@
         "date": "2026-04-20",
         "category": "AI_Gen",
         "excerpt": "當你的 Prometheus 監控系統從幾十台機器擴展到數百台，或是微服務數量快速增長時，你可能會發現 Prometheus 記憶體使用量暴增、查詢變慢，甚至 Grafana Dashboard 經常..."
+    },
+    {
+        "title": "資料庫連線池耗盡：從告警到根因分析的實戰排查指南",
+        "file": "2026-04-21-資料庫連線池.md",
+        "date": "2026-04-21",
+        "category": "AI_Gen",
+        "excerpt": "凌晨三點，手機震動，PagerDuty 告警：「Database connection pool exhausted」。這個場景對於中階 DevOps 工程師來說絕不陌生。連線池耗盡往往不是單純的「調..."
     }
 ]
