@@ -1,8 +1,9 @@
 // 分類資訊統一管理
 const categoryInfo = {
   tech: { name: '💻 後端技術筆記', icon: 'fas fa-code' },
+  SRE: { name: '🛠️ SRE 筆記', icon: 'fas fa-code' },
   //life: { name: '☕ 日常生活', icon: 'fas fa-coffee' },
-  training: { name: '📖 學習紀錄', icon: 'fas fa-book-open' },
+  training: { name: '📖 其他學習', icon: 'fas fa-book-open' },
   sport: { name: '🏃 運動休閒', icon: 'fas fa-running' },
   AI_Gen: { name: '🧠 AI 文章', icon: 'fas fa-plane' }
   //travel: { name: '✈️ 旅遊紀錄', icon: 'fas fa-plane' }
@@ -126,6 +127,7 @@ function toggleIntroText(category) {
   const introTextContainer = document.getElementById('intro-text-container');
   const introTextContainer2 = document.getElementById('intro-text-container2');
   const introTextContainer3 = document.getElementById('intro-text-container3');
+  const introTextContainer4 = document.getElementById('intro-text-container4');
 
   if (category === 'tech') {
     introTextContainer.style.display = 'block';
@@ -143,6 +145,12 @@ function toggleIntroText(category) {
   } else {
     introTextContainer3.style.display = 'none';
   }
+  if (category === 'SRE') {
+    introTextContainer4.style.display = 'block';
+  } else {
+    introTextContainer4.style.display = 'none';
+  } 
+  
 
 }
 

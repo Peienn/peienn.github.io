@@ -20,14 +20,27 @@ fetch("/components/AI_Generated.html")
     slot.innerHTML = html;
 
     // ⭐ 一定要在這裡找！
-    const introTextContainer2 =
+    const introTextContainer3 =
       document.getElementById("intro-AI_Generated-container");
 
-    console.log(introTextContainer2); // OK
+    console.log(introTextContainer3); // OK
     initSportAccordion();
   });
 
 
+fetch("/components/SRE.html")
+  .then(res => res.text())
+  .then(html => {
+    const slot = document.getElementById("intro-SRE-slot");
+    slot.innerHTML = html;
+
+    // ⭐ 一定要在這裡找！
+    const introTextContainer4 =
+      document.getElementById("intro-SRE-container");
+
+    console.log(introTextContainer4); // OK
+    initSportAccordion();
+  });
 
 
 fetch("/components/sport.html")

@@ -1,5 +1,12 @@
 [
     {
+        "title": "第一篇文章：SRE 介紹",
+        "file": "sre_intro.md",
+        "date": "2026-04-21",
+        "category": "SRE",
+        "excerpt": ""
+    },
+    {
         "title": "第七篇文章：Message Queue + AI Model 介紹與使用",
         "file": "MQ.md",
         "date": "2026-01-27",

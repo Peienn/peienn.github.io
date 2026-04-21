@@ -77,7 +77,7 @@ def build_prompt(topic: str) -> str:
     audience = AUDIENCE_MAP.get(AUDIENCE, AUDIENCE_MAP["intermediate"])
     today = datetime.now().strftime("%Y-%m-%d")
 
-    return f"""你是一位資深 DevOps / Backend 工程師，今天要寫一篇關於「{topic}」的技術文章。
+    return f"""你是一位資深 SRE/ DevOps / Backend 工程師，今天要寫一篇關於「{topic}」的技術文章。
 
 請你先自己決定一個具體的小主題角度（例如：{topic} 的某個常見問題、某個實用技巧、某個工具比較等），
 然後以該角度撰寫一篇完整的技術文章。

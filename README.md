@@ -50,3 +50,7 @@
 
 ## 🤖DevOps 每日文章自動生成器
 使用 Claude API + GitHub Actions，每天自動產生一篇 DevOps 技術文章並存入此 Repo。
+
+
+# Localhost 啟動
+`python -m http.server 5500`
