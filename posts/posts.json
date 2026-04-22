@@ -383,5 +383,12 @@
         "date": "2026-04-21",
         "category": "AI_Gen",
         "excerpt": "凌晨三點，手機震動，PagerDuty 告警：「Database connection pool exhausted」。這個場景對於中階 DevOps 工程師來說絕不陌生。連線池耗盡往往不是單純的「調..."
+    },
+    {
+        "title": "建立有效的 On-Call Escalation Policy：從警報疲勞到精準回應",
+        "file": "2026-04-22-On-Call-與事故管理.md",
+        "date": "2026-04-22",
+        "category": "AI_Gen",
+        "excerpt": "凌晨三點，手機響起刺耳的警報聲，你睡眼惺忪地拿起手機，發現又是一個「CPU 使用率超過 80%」的通知——而這已經是今晚第五次了。這種場景對許多 On-Call 工程師來說再熟悉不過。警報疲勞（Ale..."
     }
 ]
