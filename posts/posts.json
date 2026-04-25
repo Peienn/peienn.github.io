@@ -404,5 +404,12 @@
         "date": "2026-04-24",
         "category": "AI_Gen",
         "excerpt": "在分散式系統中，Message Queue 是解耦服務的關鍵元件。然而，當消費者處理速度跟不上生產者發送速度時，**消息堆積（Message Backlog）** 就會成為系統的隱形殺手。"
+    },
+    {
+        "title": "當 Error Budget 燒完了，團隊該怎麼辦？建立有效的 Error Budget Policy 實戰指南",
+        "file": "2026-04-25-SLO--SLI--Error-Bu.md",
+        "date": "2026-04-25",
+        "category": "AI_Gen",
+        "excerpt": "你的團隊已經定義了 SLO，也設定好了 SLI 的監控儀表板，Error Budget 的燒毀率也一目了然。但某天早上，你發現 Error Budget 只剩下 5%，而這個月才過了一半——接下來該怎..."
     }
 ]
