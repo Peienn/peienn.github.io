@@ -411,5 +411,12 @@
         "date": "2026-04-25",
         "category": "AI_Gen",
         "excerpt": "你的團隊已經定義了 SLO，也設定好了 SLI 的監控儀表板，Error Budget 的燒毀率也一目了然。但某天早上，你發現 Error Budget 只剩下 5%，而這個月才過了一半——接下來該怎..."
+    },
+    {
+        "title": "Helm Chart 依賴管理實戰：用 Dependency 優雅處理多服務部署",
+        "file": "2026-04-26-Helm.md",
+        "date": "2026-04-26",
+        "category": "AI_Gen",
+        "excerpt": "當你的 Kubernetes 應用從單一服務成長為包含 Redis、PostgreSQL、Nginx 等多個元件的微服務架構時，如何有效管理這些相互依賴的 Helm Charts 就成為關鍵課題。許多..."
     }
 ]
