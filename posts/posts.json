@@ -398,5 +398,47 @@
         "date": "2026-04-21",
         "category": "AI_Gen",
         "excerpt": "凌晨三點，手機震動，PagerDuty 告警：「Database connection pool exhausted」。這個場景對於中階 DevOps 工程師來說絕不陌生。連線池耗盡往往不是單純的「調..."
+    },
+    {
+        "title": "建立有效的 On-Call Escalation Policy：從警報疲勞到精準回應",
+        "file": "2026-04-22-On-Call-與事故管理.md",
+        "date": "2026-04-22",
+        "category": "AI_Gen",
+        "excerpt": "凌晨三點，手機響起刺耳的警報聲，你睡眼惺忪地拿起手機，發現又是一個「CPU 使用率超過 80%」的通知——而這已經是今晚第五次了。這種場景對許多 On-Call 工程師來說再熟悉不過。警報疲勞（Ale..."
+    },
+    {
+        "title": "解決 RabbitMQ 消費端重複消費問題：實戰冪等性設計指南",
+        "file": "2026-04-23-Message-Queue.md",
+        "date": "2026-04-23",
+        "category": "AI_Gen",
+        "excerpt": "在分散式系統中，Message Queue 是解耦服務的核心元件，但「消息被重複消費」卻是每位工程師遲早會遇到的惡夢。想像一下：用戶只下了一筆訂單，系統卻扣了兩次款項；或是同一封通知信被發送了三遍。這..."
+    },
+    {
+        "title": "解決 RabbitMQ 消息堆積問題：從監控到消費者優化的實戰指南",
+        "file": "2026-04-24-Message-Queue.md",
+        "date": "2026-04-24",
+        "category": "AI_Gen",
+        "excerpt": "在分散式系統中，Message Queue 是解耦服務的關鍵元件。然而，當消費者處理速度跟不上生產者發送速度時，**消息堆積（Message Backlog）** 就會成為系統的隱形殺手。"
+    },
+    {
+        "title": "當 Error Budget 燒完了，團隊該怎麼辦？建立有效的 Error Budget Policy 實戰指南",
+        "file": "2026-04-25-SLO--SLI--Error-Bu.md",
+        "date": "2026-04-25",
+        "category": "AI_Gen",
+        "excerpt": "你的團隊已經定義了 SLO，也設定好了 SLI 的監控儀表板，Error Budget 的燒毀率也一目了然。但某天早上，你發現 Error Budget 只剩下 5%，而這個月才過了一半——接下來該怎..."
+    },
+    {
+        "title": "Helm Chart 依賴管理實戰：用 Dependency 優雅處理多服務部署",
+        "file": "2026-04-26-Helm.md",
+        "date": "2026-04-26",
+        "category": "AI_Gen",
+        "excerpt": "當你的 Kubernetes 應用從單一服務成長為包含 Redis、PostgreSQL、Nginx 等多個元件的微服務架構時，如何有效管理這些相互依賴的 Helm Charts 就成為關鍵課題。許多..."
+    },
+    {
+        "title": "MongoDB Replica Set 故障轉移：從原理到實戰監控指南",
+        "file": "2026-04-27-MongoDB.md",
+        "date": "2026-04-27",
+        "category": "AI_Gen",
+        "excerpt": "在生產環境中運行 MongoDB，高可用性是不可妥協的需求。Replica Set 作為 MongoDB 內建的高可用方案，能在主節點故障時自動完成故障轉移（Failover）。然而，許多團隊在部署完..."
     }
 ]
