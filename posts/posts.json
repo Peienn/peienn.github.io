@@ -418,5 +418,12 @@
         "date": "2026-04-26",
         "category": "AI_Gen",
         "excerpt": "當你的 Kubernetes 應用從單一服務成長為包含 Redis、PostgreSQL、Nginx 等多個元件的微服務架構時，如何有效管理這些相互依賴的 Helm Charts 就成為關鍵課題。許多..."
+    },
+    {
+        "title": "MongoDB Replica Set 故障轉移：從原理到實戰監控指南",
+        "file": "2026-04-27-MongoDB.md",
+        "date": "2026-04-27",
+        "category": "AI_Gen",
+        "excerpt": "在生產環境中運行 MongoDB，高可用性是不可妥協的需求。Replica Set 作為 MongoDB 內建的高可用方案，能在主節點故障時自動完成故障轉移（Failover）。然而，許多團隊在部署完..."
     }
 ]
