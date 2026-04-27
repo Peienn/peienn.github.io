@@ -43,12 +43,13 @@ SRE 中的 **Toil（雜務）**，指的是：
 
 ---
 
-## 用聊天室系統來理解 SRE
-
 前一系列（後端技術）是架設一個聊天室系統，此次將以該專案作為觀察的對象。
 
-![Nginx](../images/SRE/arch.svg)
 
+<figure style="text-align: center;">
+  <img src="../images/SRE/arch.svg" alt="GitLab 架構圖" />
+  <figcaption>聊天室專案架構圖</figcaption>
+</figure>
 
 - **Nginx 掛了**：所有用戶無法連線
 - **Node.js (Server) 掛了**：Nginx流量導向至其他台，服務繼續。

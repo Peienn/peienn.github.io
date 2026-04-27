@@ -1,4 +1,19 @@
 [
+    
+    {
+        "title": "第三篇文章：可觀測性與告警",
+        "file": "SRE_3.md",
+        "date": "2026-04-27",
+        "category": "SRE",
+        "excerpt": "Observability, Grafana, Prometheus, Alertmanager, Slack"
+    },
+    {
+        "title": "第二篇文章：SLA、SLO、SLI 及錯誤預算",
+        "file": "SRE_2.md",
+        "date": "2026-04-25",
+        "category": "SRE",
+        "excerpt": "SLI, SLO, SLA, Error Budget"
+    },
     {
         "title": "第一篇文章：SRE 介紹",
         "file": "sre_intro.md",
