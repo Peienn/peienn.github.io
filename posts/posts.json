@@ -1,5 +1,4 @@
 [
-    
     {
         "title": "第三篇文章：可觀測性與告警",
         "file": "SRE_3.md",
@@ -440,5 +439,12 @@
         "date": "2026-04-27",
         "category": "AI_Gen",
         "excerpt": "在生產環境中運行 MongoDB，高可用性是不可妥協的需求。Replica Set 作為 MongoDB 內建的高可用方案，能在主節點故障時自動完成故障轉移（Failover）。然而，許多團隊在部署完..."
+    },
+    {
+        "title": "解決 AWS EKS Pod 跨可用區（AZ）流量成本過高的實戰技巧",
+        "file": "2026-04-28-AWS-EKS.md",
+        "date": "2026-04-28",
+        "category": "AI_Gen",
+        "excerpt": "在 AWS EKS 上運行生產環境時，許多團隊會發現每月帳單中有一筆意外的高額費用——跨可用區（Cross-AZ）的資料傳輸費用。這個問題特別容易被忽略，因為 Kubernetes 預設的 Servi..."
     }
 ]
