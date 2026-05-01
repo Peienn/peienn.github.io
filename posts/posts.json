@@ -460,5 +460,12 @@
         "date": "2026-04-30",
         "category": "AI_Gen",
         "excerpt": "當團隊開始導入 GitOps 工作流程後，很快就會遇到一個棘手的問題：「敏感資料該怎麼存？」"
+    },
+    {
+        "title": "Helm Chart 版本升級踩雷指南：三個常見陷阱與避坑技巧",
+        "file": "2026-05-01-Helm.md",
+        "date": "2026-05-01",
+        "category": "AI_Gen",
+        "excerpt": "當你在 Kubernetes 環境中使用 Helm 管理應用程式部署時，Chart 版本升級往往是最容易出問題的環節。相信不少人都有過這樣的經驗：明明只是執行一個看似簡單的 `helm upgrade..."
     }
 ]
