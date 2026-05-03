@@ -474,5 +474,12 @@
         "date": "2026-05-02",
         "category": "AI_Gen",
         "excerpt": "在高流量的生產環境中，Redis 快取是保護後端資料庫的關鍵防線。然而，當這道防線失效時，瞬間湧入的請求可能直接壓垮資料庫，導致整個服務癱瘓。身為 SRE，我曾在凌晨三點被 PagerDuty 叫醒，..."
+    },
+    {
+        "title": "實戰解析：使用 Sliding Window 演算法打造精準的 API Rate Limiting",
+        "file": "2026-05-03-API-Rate-Limiting.md",
+        "date": "2026-05-03",
+        "category": "AI_Gen",
+        "excerpt": "在微服務架構中，API Rate Limiting 是保護系統穩定性的第一道防線。然而，許多團隊在實作時只停留在最基本的 Fixed Window 計數器，卻忽略了它在視窗邊界時可能產生的流量突波問題..."
     }
 ]
