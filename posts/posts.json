@@ -495,5 +495,12 @@
         "date": "2026-05-05",
         "category": "AI_Gen",
         "excerpt": "在分散式系統中，非同步任務失敗是常態而非例外。網路抖動、下游服務過載、資源競爭——這些都可能導致任務執行失敗。作為 DevOps 工程師，我們經常面對的問題不是「任務會不會失敗」，而是「任務失敗後該如..."
+    },
+    {
+        "title": "用 Prometheus Recording Rules 優化高基數指標查詢效能",
+        "file": "2026-05-06-Prometheus--Grafana.md",
+        "date": "2026-05-06",
+        "category": "AI_Gen",
+        "excerpt": "當你的 Prometheus 監控規模逐漸擴大，是否曾經遇過 Grafana 儀表板載入緩慢、甚至查詢超時的狀況？這個問題在監控 Kubernetes 叢集時特別常見——當 Pod 數量突破數百個，每..."
     }
 ]
