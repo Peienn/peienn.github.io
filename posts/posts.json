@@ -1,5 +1,4 @@
 [
-    
     {
         "title": "第四篇文章：事故管理（Incident Management）",
         "file": "SRE_4.md",
@@ -447,5 +446,75 @@
         "date": "2026-04-27",
         "category": "AI_Gen",
         "excerpt": "在生產環境中運行 MongoDB，高可用性是不可妥協的需求。Replica Set 作為 MongoDB 內建的高可用方案，能在主節點故障時自動完成故障轉移（Failover）。然而，許多團隊在部署完..."
+    },
+    {
+        "title": "解決 AWS EKS Pod 跨可用區（AZ）流量成本過高的實戰技巧",
+        "file": "2026-04-28-AWS-EKS.md",
+        "date": "2026-04-28",
+        "category": "AI_Gen",
+        "excerpt": "在 AWS EKS 上運行生產環境時，許多團隊會發現每月帳單中有一筆意外的高額費用——跨可用區（Cross-AZ）的資料傳輸費用。這個問題特別容易被忽略，因為 Kubernetes 預設的 Servi..."
+    },
+    {
+        "title": "非同步任務處理中的重試機制設計：避免雪崩效應的實戰指南",
+        "file": "2026-04-29-非同步任務處理.md",
+        "date": "2026-04-29",
+        "category": "AI_Gen",
+        "excerpt": "在分散式系統中，非同步任務處理是不可或缺的架構元素。無論是發送通知信、處理圖片轉檔，還是同步第三方資料，我們都仰賴 Message Queue 搭配 Worker 來完成這些工作。然而，當下游服務發生..."
+    },
+    {
+        "title": "GitOps 實戰：如何優雅處理 Secrets 管理的三種方案比較",
+        "file": "2026-04-30-GitOps.md",
+        "date": "2026-04-30",
+        "category": "AI_Gen",
+        "excerpt": "當團隊開始導入 GitOps 工作流程後，很快就會遇到一個棘手的問題：「敏感資料該怎麼存？」"
+    },
+    {
+        "title": "Helm Chart 版本升級踩雷指南：三個常見陷阱與避坑技巧",
+        "file": "2026-05-01-Helm.md",
+        "date": "2026-05-01",
+        "category": "AI_Gen",
+        "excerpt": "當你在 Kubernetes 環境中使用 Helm 管理應用程式部署時，Chart 版本升級往往是最容易出問題的環節。相信不少人都有過這樣的經驗：明明只是執行一個看似簡單的 `helm upgrade..."
+    },
+    {
+        "title": "Redis 快取雪崩、穿透與擊穿：三大災難的防禦實戰指南",
+        "file": "2026-05-02-Redis-快取.md",
+        "date": "2026-05-02",
+        "category": "AI_Gen",
+        "excerpt": "在高流量的生產環境中，Redis 快取是保護後端資料庫的關鍵防線。然而，當這道防線失效時，瞬間湧入的請求可能直接壓垮資料庫，導致整個服務癱瘓。身為 SRE，我曾在凌晨三點被 PagerDuty 叫醒，..."
+    },
+    {
+        "title": "實戰解析：使用 Sliding Window 演算法打造精準的 API Rate Limiting",
+        "file": "2026-05-03-API-Rate-Limiting.md",
+        "date": "2026-05-03",
+        "category": "AI_Gen",
+        "excerpt": "在微服務架構中，API Rate Limiting 是保護系統穩定性的第一道防線。然而，許多團隊在實作時只停留在最基本的 Fixed Window 計數器，卻忽略了它在視窗邊界時可能產生的流量突波問題..."
+    },
+    {
+        "title": "MySQL 慢查詢排查實戰：從發現到優化的完整指南",
+        "file": "2026-05-04-MySQL.md",
+        "date": "2026-05-04",
+        "category": "AI_Gen",
+        "excerpt": "凌晨三點，監控告警響起，資料庫 CPU 飆到 95%，API 回應時間從 50ms 暴漲到 5 秒。身為 SRE，你第一時間登入主機，卻發現數十條 SQL 同時在跑，該從何下手？"
+    },
+    {
+        "title": "從 Celery 到 Redis Streams：重新思考非同步任務的重試策略",
+        "file": "2026-05-05-非同步任務處理.md",
+        "date": "2026-05-05",
+        "category": "AI_Gen",
+        "excerpt": "在分散式系統中，非同步任務失敗是常態而非例外。網路抖動、下游服務過載、資源競爭——這些都可能導致任務執行失敗。作為 DevOps 工程師，我們經常面對的問題不是「任務會不會失敗」，而是「任務失敗後該如..."
+    },
+    {
+        "title": "用 Prometheus Recording Rules 優化高基數指標查詢效能",
+        "file": "2026-05-06-Prometheus--Grafana.md",
+        "date": "2026-05-06",
+        "category": "AI_Gen",
+        "excerpt": "當你的 Prometheus 監控規模逐漸擴大，是否曾經遇過 Grafana 儀表板載入緩慢、甚至查詢超時的狀況？這個問題在監控 Kubernetes 叢集時特別常見——當 Pod 數量突破數百個，每..."
+    },
+    {
+        "title": "用 Celery + Redis 打造可觀測的非同步任務系統：從 Silent Failure 到全面監控",
+        "file": "2026-05-07-非同步任務處理.md",
+        "date": "2026-05-07",
+        "category": "AI_Gen",
+        "excerpt": "在微服務架構中，非同步任務處理是不可或缺的一環。無論是寄送 Email、處理圖片、產生報表，我們都依賴 Celery 這類任務佇列來處理耗時操作。然而，許多團隊在導入 Celery 後，常陷入一個困境..."
     }
 ]
