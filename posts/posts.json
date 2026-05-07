@@ -1,7 +1,14 @@
 [
     
     {
-        "title": "第三篇文章：可觀測性與告警",
+        "title": "第四篇文章：事故管理（Incident Management）",
+        "file": "SRE_4.md",
+        "date": "2026-05-07",
+        "category": "SRE",
+        "excerpt": "Incident Management, Observability, Grafana, Prometheus, Alertmanager, Slack"
+    },
+    {
+        "title": "第三篇文章：監控與可觀測性（Observability）",
         "file": "SRE_3.md",
         "date": "2026-04-27",
         "category": "SRE",
