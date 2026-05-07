@@ -502,5 +502,12 @@
         "date": "2026-05-06",
         "category": "AI_Gen",
         "excerpt": "當你的 Prometheus 監控規模逐漸擴大，是否曾經遇過 Grafana 儀表板載入緩慢、甚至查詢超時的狀況？這個問題在監控 Kubernetes 叢集時特別常見——當 Pod 數量突破數百個，每..."
+    },
+    {
+        "title": "用 Celery + Redis 打造可觀測的非同步任務系統：從 Silent Failure 到全面監控",
+        "file": "2026-05-07-非同步任務處理.md",
+        "date": "2026-05-07",
+        "category": "AI_Gen",
+        "excerpt": "在微服務架構中，非同步任務處理是不可或缺的一環。無論是寄送 Email、處理圖片、產生報表，我們都依賴 Celery 這類任務佇列來處理耗時操作。然而，許多團隊在導入 Celery 後，常陷入一個困境..."
     }
 ]
