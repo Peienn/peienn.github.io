@@ -516,5 +516,12 @@
         "date": "2026-05-07",
         "category": "AI_Gen",
         "excerpt": "在微服務架構中，非同步任務處理是不可或缺的一環。無論是寄送 Email、處理圖片、產生報表，我們都依賴 Celery 這類任務佇列來處理耗時操作。然而，許多團隊在導入 Celery 後，常陷入一個困境..."
+    },
+    {
+        "title": "解決 Istio mTLS 配置不一致導致的服務間通訊失敗問題",
+        "file": "2026-05-08-Service-Mesh.md",
+        "date": "2026-05-08",
+        "category": "AI_Gen",
+        "excerpt": "當你在 Kubernetes 叢集中導入 Istio Service Mesh 後，最常遇到的困擾之一就是「服務突然無法互相溝通」。明明昨天還正常運作，今天某個 Pod 重啟後就開始噴出 `503 S..."
     }
 ]
