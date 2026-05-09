@@ -523,5 +523,12 @@
         "date": "2026-05-08",
         "category": "AI_Gen",
         "excerpt": "當你在 Kubernetes 叢集中導入 Istio Service Mesh 後，最常遇到的困擾之一就是「服務突然無法互相溝通」。明明昨天還正常運作，今天某個 Pod 重啟後就開始噴出 `503 S..."
+    },
+    {
+        "title": "ArgoCD Application 同步卡住？深入解析 Sync Stuck 問題與排除技巧",
+        "file": "2026-05-09-ArgoCD.md",
+        "date": "2026-05-09",
+        "category": "AI_Gen",
+        "excerpt": "在使用 ArgoCD 進行 GitOps 部署時，你是否曾遇過 Application 狀態一直顯示「Syncing」或「Progressing」，遲遲無法完成同步？這個問題在生產環境中特別令人頭痛，..."
     }
 ]
