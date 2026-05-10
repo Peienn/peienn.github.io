@@ -2,7 +2,7 @@ name: 每日 DevOps 文章生成
 
 on:
   schedule:
-    - cron: "0 0 * * *"   # 改回每天 UTC 00:00
+    - cron: "0 0 1 * *"   # 改回每天 UTC 00:00
   workflow_dispatch:
     inputs:
       topic:
