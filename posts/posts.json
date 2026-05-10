@@ -530,5 +530,12 @@
         "date": "2026-05-09",
         "category": "AI_Gen",
         "excerpt": "在使用 ArgoCD 進行 GitOps 部署時，你是否曾遇過 Application 狀態一直顯示「Syncing」或「Progressing」，遲遲無法完成同步？這個問題在生產環境中特別令人頭痛，..."
+    },
+    {
+        "title": "微服務架構中的服務間通訊：同步 vs 非同步模式的選擇策略",
+        "file": "2026-05-10-微服務架構.md",
+        "date": "2026-05-10",
+        "category": "AI_Gen",
+        "excerpt": "當團隊從單體架構遷移到微服務架構後，最常遇到的挑戰之一就是：服務之間該如何通訊？選擇 HTTP REST API 直接呼叫，還是透過 Message Queue 非同步處理？這個決策看似簡單，卻會深刻..."
     }
 ]
